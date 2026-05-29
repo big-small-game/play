@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✊ Rock Paper Scissors</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI,sans-serif;
+background:linear-gradient(135deg,#ff6b6b,#6c5ce7,#00cec9);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
+}
+
+.container{
+text-align:center;
+width:90%;
+max-width:600px;
+background:rgba(255,255,255,0.15);
+padding:30px;
+border-radius:20px;
+backdrop-filter:blur(10px);
+}
+
+h1{
+margin-bottom:20px;
+}
+
+.choice{
+font-size:50px;
+padding:20px;
+margin:10px;
+border:none;
+border-radius:15px;
+cursor:pointer;
+}
+
+.result{
+font-size:28px;
+font-weight:bold;
+margin-top:20px;
+}
+
+.score{
+margin-top:20px;
+font-size:22px;
+}
+
+.info{
+margin-top:20px;
+font-size:20px;
+}
+
+button{
+cursor:pointer;
+}
+
+.back{
+margin-top:20px;
+padding:12px 20px;
+border:none;
+border-radius:10px;
+background:white;
+color:black;
+font-size:16px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>✊ Rock Paper Scissors ✋</h1>
+
+<p>Choose one:</p>
+
+<button class="choice" onclick="play('rock')">
+✊
+</button>
+
+<button class="choice" onclick="play('paper')">
+✋
+</button>
+
+<button class="choice" onclick="play('scissors')">
+✌️
+</button>
+
+<div class="info">
+
+<p>
+You:
+<span id="userChoice">-</span>
+</p>
+
+<p>
+Computer:
+<span id="computerChoice">-</span>
+</p>
+
+</div>
+
+<div class="result" id="result">
+Make your move!
+</div>
+
+<div class="score">
+
+Wins: <span id="wins">0</span>
+
+  |  
+
+Losses: <span id="losses">0</span>
+
+  |  
+
+Draws: <span id="draws">0</span>
+
+</div>
+
+<button
+class="back"
+onclick="window.location.href='game.html'">
+⬅ Back to Hub </button>
+
+</div>
+
+<script>
+
+let wins = 0;
+let losses = 0;
+let draws = 0;
+
+const choices =
+["rock","paper","scissors"];
+
+function play(user){
+
+const computer =
+choices[
+Math.floor(
+Math.random()*3
+)
+];
+
+document.getElementById(
+"userChoice"
+).innerHTML = emoji(user);
+
+document.getElementById(
+"computerChoice"
+).innerHTML = emoji(computer);
+
+let result = "";
+
+if(user === computer){
+
+draws++;
+
+result = "🤝 Draw";
+
+}
+else if(
+
+(user==="rock" &&
+computer==="scissors")
+
+||
+
+(user==="paper" &&
+computer==="rock")
+
+||
+
+(user==="scissors" &&
+computer==="paper")
+
+){
+
+wins++;
+
+result = "🎉 You Win!";
+
+}
+else{
+
+losses++;
+
+result = "❌ You Lose!";
+
+}
+
+document.getElementById(
+"result"
+).innerHTML = result;
+
+document.getElementById(
+"wins"
+).innerHTML = wins;
+
+document.getElementById(
+"losses"
+).innerHTML = losses;
+
+document.getElementById(
+"draws"
+).innerHTML = draws;
+
+}
+
+function emoji(choice){
+
+if(choice==="rock")
+return "✊";
+
+if(choice==="paper")
+return "✋";
+
+return "✌️";
+
+}
+
+</script>
+
+</body>
+</html>
