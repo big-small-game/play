@@ -191,7 +191,12 @@ auth,
 email,
 password
 )
-.then(() => {
+.then((userCredential) => {
+
+localStorage.setItem(
+"currentUser",
+userCredential.user.email
+);
 
 window.location.href = "game.html";
 
