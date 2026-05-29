@@ -226,6 +226,8 @@ let selected = "";
 let currentUser =
 localStorage.getItem("currentUser");
 
+alert("Logged in user: " + currentUser);
+
 document.getElementById("userEmail")
 .innerHTML =
 currentUser || "Guest";
