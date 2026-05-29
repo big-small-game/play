@@ -398,6 +398,25 @@ new Date().toLocaleTimeString()
 
 document.getElementById("historyList")
 .prepend(li);
+fetch(
+"https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec",
+{
+method:"POST",
+body:JSON.stringify({
+
+action:"updateBalance",
+
+email:currentUser,
+
+balance:Math.round(balance),
+
+wins:wins,
+
+losses:losses
+
+})
+}
+);
 
 selected="";
 
