@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ Reaction Time Test</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI,sans-serif;
+background:linear-gradient(135deg,#ff6b6b,#6c5ce7,#00cec9);
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
+}
+
+.container{
+text-align:center;
+width:90%;
+max-width:600px;
+background:rgba(255,255,255,0.15);
+padding:30px;
+border-radius:20px;
+backdrop-filter:blur(10px);
+}
+
+h1{
+margin-bottom:20px;
+}
+
+#box{
+width:100%;
+height:250px;
+border-radius:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:30px;
+font-weight:bold;
+cursor:pointer;
+background:#444;
+user-select:none;
+}
+
+.stats{
+margin-top:20px;
+font-size:22px;
+}
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-size:16px;
+margin-top:20px;
+}
+
+.back{
+background:white;
+color:black;
+margin-left:10px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>⚡ Reaction Time Test</h1>
+
+<p>
+Click Start. Wait for GREEN.
+Then click as fast as possible.
+</p>
+
+<div id="box">
+Press Start
+</div>
+
+<div class="stats">
+
+<p>
+Last Time:
+<span id="time">0</span> ms
+</p>
+
+<p>
+Best Time:
+<span id="best">--</span> ms
+</p>
+
+</div>
+
+<button onclick="startGame()">
+Start
+</button>
+
+<button class="back"
+onclick="window.location.href='game.html'">
+⬅ Back </button>
+
+</div>
+
+<script>
+
+let startTime;
+let waiting = false;
+let ready = false;
+
+let best =
+localStorage.getItem("bestReaction");
+
+if(best){
+document.getElementById("best")
+.innerHTML = best;
+}
+
+function startGame(){
+
+const box =
+document.getElementById("box");
+
+waiting = true;
+ready = false;
+
+box.style.background = "#444";
+box.innerHTML = "Wait...";
+
+const delay =
+Math.random()*4000 + 2000;
+
+setTimeout(()=>{
+
+ready = true;
+waiting = false;
+
+box.style.background =
+"#00b894";
+
+box.innerHTML =
+"CLICK NOW!";
+
+startTime =
+new Date().getTime();
+
+},delay);
+
+}
+
+document.getElementById("box")
+.addEventListener("click",()=>{
+
+const box =
+document.getElementById("box");
+
+if(waiting){
+
+box.innerHTML =
+"❌ Too Early!";
+
+box.style.background =
+"#d63031";
+
+waiting = false;
+
+return;
+}
+
+if(ready){
+
+const reaction =
+new Date().getTime()
+- startTime;
+
+document.getElementById("time")
+.innerHTML =
+reaction;
+
+if(
+!localStorage.getItem(
+"bestReaction"
+)
+||
+reaction <
+localStorage.getItem(
+"bestReaction"
+)
+){
+
+localStorage.setItem(
+"bestReaction",
+reaction
+);
+
+document.getElementById("best")
+.innerHTML =
+reaction;
+
+}
+
+box.innerHTML =
+"⚡ " +
+reaction +
+" ms";
+
+box.style.background =
+"#0984e3";
+
+ready = false;
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
