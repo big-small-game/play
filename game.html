@@ -50,18 +50,13 @@ padding:20px;
 text-align:center;
 }
 
-.timer{
-font-size:60px;
-font-weight:bold;
-margin:20px 0;
-}
-
 .bet-input{
 padding:12px;
 width:250px;
 border:none;
 border-radius:10px;
 font-size:16px;
+margin-top: 20px;
 }
 
 .choice-btn{
@@ -73,12 +68,11 @@ font-size:22px;
 cursor:pointer;
 color:white;
 font-weight:bold;
-transition: opacity 0.3s;
+transition: opacity 0.2s;
 }
 
-.choice-btn:disabled, .play-btn:disabled {
-opacity: 0.5;
-cursor: not-allowed;
+.choice-btn:active {
+opacity: 0.8;
 }
 
 .big{
@@ -105,7 +99,7 @@ font-weight: bold;
 margin-top:20px;
 font-size:24px;
 font-weight:bold;
-min-height: 35px; /* Keeps layout stable */
+min-height: 35px;
 }
 
 .panel{
@@ -158,8 +152,6 @@ font-weight: bold;
         <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
-    <div class="timer" id="timer">20</div>
-
     <input class="bet-input" type="number" id="betAmount" placeholder="Minimum Bet = 10">
     <br>
 
@@ -168,63 +160,4 @@ font-weight: bold;
 
     <p id="selectedChoice" style="margin-top: 10px; font-weight: bold;"></p>
 
-    <button id="btnPlaceBet" class="play-btn" onclick="placeBet()">Place Bet</button>
-
-    <div class="result" id="result"></div>
-
-    <div class="history">
-        <h3>Bet History</h3>
-        <ul id="historyList"></ul>
-    </div>
-</div>
-
-<script>
-const BALANCE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
-
-let balance = 10;
-let wins = 0;
-let losses = 0;
-let selected = "";
-
-// Game State Variables for synchronization
-let activeBet = 0;
-let activeChoice = "";
-let isBetPlaced = false;
-let time = 20;
-
-let currentUser = localStorage.getItem("currentUser") || "Guest";
-document.getElementById("userEmail").innerHTML = currentUser;
-
-function toggleAccount(){
-    let panel = document.getElementById("accountPanel");
-    panel.style.display = panel.style.display === "block" ? "none" : "block";
-}
-
-async function loadBalance(){
-    try{
-        let response = await fetch(BALANCE_URL);
-        let data = await response.json();
-
-        for(let i=1; i<data.length; i++){
-            if(data[i][0] === currentUser){
-                balance = Number(data[i][1]);
-                wins = Number(data[i][2]);
-                losses = Number(data[i][3]);
-
-                updateUI();
-                break;
-            }
-        }
-    } catch(err){
-        console.error("Error loading balance:", err);
-    }
-}
-
-function updateUI() {
-    document.getElementById("balance").innerHTML = Math.round(balance);
-    document.getElementById("wins").innerHTML = wins;
-    document.getElementById("losses").innerHTML = losses;
-}
-
-function choose(choice){
-    if(isBetPlaced) return; //
+    <button id="btnPlaceBet" class="play-btn" onclick="playGame()">Place
