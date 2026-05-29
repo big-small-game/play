@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Big Small Arena</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e40af,#7c3aed);
+    overflow:hidden;
+}
+
+body::before{
+    content:'';
+    position:absolute;
+    width:300px;
+    height:300px;
+    background:rgba(255,255,255,0.1);
+    border-radius:50%;
+    top:-100px;
+    left:-100px;
+}
+
+body::after{
+    content:'';
+    position:absolute;
+    width:250px;
+    height:250px;
+    background:rgba(255,255,255,0.08);
+    border-radius:50%;
+    bottom:-80px;
+    right:-80px;
+}
+
+.card{
+    position:relative;
+    z-index:10;
+    width:90%;
+    max-width:420px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:25px;
+    padding:35px;
+    text-align:center;
+    color:white;
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+.logo{
+    font-size:70px;
+}
+
+h1{
+    margin-top:10px;
+}
+
+.subtitle{
+    margin-top:8px;
+    opacity:0.8;
+    margin-bottom:25px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin:10px 0;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    border:none;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+.register-link{
+    margin-top:20px;
+    font-size:15px;
+}
+
+.register-link a{
+    color:#ffd700;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+#error{
+    margin-top:15px;
+    color:#ffb4b4;
+    font-size:14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="logo">🎲</div>
+
+<h1>BIG SMALL ARENA</h1>
+
+<p class="subtitle">
+Welcome Back!
+</p>
+
+<input
+type="email"
+id="email"
+placeholder="Email Address">
+
+<input
+type="password"
+id="password"
+placeholder="Password">
+
+<button onclick="login()">
+Login
+</button>
+
+<div id="error"></div>
+
+<div class="register-link">
+Didn't Register Yet?
+<a href="register.html">Register</a>
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA_hkolHDRyi4r0rTSC8fRt-tEhXMS-4pM",
+  authDomain: "big-small-15ac1.firebaseapp.com",
+  projectId: "big-small-15ac1",
+  storageBucket: "big-small-15ac1.firebasestorage.app",
+  messagingSenderId: "445997925162",
+  appId: "1:445997925162:web:3eda0cfdf8c808b4d6d453"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.login = function(){
+
+let email =
+document.getElementById("email").value;
+
+let password =
+document.getElementById("password").value;
+
+signInWithEmailAndPassword(
+auth,
+email,
+password
+)
+.then(() => {
+
+window.location.href = "game.html";
+
+})
+.catch(() => {
+
+document.getElementById("error").innerHTML =
+"Invalid Email or Password";
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
