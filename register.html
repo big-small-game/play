@@ -1,54 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Register</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
 body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0f172a,#2563eb,#7c3aed);
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#0f172a,#1e40af);
 }
 
-.card{
+.box{
+background:white;
 width:90%;
 max-width:400px;
-background:white;
 padding:30px;
 border-radius:20px;
+text-align:center;
 box-shadow:0 10px 30px rgba(0,0,0,.3);
 }
 
-h1{
-text-align:center;
-margin-bottom:20px;
-}
-
 input{
-width:100%;
-padding:14px;
-margin:10px 0;
-border:1px solid #ddd;
+width:90%;
+padding:12px;
+margin:10px;
+border:1px solid #ccc;
 border-radius:10px;
-font-size:16px;
 }
 
 button{
-width:100%;
-padding:14px;
+width:95%;
+padding:12px;
 border:none;
 border-radius:10px;
 background:#2563eb;
@@ -57,36 +44,25 @@ font-size:18px;
 cursor:pointer;
 }
 
-button:hover{
-opacity:.9;
-}
-
 #msg{
-margin-top:15px;
-text-align:center;
-font-weight:bold;
+margin-top:10px;
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="box">
 
 <h1>Create Account</h1>
 
-<input id="username" placeholder="Username">
+<input type="email" id="email" placeholder="Email">
 
-<input id="password"
-type="password"
-placeholder="Password">
+<input type="password" id="password" placeholder="Password">
 
-<input id="confirm"
-type="password"
-placeholder="Confirm Password">
+<input type="password" id="confirm" placeholder="Confirm Password">
 
-<button onclick="registerUser()">
+<button onclick="register()">
 Register
 </button>
 
@@ -94,15 +70,33 @@ Register
 
 </div>
 
-<script>
+<script type="module">
 
-const SCRIPT_URL =
-"YOUR_SCRIPT_URL";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
-function registerUser(){
+import {
+getAuth,
+createUserWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-let username =
-document.getElementById("username").value;
+const firebaseConfig = {
+  apiKey: "AIzaSyA_hkolHDRyi4r0rTSC8fRt-tEhXMS-4pM",
+  authDomain: "big-small-15ac1.firebaseapp.com",
+  projectId: "big-small-15ac1",
+  storageBucket: "big-small-15ac1.firebasestorage.app",
+  messagingSenderId: "445997925162",
+  appId: "1:445997925162:web:3eda0cfdf8c808b4d6d453"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.register = function(){
+
+let email =
+document.getElementById("email").value;
 
 let password =
 document.getElementById("password").value;
@@ -118,15 +112,12 @@ document.getElementById("msg").innerHTML =
 return;
 }
 
-fetch(https://script.google.com/macros/s/AKfycbyrBSSuLQs2vOQj78cg0cJZruLygNIzwkb5s625LkjhmgN1iamiSxDyxH0ttLGqm7w-2w/exec,{
-method:"POST",
-body:JSON.stringify({
-username:username,
-password:password
-})
-})
-.then(r=>r.text())
-.then(data=>{
+createUserWithEmailAndPassword(
+auth,
+email,
+password
+)
+.then(() => {
 
 document.getElementById("msg").innerHTML =
 "Registration Successful";
@@ -136,10 +127,10 @@ window.location.href="login.html";
 },1500);
 
 })
-.catch(err=>{
+.catch((error)=>{
 
 document.getElementById("msg").innerHTML =
-"Error";
+error.message;
 
 });
 
