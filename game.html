@@ -1,163 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Big Small Arena</title>
+<title>Mini Games Hub</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
-}
 
 body{
-min-height:100vh;
+margin:0;
+font-family:Segoe UI,sans-serif;
 background:linear-gradient(135deg,#ff6b6b,#6c5ce7,#00cec9);
+min-height:100vh;
 color:white;
-}
-
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px;
-}
-
-.account-btn{
-background:white;
-color:black;
-border:none;
-padding:10px 15px;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.balance-box{
-background:rgba(255,255,255,0.2);
-padding:10px 15px;
-border-radius:10px;
-font-weight:bold;
-}
-
-.container{
-max-width:800px;
-margin:auto;
-padding:20px;
 text-align:center;
 }
 
-.bet-input{
-padding:12px;
-width:250px;
-border:none;
-border-radius:10px;
-font-size:16px;
-margin-top: 20px;
+.header{
+padding:20px;
 }
 
-.choice-btn{
-padding:15px 40px;
-margin:15px;
-border:none;
-border-radius:15px;
-font-size:22px;
-cursor:pointer;
-color:white;
-font-weight:bold;
-transition: opacity 0.2s;
-}
-
-.choice-btn:active {
-opacity: 0.8;
-}
-
-.big{
-background:#00b894;
-}
-
-.small{
-background:#d63031;
-}
-
-.play-btn{
-padding:15px 35px;
-border:none;
-border-radius:15px;
-cursor:pointer;
-font-size:18px;
-margin-top:15px;
-background: white;
-color: black;
-font-weight: bold;
-}
-
-.result{
-margin-top:20px;
-font-size:24px;
-font-weight:bold;
-min-height: 35px;
-}
-
-.panel{
-margin-top:20px;
+.card{
 background:rgba(255,255,255,0.15);
-padding:15px;
+margin:20px auto;
+padding:20px;
+width:90%;
+max-width:500px;
+border-radius:20px;
+backdrop-filter:blur(10px);
+}
+
+.game-btn{
+display:block;
+width:90%;
+margin:15px auto;
+padding:18px;
+border:none;
 border-radius:15px;
-display:none;
+font-size:20px;
+cursor:pointer;
+font-weight:bold;
 }
 
-.history{
-margin-top:25px;
-background:rgba(255,255,255,0.15);
-padding:15px;
-border-radius:15px;
-text-align:left;
-}
+.guess{background:#f39c12;color:white;}
+.memory{background:#00b894;color:white;}
+.rps{background:#6c5ce7;color:white;}
+.reaction{background:#e84393;color:white;}
+.quiz{background:#0984e3;color:white;}
 
-.history ul{
-padding-left:20px;
-}
-
-.logout-btn{
+.logout{
+background:white;
+color:black;
 padding:10px 20px;
 border:none;
 border-radius:10px;
 cursor:pointer;
-margin-top:10px;
-background: #e74c3c;
-color: white;
-font-weight: bold;
 }
+
 </style>
+
 </head>
 
 <body>
 
-<div class="topbar">
-    <button class="account-btn" onclick="toggleAccount()">👤 Account</button>
-    <div class="balance-box">Balance: <span id="balance">10</span></div>
+<div class="header">
+
+<h1>🎮 MINI GAMES HUB</h1>
+
+<div class="card">
+
+<p>
+Logged In:
+<span id="email"></span>
+</p>
+
+<button class="logout" onclick="logout()">
+Logout
+</button>
+
 </div>
 
-<div class="container">
-    <h1>🎲 BIG SMALL ARENA</h1>
+</div>
 
-    <div class="panel" id="accountPanel">
-        <p><b>Email:</b> <span id="userEmail"></span></p>
-        <p><b>Wins:</b> <span id="wins">0</span></p>
-        <p><b>Losses:</b> <span id="losses">0</span></p>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
+<div class="card">
 
-    <input class="bet-input" type="number" id="betAmount" placeholder="Minimum Bet = 10">
-    <br>
+<h2>Choose A Game</h2>
 
-    <button id="btnBig" class="choice-btn big" onclick="choose('Big')">BIG</button>
-    <button id="btnSmall" class="choice-btn small" onclick="choose('Small')">SMALL</button>
+<button class="game-btn guess"
+onclick="location.href='guess.html'">
+🎯 Number Guess Challenge </button>
 
-    <p id="selectedChoice" style="margin-top: 10px; font-weight: bold;"></p>
+<button class="game-btn memory"
+onclick="location.href='memory.html'">
+🧠 Memory Game </button>
 
-    <button id="btnPlaceBet" class="play-btn" onclick="playGame()">Place
+<button class="game-btn rps"
+onclick="location.href='rps.html'">
+✊ Rock Paper Scissors </button>
+
+<button class="game-btn reaction"
+onclick="location.href='reaction.html'">
+⚡ Reaction Time Test </button>
+
+<button class="game-btn quiz"
+onclick="location.href='quiz.html'">
+📚 Quiz Arena </button>
+
+</div>
+
+<script>
+
+let user =
+localStorage.getItem("currentUser");
+
+document.getElementById("email")
+.innerHTML =
+user || "Guest";
+
+function logout(){
+
+localStorage.removeItem("currentUser");
+
+window.location.href =
+"login.html";
+
+}
+
+</script>
+
+</body>
+</html>
