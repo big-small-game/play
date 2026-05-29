@@ -1,1 +1,177 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Small Arena</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,#ff6b6b,#6c5ce7,#00cec9);
+    min-height:100vh;
+    color:white;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    padding:20px;
+}
+
+.balance{
+    background:white;
+    color:black;
+    padding:10px 15px;
+    border-radius:10px;
+    font-weight:bold;
+}
+
+.container{
+    text-align:center;
+    margin-top:40px;
+}
+
+.choice{
+    padding:15px 35px;
+    margin:10px;
+    border:none;
+    border-radius:12px;
+    font-size:20px;
+    cursor:pointer;
+}
+
+.big{
+    background:#00b894;
+    color:white;
+}
+
+.small{
+    background:#d63031;
+    color:white;
+}
+
+.bet{
+    padding:12px;
+    width:220px;
+    border:none;
+    border-radius:10px;
+    margin-top:20px;
+}
+
+.play{
+    padding:15px 35px;
+    border:none;
+    border-radius:12px;
+    font-size:18px;
+    cursor:pointer;
+    margin-top:15px;
+}
+
+.result{
+    margin-top:20px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.account{
+    background:white;
+    color:black;
+    padding:10px 15px;
+    border-radius:10px;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="header">
+
+<div class="account">
+👤 <span id="userEmail"></span>
+</div>
+
+<div class="balance">
+Balance: 10
+</div>
+
+</div>
+
+<div class="container">
+
+<h1>🎲 BIG SMALL ARENA</h1>
+
+<h2>Select One</h2>
+
+<button class="choice big" onclick="pick('Big')">
+BIG
+</button>
+
+<button class="choice small" onclick="pick('Small')">
+SMALL
+</button>
+
+<br>
+
+<input
+class="bet"
+type="number"
+placeholder="Bet Amount">
+
+<br>
+
+<button class="play" onclick="playGame()">
+Place Bet
+</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+
+let selected="";
+
+function pick(choice){
+    selected=choice;
+}
+
+function playGame(){
+
+    if(selected==""){
+        alert("Choose Big or Small");
+        return;
+    }
+
+    let outcome =
+    Math.random()<0.5
+    ? "Big"
+    : "Small";
+
+    if(outcome===selected){
+
+        document.getElementById("result")
+        .innerHTML =
+        "🎉 WIN";
+
+    }else{
+
+        document.getElementById("result")
+        .innerHTML =
+        "❌ LOSS";
+
+    }
+}
+
+document.getElementById("userEmail")
+.innerHTML =
+localStorage.getItem("currentUser") || "Guest";
+
+</script>
+
+</body>
+</html>
 
