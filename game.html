@@ -39,8 +39,50 @@ border-radius:15px;
 background:rgba(255,255,255,.2);
 backdrop-filter:blur(10px);
 }
-.coin-box{right:20px;}
-.account-btn{left:20px;border:none;color:white;cursor:pointer;}
+.coin-box{
+position:fixed;
+top:10px;
+right:10px;
+font-size:14px;
+padding:10px;
+z-index:1000;
+}
+
+.account-btn{
+position:fixed;
+top:10px;
+left:10px;
+font-size:14px;
+padding:10px;
+z-index:1000;
+}
+@media(max-width:600px){
+
+h1{
+font-size:24px;
+margin-top:70px;
+}
+
+.card{
+width:95%;
+padding:15px;
+}
+
+.game-btn{
+font-size:16px;
+padding:15px;
+}
+
+.account-menu{
+width:180px;
+}
+
+.modal-content{
+width:90%;
+margin:25% auto;
+}
+
+}
 .account-menu{
 display:none;
 position:fixed;
@@ -154,7 +196,15 @@ username:user,
 amount:document.getElementById("depAmount").value,
 paymentId:document.getElementById("depId").value
 })
-}).then(()=>alert("Deposit submitted"));
+}).then(r => r.text())
+.then(data => {
+console.log(data);
+alert("Deposit submitted");
+})
+.catch(err => {
+console.error(err);
+alert("Deposit failed");
+});
 }
 
 function submitWithdraw(){
@@ -165,7 +215,15 @@ username:user,
 amount:document.getElementById("withAmount").value,
 withdrawId:document.getElementById("withId").value
 })
-}).then(()=>alert("Withdraw submitted"));
+}).then(r => r.text())
+.then(data => {
+console.log(data);
+alert("Withdraw submitted");
+})
+.catch(err => {
+console.error(err);
+alert("Withdraw failed");
+});
 }
 </script>
 </body>
