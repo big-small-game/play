@@ -121,13 +121,20 @@ password
 
 fetch("https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec",{
 method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify({
 email:email,
-balance:10,
+balance:0,
 wins:0,
 losses:0
 })
-});
+})
+.then(r=>r.text())
+.then(data=>{
+
+console.log(data);
 
 document.getElementById("msg").innerHTML =
 "Registration Successful";
@@ -135,6 +142,16 @@ document.getElementById("msg").innerHTML =
 setTimeout(()=>{
 window.location.href="login.html";
 },1500);
+
+})
+.catch(err=>{
+
+document.getElementById("msg").innerHTML =
+"Sheet Error";
+
+console.error(err);
+
+});
 
 })
 .catch((error)=>{
