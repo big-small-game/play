@@ -406,9 +406,6 @@ function submitDeposit(){
 
 fetch("https://script.google.com/macros/s/AKfycbxdewVWmLbZ5Z6iVrnm01ARLX1z51eUVDunoz6tbkEqam2v2XKrD2SWIr-CSuF0HFRg/exec",{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
 body:JSON.stringify({
   username:user,
   amount:document.getElementById("depAmount").value,
@@ -430,15 +427,13 @@ alert("Deposit failed. Please try again.");
 function submitWithdraw(){
 fetch("https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec",{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
 body:JSON.stringify({
 username:user,
 amount:document.getElementById("withAmount").value,
 withdrawId:document.getElementById("withId").value
 })
-}).then(r => r.text())
+})
+.then(r => r.text())
 .then(data => {
 console.log(data);
 alert("Withdraw submitted");
