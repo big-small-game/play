@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="UTF-8">
@@ -94,6 +95,8 @@ cursor:pointer;
 font-weight:bold;
 }
 
+/* Coin Box */
+
 .coin-box{
 position:absolute;
 top:20px;
@@ -107,15 +110,99 @@ backdrop-filter:blur(10px);
 box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
+/* Account Section */
+
+.account-box{
+position:absolute;
+top:20px;
+left:20px;
+}
+
+.account-btn{
+background:rgba(255,255,255,0.2);
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:15px;
+cursor:pointer;
+font-weight:bold;
+font-size:16px;
+backdrop-filter:blur(10px);
+}
+
+.account-menu{
+display:none;
+position:absolute;
+top:55px;
+left:0;
+width:230px;
+background:rgba(0,0,0,0.85);
+padding:15px;
+border-radius:15px;
+text-align:left;
+box-shadow:0 4px 15px rgba(0,0,0,0.3);
+z-index:1000;
+}
+
+.account-menu p{
+margin:8px 0;
+}
+
+.account-menu button{
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.deposit-btn{
+background:#00b894;
+color:white;
+}
+
+.withdraw-btn{
+background:#e17055;
+color:white;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<!-- Coin Balance -->
+<!-- Account -->
+
+<div class="account-box">
+
+<button class="account-btn" onclick="toggleAccount()">
+👤 Account
+</button>
+
+<div class="account-menu" id="accountMenu">
+
+<p><strong>Username:</strong></p>
+<p id="accountUser">Guest</p>
+
+<button class="deposit-btn" onclick="depositCoins()">
+➕ Deposit
+</button>
+
+<button class="withdraw-btn" onclick="withdrawCoins()">
+➖ Withdraw
+</button>
+
+</div>
+
+</div>
+
+<!-- Coins -->
+
 <div class="coin-box">
-🪙 Coins:
+🪙 Balance:
 <span id="coins">0</span>
 </div>
 
@@ -144,33 +231,27 @@ Logout
 
 <button class="game-btn big-small"
 onclick="location.href='big-small.html'">
-🎲 Big Small Game
-</button>
+🎲 Big Small Game </button>
 
 <button class="game-btn guess"
 onclick="location.href='guess.html'">
-🎯 Number Guess Challenge
-</button>
+🎯 Number Guess Challenge </button>
 
 <button class="game-btn memory"
 onclick="location.href='memory.html'">
-🧠 Memory Game
-</button>
+🧠 Memory Game </button>
 
 <button class="game-btn rps"
 onclick="location.href='rps.html'">
-✊ Rock Paper Scissors
-</button>
+✊ Rock Paper Scissors </button>
 
 <button class="game-btn reaction"
 onclick="location.href='reaction.html'">
-⚡ Reaction Time Test
-</button>
+⚡ Reaction Time Test </button>
 
 <button class="game-btn quiz"
 onclick="location.href='quiz.html'">
-📚 Quiz Arena
-</button>
+📚 Quiz Arena </button>
 
 <button class="game-btn soon">
 🚀 More Games Coming Soon!
@@ -181,25 +262,119 @@ onclick="location.href='quiz.html'">
 <script>
 
 // Current User
-let user = localStorage.getItem("currentUser");
+
+let user =
+localStorage.getItem("currentUser");
 
 document.getElementById("email").innerHTML =
 user || "Guest";
 
+document.getElementById("accountUser").innerHTML =
+user || "Guest";
+
 // Coin Balance
-let coins = localStorage.getItem("coins") || 0;
+
+let coins =
+Number(localStorage.getItem("coins") || 0);
 
 document.getElementById("coins").innerHTML =
 coins;
 
-// Logout Function
+// Toggle Account Menu
+
+function toggleAccount(){
+
+let menu =
+document.getElementById("accountMenu");
+
+if(menu.style.display === "block"){
+menu.style.display = "none";
+}else{
+menu.style.display = "block";
+}
+
+}
+
+// Deposit Coins
+
+function depositCoins(){
+
+let amount =
+prompt("Enter amount to deposit:");
+
+if(amount && !isNaN(amount)){
+
+coins += Number(amount);
+
+localStorage.setItem("coins", coins);
+
+document.getElementById("coins").innerHTML =
+coins;
+
+alert("₹" + amount + " deposited successfully!");
+
+}
+
+}
+
+// Withdraw Coins
+
+function withdrawCoins(){
+
+let amount =
+prompt("Enter amount to withdraw:");
+
+if(amount && !isNaN(amount)){
+
+amount = Number(amount);
+
+if(amount > coins){
+
+alert("Insufficient balance!");
+
+return;
+
+}
+
+coins -= amount;
+
+localStorage.setItem("coins", coins);
+
+document.getElementById("coins").innerHTML =
+coins;
+
+alert("₹" + amount + " withdrawn successfully!");
+
+}
+
+}
+
+// Logout
+
 function logout(){
 
 localStorage.removeItem("currentUser");
 
-window.location.href = "login.html";
+window.location.href =
+"login.html";
 
 }
+
+// Close menu when clicking outside
+
+document.addEventListener("click", function(e){
+
+let menu =
+document.getElementById("accountMenu");
+
+let box =
+document.querySelector(".account-box");
+
+if(!box.contains(e.target)){
+menu.style.display = "none";
+}
+
+});
 
 </script>
 
