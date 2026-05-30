@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 <head>
 <meta charset="UTF-8">
@@ -15,6 +14,7 @@ background:linear-gradient(135deg,#ff6b6b,#6c5ce7,#00cec9);
 min-height:100vh;
 color:white;
 text-align:center;
+position:relative;
 }
 
 .header{
@@ -41,13 +41,48 @@ border-radius:15px;
 font-size:20px;
 cursor:pointer;
 font-weight:bold;
+transition:0.3s;
 }
 
-.guess{background:#f39c12;color:white;}
-.memory{background:#00b894;color:white;}
-.rps{background:#6c5ce7;color:white;}
-.reaction{background:#e84393;color:white;}
-.quiz{background:#0984e3;color:white;}
+.game-btn:hover{
+transform:scale(1.03);
+}
+
+.big-small{
+background:#fdcb6e;
+color:white;
+}
+
+.guess{
+background:#f39c12;
+color:white;
+}
+
+.memory{
+background:#00b894;
+color:white;
+}
+
+.rps{
+background:#6c5ce7;
+color:white;
+}
+
+.reaction{
+background:#e84393;
+color:white;
+}
+
+.quiz{
+background:#0984e3;
+color:white;
+}
+
+.soon{
+background:#636e72;
+color:white;
+cursor:not-allowed;
+}
 
 .logout{
 background:white;
@@ -56,6 +91,20 @@ padding:10px 20px;
 border:none;
 border-radius:10px;
 cursor:pointer;
+font-weight:bold;
+}
+
+.coin-box{
+position:absolute;
+top:20px;
+right:20px;
+background:rgba(255,255,255,0.2);
+padding:10px 18px;
+border-radius:15px;
+font-weight:bold;
+font-size:18px;
+backdrop-filter:blur(10px);
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
 </style>
@@ -63,6 +112,12 @@ cursor:pointer;
 </head>
 
 <body>
+
+<!-- Coin Balance -->
+<div class="coin-box">
+🪙 Coins:
+<span id="coins">0</span>
+</div>
 
 <div class="header">
 
@@ -89,45 +144,60 @@ Logout
 
 <button class="game-btn big-small"
 onclick="location.href='big-small.html'">
-🎲 Big Small Game </button>
+🎲 Big Small Game
+</button>
 
 <button class="game-btn guess"
 onclick="location.href='guess.html'">
-🎯 Number Guess Challenge </button>
+🎯 Number Guess Challenge
+</button>
 
 <button class="game-btn memory"
 onclick="location.href='memory.html'">
-🧠 Memory Game </button>
+🧠 Memory Game
+</button>
 
 <button class="game-btn rps"
 onclick="location.href='rps.html'">
-✊ Rock Paper Scissors </button>
+✊ Rock Paper Scissors
+</button>
 
 <button class="game-btn reaction"
 onclick="location.href='reaction.html'">
-⚡ Reaction Time Test </button>
+⚡ Reaction Time Test
+</button>
 
 <button class="game-btn quiz"
 onclick="location.href='quiz.html'">
-📚 Quiz Arena </button>
+📚 Quiz Arena
+</button>
+
+<button class="game-btn soon">
+🚀 More Games Coming Soon!
+</button>
 
 </div>
 
 <script>
 
-let user =
-localStorage.getItem("currentUser");
+// Current User
+let user = localStorage.getItem("currentUser");
 
-document.getElementById("email")
-.innerHTML =
+document.getElementById("email").innerHTML =
 user || "Guest";
 
+// Coin Balance
+let coins = localStorage.getItem("coins") || 0;
+
+document.getElementById("coins").innerHTML =
+coins;
+
+// Logout Function
 function logout(){
 
 localStorage.removeItem("currentUser");
 
-window.location.href =
-"login.html";
+window.location.href = "login.html";
 
 }
 
