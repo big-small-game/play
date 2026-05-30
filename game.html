@@ -1,382 +1,172 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Games Hub</title>
-
+<title>Mini Games Hub Pro</title>
 <style>
-
 body{
 margin:0;
 font-family:Segoe UI,sans-serif;
-background:linear-gradient(135deg,#ff6b6b,#6c5ce7,#00cec9);
-min-height:100vh;
+background:linear-gradient(-45deg,#ff6b6b,#6c5ce7,#00cec9,#fdcb6e);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
 color:white;
+min-height:100vh;
 text-align:center;
-position:relative;
 }
-
-.header{
-padding:20px;
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
 }
-
 .card{
-background:rgba(255,255,255,0.15);
-margin:20px auto;
-padding:20px;
-width:90%;
-max-width:500px;
+background:rgba(255,255,255,.15);
+backdrop-filter:blur(12px);
 border-radius:20px;
+padding:20px;
+margin:20px auto;
+width:90%;
+max-width:600px;
+box-shadow:0 0 25px rgba(255,255,255,.2);
+}
+.coin-box,.account-btn{
+position:fixed;
+top:20px;
+padding:12px 18px;
+border-radius:15px;
+background:rgba(255,255,255,.2);
 backdrop-filter:blur(10px);
 }
-
+.coin-box{right:20px;}
+.account-btn{left:20px;border:none;color:white;cursor:pointer;}
+.account-menu{
+display:none;
+position:fixed;
+top:70px;
+left:20px;
+background:rgba(0,0,0,.8);
+padding:15px;
+border-radius:15px;
+width:220px;
+}
 .game-btn{
 display:block;
 width:90%;
-margin:15px auto;
+margin:12px auto;
 padding:18px;
 border:none;
 border-radius:15px;
-font-size:20px;
-cursor:pointer;
+font-size:18px;
 font-weight:bold;
-transition:0.3s;
+cursor:pointer;
 }
-
-.game-btn:hover{
-transform:scale(1.03);
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.6);
 }
-
-.big-small{
-background:#fdcb6e;
-color:white;
-}
-
-.guess{
-background:#f39c12;
-color:white;
-}
-
-.memory{
-background:#00b894;
-color:white;
-}
-
-.rps{
-background:#6c5ce7;
-color:white;
-}
-
-.reaction{
-background:#e84393;
-color:white;
-}
-
-.quiz{
-background:#0984e3;
-color:white;
-}
-
-.soon{
-background:#636e72;
-color:white;
-cursor:not-allowed;
-}
-
-.logout{
+.modal-content{
 background:white;
 color:black;
-padding:10px 20px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-}
-
-/* Coin Box */
-
-.coin-box{
-position:absolute;
-top:20px;
-right:20px;
-background:rgba(255,255,255,0.2);
-padding:10px 18px;
+max-width:350px;
+margin:10% auto;
+padding:20px;
 border-radius:15px;
-font-weight:bold;
-font-size:18px;
-backdrop-filter:blur(10px);
-box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
-
-/* Account Section */
-
-.account-box{
-position:absolute;
-top:20px;
-left:20px;
-}
-
-.account-btn{
-background:rgba(255,255,255,0.2);
-color:white;
-border:none;
-padding:10px 18px;
-border-radius:15px;
-cursor:pointer;
-font-weight:bold;
-font-size:16px;
-backdrop-filter:blur(10px);
-}
-
-.account-menu{
-display:none;
-position:absolute;
-top:55px;
-left:0;
-width:230px;
-background:rgba(0,0,0,0.85);
-padding:15px;
-border-radius:15px;
-text-align:left;
-box-shadow:0 4px 15px rgba(0,0,0,0.3);
-z-index:1000;
-}
-
-.account-menu p{
+input{
+width:95%;
+padding:10px;
 margin:8px 0;
 }
-
-.account-menu button{
-width:100%;
-padding:10px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-}
-
-.deposit-btn{
-background:#00b894;
-color:white;
-}
-
-.withdraw-btn{
-background:#e17055;
-color:white;
-}
-
 </style>
-
 </head>
-
 <body>
 
-<!-- Account -->
+<button class="account-btn" onclick="toggleMenu()">👤 Account</button>
 
-<div class="account-box">
-
-<button class="account-btn" onclick="toggleAccount()">
-👤 Account
-</button>
-
-<div class="account-menu" id="accountMenu">
-
-<p><strong>Username:</strong></p>
-<p id="accountUser">Guest</p>
-
-<button class="deposit-btn" onclick="depositCoins()">
-➕ Deposit
-</button>
-
-<button class="withdraw-btn" onclick="withdrawCoins()">
-➖ Withdraw
-</button>
-
+<div class="account-menu" id="menu">
+<p><b>User:</b> <span id="user"></span></p>
+<button onclick="openDeposit()">Deposit</button>
+<button onclick="openWithdraw()">Withdraw</button>
 </div>
 
-</div>
-
-<!-- Coins -->
-
-<div class="coin-box">
-🪙 Balance:
-<span id="coins">0</span>
-</div>
-
-<div class="header">
-
-<h1>🎮 MINI GAMES HUB</h1>
+<div class="coin-box">🪙 Balance: <span id="coins">0</span></div>
 
 <div class="card">
-
-<p>
-Logged In:
-<span id="email"></span>
-</p>
-
-<button class="logout" onclick="logout()">
-Logout
-</button>
-
-</div>
-
+<h1>🎮 MINI GAMES HUB PRO</h1>
+<p>Logged In: <span id="email"></span></p>
 </div>
 
 <div class="card">
+<button class="game-btn" onclick="location.href='big-small.html'">🎲 Big Small Game</button>
+<button class="game-btn" onclick="location.href='guess.html'">🎯 Number Guess</button>
+<button class="game-btn" onclick="location.href='memory.html'">🧠 Memory Game</button>
+<button class="game-btn" onclick="location.href='rps.html'">✊ Rock Paper Scissors</button>
+<button class="game-btn" onclick="location.href='reaction.html'">⚡ Reaction Test</button>
+<button class="game-btn" onclick="location.href='quiz.html'">📚 Quiz Arena</button>
+<button class="game-btn">🚀 More Games Coming Soon</button>
+</div>
 
-<h2>Choose A Game</h2>
+<div class="modal" id="depositModal">
+<div class="modal-content">
+<h3>Deposit</h3>
+<input id="depAmount" placeholder="Amount">
+<input id="depId" placeholder="Payment ID">
+<button onclick="submitDeposit()">Submit</button>
+<button onclick="closeModals()">Close</button>
+</div>
+</div>
 
-<button class="game-btn big-small"
-onclick="location.href='big-small.html'">
-🎲 Big Small Game </button>
-
-<button class="game-btn guess"
-onclick="location.href='guess.html'">
-🎯 Number Guess Challenge </button>
-
-<button class="game-btn memory"
-onclick="location.href='memory.html'">
-🧠 Memory Game </button>
-
-<button class="game-btn rps"
-onclick="location.href='rps.html'">
-✊ Rock Paper Scissors </button>
-
-<button class="game-btn reaction"
-onclick="location.href='reaction.html'">
-⚡ Reaction Time Test </button>
-
-<button class="game-btn quiz"
-onclick="location.href='quiz.html'">
-📚 Quiz Arena </button>
-
-<button class="game-btn soon">
-🚀 More Games Coming Soon!
-</button>
-
+<div class="modal" id="withdrawModal">
+<div class="modal-content">
+<h3>Withdraw</h3>
+<input id="withAmount" placeholder="Amount">
+<input id="withId" placeholder="Withdraw ID">
+<button onclick="submitWithdraw()">Submit</button>
+<button onclick="closeModals()">Close</button>
+</div>
 </div>
 
 <script>
+let user=localStorage.getItem("currentUser")||"Guest";
+document.getElementById("email").innerText=user;
+document.getElementById("user").innerText=user;
 
-// Current User
-
-let user =
-localStorage.getItem("currentUser");
-
-document.getElementById("email").innerHTML =
-user || "Guest";
-
-document.getElementById("accountUser").innerHTML =
-user || "Guest";
-
-// Coin Balance
-
-let coins =
-Number(localStorage.getItem("coins") || 0);
-
-document.getElementById("coins").innerHTML =
-coins;
-
-// Toggle Account Menu
-
-function toggleAccount(){
-
-let menu =
-document.getElementById("accountMenu");
-
-if(menu.style.display === "block"){
-menu.style.display = "none";
-}else{
-menu.style.display = "block";
+function toggleMenu(){
+let m=document.getElementById("menu");
+m.style.display=m.style.display==="block"?"none":"block";
+}
+function openDeposit(){document.getElementById("depositModal").style.display="block";}
+function openWithdraw(){document.getElementById("withdrawModal").style.display="block";}
+function closeModals(){
+document.getElementById("depositModal").style.display="none";
+document.getElementById("withdrawModal").style.display="none";
 }
 
+function submitDeposit(){
+fetch("https://script.google.com/macros/s/AKfycbxdewVWmLbZ5Z6iVrnm01ARLX1z51eUVDunoz6tbkEqam2v2XKrD2SWIr-CSuF0HFRg/exec",{
+method:"POST",
+body:JSON.stringify({
+username:user,
+amount:document.getElementById("depAmount").value,
+paymentId:document.getElementById("depId").value
+})
+}).then(()=>alert("Deposit submitted"));
 }
 
-// Deposit Coins
-
-function depositCoins(){
-
-let amount =
-prompt("Enter amount to deposit:");
-
-if(amount && !isNaN(amount)){
-
-coins += Number(amount);
-
-localStorage.setItem("coins", coins);
-
-document.getElementById("coins").innerHTML =
-coins;
-
-alert("₹" + amount + " deposited successfully!");
-
+function submitWithdraw(){
+fetch("https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec",{
+method:"POST",
+body:JSON.stringify({
+username:user,
+amount:document.getElementById("withAmount").value,
+withdrawId:document.getElementById("withId").value
+})
+}).then(()=>alert("Withdraw submitted"));
 }
-
-}
-
-// Withdraw Coins
-
-function withdrawCoins(){
-
-let amount =
-prompt("Enter amount to withdraw:");
-
-if(amount && !isNaN(amount)){
-
-amount = Number(amount);
-
-if(amount > coins){
-
-alert("Insufficient balance!");
-
-return;
-
-}
-
-coins -= amount;
-
-localStorage.setItem("coins", coins);
-
-document.getElementById("coins").innerHTML =
-coins;
-
-alert("₹" + amount + " withdrawn successfully!");
-
-}
-
-}
-
-// Logout
-
-function logout(){
-
-localStorage.removeItem("currentUser");
-
-window.location.href =
-"login.html";
-
-}
-
-// Close menu when clicking outside
-
-document.addEventListener("click", function(e){
-
-let menu =
-document.getElementById("accountMenu");
-
-let box =
-document.querySelector(".account-box");
-
-if(!box.contains(e.target)){
-menu.style.display = "none";
-}
-
-});
-
 </script>
-
 </body>
 </html>
