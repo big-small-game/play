@@ -1,75 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Register</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-body{
-margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#0f172a,#2563eb,#7c3aed);
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.box{
-background:white;
-width:90%;
-max-width:400px;
-padding:30px;
-border-radius:20px;
-text-align:center;
-box-shadow:0 10px 30px rgba(0,0,0,.3);
-}
-
-input{
-width:90%;
-padding:12px;
-margin:10px;
-border:1px solid #ccc;
-border-radius:10px;
-}
-
-button{
-width:95%;
-padding:12px;
-border:none;
-border-radius:10px;
-background:#2563eb;
-color:white;
-font-size:18px;
-cursor:pointer;
-}
-
-#msg{
-margin-top:10px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="box">
-
-<h1>Create Account</h1>
-
-<input type="text" id="username" placeholder="Username">
-
-<input type="password" id="password" placeholder="Password">
-
-<input type="password" id="confirm" placeholder="Confirm Password">
-
-<button onclick="register()">
-Register
-</button>
-
-<div id="msg"></div>
-
-</div>
-
 <script type="module">
 
 import { initializeApp }
@@ -113,6 +41,15 @@ return;
 
 }
 
+if(password.length < 6){
+
+document.getElementById("msg").innerHTML =
+"Password must be at least 6 characters";
+
+return;
+
+}
+
 if(password !== confirm){
 
 document.getElementById("msg").innerHTML =
@@ -137,7 +74,7 @@ localStorage.setItem(
 username
 );
 
-return fetch(
+fetch(
 "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec",
 {
 method:"POST",
@@ -150,9 +87,6 @@ losses:0
 })
 }
 );
-
-})
-.then(() => {
 
 document.getElementById("msg").innerHTML =
 "Registration Successful";
@@ -173,8 +107,4 @@ console.error(error);
 
 }
 
-
 </script>
-
-</body>
-</html>
