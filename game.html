@@ -101,14 +101,33 @@ margin:25% auto;
 .account-menu{
 display:none;
 position:fixed;
-top:70px;
-left:20px;
-background:rgba(0,0,0,.8);
-padding:15px;
-border-radius:15px;
-width:220px;
+top:65px;
+left:10px;
+width:280px;
+max-width:90vw;
+background:rgba(20,20,20,0.95);
+backdrop-filter:blur(15px);
+padding:18px;
+border-radius:18px;
+box-shadow:0 8px 30px rgba(0,0,0,0.5);
+z-index:999999;
 }
 @media(max-width:600px){
+.account-menu{
+width:300px;
+left:10px;
+top:60px;
+}
+
+.modal-content{
+width:95%;
+padding:20px;
+}
+
+input{
+font-size:16px;
+padding:14px;
+}
 
 .game-btn{
 display:block;
@@ -232,6 +251,31 @@ width:95%;
 padding:10px;
 margin:8px 0;
 }
+.pay-info{
+font-size:16px;
+font-weight:bold;
+margin:10px 0;
+color:#2563eb;
+}
+
+@media(max-width:600px){
+
+.deposit-btn,
+.withdraw-btn,
+.logout-btn{
+font-size:20px;
+padding:18px;
+}
+
+.account-btn{
+font-size:18px;
+padding:14px 20px;
+}
+
+.coin-box{
+font-size:18px;
+}
+}
 </style>
 </head>
 <body>
@@ -327,7 +371,11 @@ It takes a maximum of 24 Hours to Update Your Balance.
 </div>
 
 <script>
-let user=localStorage.getItem("currentUser")||"Guest";
+let user = localStorage.getItem("currentUser") || "Guest";
+
+if(user.includes("@game.local")){
+user = user.replace("@game.local","");
+}
 document.getElementById("email").innerText=user;
 document.getElementById("user").innerText=user;
 
@@ -370,11 +418,11 @@ body:JSON.stringify({
 .then(r=>r.text())
 .then(data=>{
 console.log("Server Response:",data);
-alert("Deposit submitted");
+alert("Deposit Request Submitted Successfully.\nBalance will be updated within 24 hours.");
 })
 .catch(err=>{
 console.error("Deposit Error:",err);
-alert("Deposit failed: " + err);
+alert("Deposit failed. Please try again.");
 });
 
 }
@@ -382,6 +430,9 @@ alert("Deposit failed: " + err);
 function submitWithdraw(){
 fetch("https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec",{
 method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify({
 username:user,
 amount:document.getElementById("withAmount").value,
