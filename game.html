@@ -378,6 +378,12 @@ user = user.replace("@game.local","");
 }
 document.getElementById("email").innerText=user;
 document.getElementById("user").innerText=user;
+fetch("https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec?username="+user)
+.then(r=>r.json())
+.then(data=>{
+document.getElementById("coins").innerText =
+data.balance;
+});
 
 function toggleMenu(){
 let m=document.getElementById("menu");
