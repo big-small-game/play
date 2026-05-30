@@ -56,7 +56,7 @@ margin-top:10px;
 
 <h1>Create Account</h1>
 
-<input type="email" id="email" placeholder="Email">
+<input type="text" id="username" placeholder="Username">
 
 <input type="password" id="password" placeholder="Password">
 
@@ -95,8 +95,8 @@ const auth = getAuth(app);
 
 window.register = function(){
 
-let email =
-document.getElementById("email").value;
+let username =
+document.getElementById("username").value.trim();
 
 let password =
 document.getElementById("password").value;
@@ -104,35 +104,58 @@ document.getElementById("password").value;
 let confirm =
 document.getElementById("confirm").value;
 
+if(username === ""){
+
+document.getElementById("msg").innerHTML =
+"Enter Username";
+
+return;
+
+}
+
 if(password !== confirm){
 
 document.getElementById("msg").innerHTML =
 "Passwords do not match";
 
 return;
+
 }
+
+let fakeEmail =
+username + "@game.local";
 
 createUserWithEmailAndPassword(
 auth,
-email,
+fakeEmail,
 password
 )
 .then(() => {
 
-fetch("https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec",{
+localStorage.setItem(
+"currentUser",
+username
+);
+
+return fetch(
+"https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec",
+{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
 body:JSON.stringify({
-email:email,
+username:username,
 balance:0,
 wins:0,
 losses:0
 })
+}
+);
+
 })
-.then(r=>r.text())
-.then(data=>{
+.then(r => r.text())
+.then(data => {
 
 console.log(data);
 
@@ -144,24 +167,17 @@ window.location.href="login.html";
 },1500);
 
 })
-.catch(err=>{
-
-document.getElementById("msg").innerHTML =
-"Sheet Error";
-
-console.error(err);
-
-});
-
-})
 .catch((error)=>{
 
 document.getElementById("msg").innerHTML =
 error.message;
 
+console.error(error);
+
 });
 
 }
+
 
 </script>
 
