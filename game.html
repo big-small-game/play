@@ -207,16 +207,25 @@ margin-top:10px;
 .modal{
 display:none;
 position:fixed;
-inset:0;
-background:rgba(0,0,0,.6);
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+z-index:999999;
+
+justify-content:center;
+align-items:center;
 }
 .modal-content{
 background:white;
 color:black;
-max-width:350px;
-margin:10% auto;
-padding:20px;
-border-radius:15px;
+width:90%;
+max-width:400px;
+padding:25px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 30px rgba(0,0,0,.4);
 }
 input{
 width:95%;
@@ -322,8 +331,20 @@ function toggleMenu(){
 let m=document.getElementById("menu");
 m.style.display=m.style.display==="block"?"none":"block";
 }
-function openDeposit(){document.getElementById("depositModal").style.display="block";}
-function openWithdraw(){document.getElementById("withdrawModal").style.display="block";}
+function openDeposit(){
+
+document.getElementById("menu").style.display="none";
+
+document.getElementById("depositModal").style.display="block";
+
+}
+function openWithdraw(){
+
+document.getElementById("menu").style.display="none";
+
+document.getElementById("withdrawModal").style.display="block";
+
+}
 function closeModals(){
 document.getElementById("depositModal").style.display="none";
 document.getElementById("withdrawModal").style.display="none";
@@ -337,9 +358,9 @@ headers:{
 "Content-Type":"application/json"
 },
 body:JSON.stringify({
-username:user,
-amount:document.getElementById("depAmount").value,
-paymentId:document.getElementById("depId").value
+  username:user,
+  amount:document.getElementById("depAmount").value,
+  paymentId:document.getElementById("depId").value
 })
 })
 .then(r=>r.text())
