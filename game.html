@@ -74,9 +74,24 @@ padding:15px;
 }
 
 .account-menu{
-width:180px;
+display:none;
+position:absolute;
+top:55px;
+left:0;
+width:230px;
+background:rgba(20,20,20,0.95);
+padding:15px;
+border-radius:15px;
+text-align:left;
+box-shadow:0 4px 20px rgba(0,0,0,0.5);
+z-index:99999;
 }
-
+.account-box{
+position:fixed;
+top:15px;
+left:15px;
+z-index:99999;
+}
 .modal-content{
 width:90%;
 margin:25% auto;
@@ -131,8 +146,17 @@ margin:8px 0;
 
 <div class="account-menu" id="menu">
 <p><b>User:</b> <span id="user"></span></p>
-<button onclick="openDeposit()">Deposit</button>
-<button onclick="openWithdraw()">Withdraw</button>
+<button class="deposit-btn" onclick="deposit()">
+➕ Deposit
+</button>
+
+<button class="withdraw-btn" onclick="withdraw()">
+➖ Withdraw
+</button>
+
+<button class="logout-btn" onclick="logout()">
+🚪 Logout
+</button>
 </div>
 
 <div class="coin-box">🪙 Balance: <span id="coins">0</span></div>
