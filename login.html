@@ -133,9 +133,9 @@ Welcome Back!
 </p>
 
 <input
-type="email"
-id="email"
-placeholder="Email Address">
+type="text"
+id="username"
+placeholder="Username">
 
 <input
 type="password"
@@ -180,22 +180,25 @@ const auth = getAuth(app);
 
 window.login = function(){
 
-let email =
-document.getElementById("email").value;
+let username =
+document.getElementById("username").value.trim();
+
+let fakeEmail =
+username + "@game.local";
 
 let password =
 document.getElementById("password").value;
 
 signInWithEmailAndPassword(
 auth,
-email,
+fakeEmail,
 password
 )
 .then((userCredential) => {
 
 localStorage.setItem(
 "currentUser",
-userCredential.user.email
+username
 );
 
 window.location.href = "game.html";
