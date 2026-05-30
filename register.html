@@ -141,9 +141,7 @@ return fetch(
 "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec",
 {
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
+mode:"no-cors",
 body:JSON.stringify({
 username:username,
 balance:0,
@@ -154,10 +152,7 @@ losses:0
 );
 
 })
-.then(r => r.text())
-.then(data => {
-
-console.log(data);
+.then(() => {
 
 document.getElementById("msg").innerHTML =
 "Registration Successful";
