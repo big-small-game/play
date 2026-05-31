@@ -1,130 +1,201 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mines Game</title>
+<title>Mines </title>
+
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background: #1e1e2f;
-        color: white;
-    }
+body{
+    margin:0;
+    background:#141824;
+    color:white;
+    font-family:Arial,sans-serif;
+}
 
-    h1 {
-        margin-top: 20px;
-    }
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 20px;
+    background:#1f2637;
+}
 
-    #grid {
-        display: grid;
-        grid-template-columns: repeat(5, 70px);
-        gap: 8px;
-        justify-content: center;
-        margin-top: 20px;
-    }
+.back-btn{
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
 
-    .cell {
-        width: 70px;
-        height: 70px;
-        background: #333;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+.balance{
+    font-weight:bold;
+    background:#2d374f;
+    padding:10px 15px;
+    border-radius:8px;
+}
 
-    .safe {
-        background: #2ecc71;
-    }
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
 
-    .mine {
-        background: #e74c3c;
-    }
+.controls{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:20px;
+}
 
-    button {
-        padding: 10px 20px;
-        margin-top: 15px;
-        font-size: 16px;
-    }
+.control-box{
+    background:#1f2637;
+    padding:15px;
+    border-radius:10px;
+}
 
-    #status {
-        margin-top: 15px;
-        font-size: 18px;
-    }
+input{
+    width:120px;
+    padding:8px;
+    margin-top:5px;
+}
+
+.start-btn{
+    padding:10px 20px;
+    cursor:pointer;
+}
+
+#grid{
+    display:grid;
+    grid-template-columns:repeat(5,70px);
+    gap:10px;
+    justify-content:center;
+}
+
+.cell{
+    width:70px;
+    height:70px;
+    background:#2d374f;
+    border-radius:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    font-size:24px;
+}
+
+.safe{
+    background:#22c55e;
+}
+
+.mine{
+    background:#ef4444;
+}
 </style>
 </head>
+
 <body>
 
-<h1>Mines Game</h1>
+<div class="topbar">
+    <button class="back-btn" onclick="history.back()">⬅ Back</button>
 
-<p>Find gems 💎 and avoid mines 💣</p>
+    <div class="balance">
+        Balance: ₹1000
+    </div>
+</div>
 
-<button onclick="startGame()">New Game</button>
+<div class="container">
 
-<div id="status">Game Started</div>
+    <div class="controls">
 
-<div id="grid"></div>
+        <div class="control-box">
+            <label>Bet Amount</label><br>
+            <input type="number" id="betAmount" value="100">
+        </div>
+
+        <div class="control-box">
+            <label>No. of Mines</label><br>
+            <input type="number" id="mineCount" min="1" max="24" value="3">
+        </div>
+
+        <div class="control-box">
+            <br>
+            <button class="start-btn" onclick="startGame()">
+                Start Game
+            </button>
+        </div>
+
+    </div>
+
+    <h3 id="status" align="center">
+        Select settings and start game
+    </h3>
+
+    <div id="grid"></div>
+
+</div>
 
 <script>
-const grid = document.getElementById("grid");
-const statusText = document.getElementById("status");
 
-let mines = [];
-let gameOver = false;
-let gemsFound = 0;
+let mines=[];
+let gameOver=false;
 
-function startGame() {
-    grid.innerHTML = "";
-    gameOver = false;
-    gemsFound = 0;
-    statusText.textContent = "Game Started";
+function startGame(){
 
-    mines = [];
-    while (mines.length < 5) {
-        let r = Math.floor(Math.random() * 25);
-        if (!mines.includes(r)) mines.push(r);
+    let mineCount=
+    parseInt(document.getElementById("mineCount").value);
+
+    mines=[];
+    gameOver=false;
+
+    document.getElementById("grid").innerHTML="";
+
+    while(mines.length<mineCount){
+        let r=Math.floor(Math.random()*25);
+        if(!mines.includes(r))
+            mines.push(r);
     }
 
-    for (let i = 0; i < 25; i++) {
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-        cell.dataset.index = i;
-        cell.addEventListener("click", revealCell);
-        grid.appendChild(cell);
+    for(let i=0;i<25;i++){
+
+        let cell=document.createElement("div");
+        cell.className="cell";
+        cell.dataset.index=i;
+        cell.onclick=revealCell;
+
+        document.getElementById("grid")
+        .appendChild(cell);
     }
+
+    document.getElementById("status")
+    .innerText="Game Started";
 }
 
-function revealCell() {
-    if (gameOver || this.textContent) return;
+function revealCell(){
 
-    const index = Number(this.dataset.index);
+    if(gameOver || this.textContent) return;
 
-    if (mines.includes(index)) {
-        this.textContent = "💣";
+    let index=
+    Number(this.dataset.index);
+
+    if(mines.includes(index)){
+
+        this.textContent="💣";
         this.classList.add("mine");
 
-        gameOver = true;
-        statusText.textContent = "Game Over!";
+        gameOver=true;
 
-        document.querySelectorAll(".cell").forEach((cell, i) => {
-            if (mines.includes(i)) {
-                cell.textContent = "💣";
-                cell.classList.add("mine");
-            }
-        });
+        document.getElementById("status")
+        .innerText="Mine Hit!";
 
-    } else {
-        this.textContent = "💎";
+    }else{
+
+        this.textContent="💎";
         this.classList.add("safe");
-        gemsFound++;
-        statusText.textContent = `Gems Found: ${gemsFound}`;
     }
 }
 
-startGame();
 </script>
 
 </body>
