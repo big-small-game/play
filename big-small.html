@@ -4,262 +4,175 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Big Small Learning Game</title>
-
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
-
 body{
-    min-height:100vh;
-    background:linear-gradient(135deg,#ff6b6b,#6c5ce7,#00cec9);
+    font-family:Arial,sans-serif;
+    text-align:center;
+    background:#1e1e2f;
     color:white;
 }
-
-.topbar{
+.top{
     display:flex;
     justify-content:space-between;
-    align-items:center;
     padding:15px;
 }
-
-.account-btn{
-    background:white;
-    color:black;
-    border:none;
+.box{
+    background:#333;
     padding:10px 15px;
     border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
 }
-
-.score-box{
-    background:rgba(255,255,255,0.2);
-    padding:10px 15px;
-    border-radius:10px;
-    font-weight:bold;
-}
-
-.container{
-    max-width:800px;
-    margin:auto;
-    padding:20px;
-    text-align:center;
-}
-
 .timer{
     font-size:60px;
-    font-weight:bold;
-    margin:20px 0;
+    margin:20px;
 }
-
-.choice-btn{
-    padding:15px 40px;
-    margin:15px;
-    border:none;
-    border-radius:15px;
-    font-size:22px;
+button{
+    padding:12px 25px;
+    margin:10px;
     cursor:pointer;
-    color:white;
-    font-weight:bold;
 }
-
-.big{
-    background:#00b894;
+input{
+    padding:10px;
+    width:120px;
 }
-
-.small{
-    background:#d63031;
-}
-
-.lock-btn{
-    padding:15px 35px;
-    border:none;
-    border-radius:15px;
-    cursor:pointer;
-    font-size:18px;
-    margin-top:15px;
-}
-
-.result{
-    margin-top:20px;
-    font-size:24px;
-    font-weight:bold;
-}
-
-.panel{
-    margin-top:20px;
-    background:rgba(255,255,255,0.15);
-    padding:15px;
-    border-radius:15px;
-    display:none;
-}
-
 .history{
-    margin-top:25px;
-    background:rgba(255,255,255,0.15);
-    padding:15px;
-    border-radius:15px;
+    max-width:500px;
+    margin:auto;
     text-align:left;
-}
-
-.history ul{
-    padding-left:20px;
-}
-
-li{
-    margin-top:5px;
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-    <button class="account-btn" onclick="togglePanel()">
-        📊 Stats
-    </button>
-
-    <div class="score-box">
-        Score: <span id="score">0</span>
-    </div>
+<div class="top">
+    <div class="box">Points: <span id="points">1000</span></div>
+    <div class="box">Wins: <span id="wins">0</span> | Losses: <span id="losses">0</span></div>
 </div>
 
-<div class="container">
+<h1>Big Small Learning Game</h1>
 
-    <h1>🎲 BIG SMALL GAME</h1>
+<div class="timer" id="timer">20</div>
 
-    <div class="panel" id="statsPanel">
-        <p><b>Wins:</b> <span id="wins">0</span></p>
-        <p><b>Losses:</b> <span id="losses">0</span></p>
-    </div>
+<input type="number" id="stake" value="10" min="1">
 
-    <div class="timer" id="timer">20</div>
+<br>
 
-    <button class="choice-btn big" onclick="choose('Big')">
-        BIG
-    </button>
+<button onclick="choose('Big')">BIG</button>
+<button onclick="choose('Small')">SMALL</button>
 
-    <button class="choice-btn small" onclick="choose('Small')">
-        SMALL
-    </button>
+<p id="choice"></p>
 
-    <p id="selectedChoice" style="margin-top:10px;"></p>
+<button onclick="lockChoice()">Lock Choice</button>
 
-    <button class="lock-btn" onclick="lockChoice()">
-        Place Bet
-    </button>
+<h2 id="result"></h2>
 
-    <div class="result" id="result"></div>
-
-    <div class="history">
-        <h3>Round History</h3>
-        <ul id="historyList"></ul>
-    </div>
-
+<div class="history">
+    <h3>History</h3>
+    <ul id="history"></ul>
 </div>
 
 <script>
-let selected = "";
-let lockedChoice = null;
-
-let score = 0;
+let points = 1000;
 let wins = 0;
 let losses = 0;
 
-function togglePanel(){
-    let panel = document.getElementById("statsPanel");
+let selected = "";
+let lockedChoice = null;
+let stakeAmount = 0;
 
-    panel.style.display =
-        panel.style.display === "block"
-        ? "none"
-        : "block";
-}
-
-function choose(choice){
-
-    if(lockedChoice !== null){
-        alert("Bet already placed for this round.");
-        return;
-    }
-
-    selected = choice;
-
-    document.getElementById("selectedChoice").innerText =
-        "Selected: " + choice;
+function choose(c){
+    if(lockedChoice) return;
+    selected = c;
+    document.getElementById("choice").innerText =
+        "Selected: " + c;
 }
 
 function lockChoice(){
 
     if(selected === ""){
-        alert("Choose Big or Small first.");
+        alert("Select Big or Small");
         return;
     }
 
-    if(lockedChoice !== null){
-        alert("Bet already Placed.");
+    stakeAmount =
+        Number(document.getElementById("stake").value);
+
+    if(stakeAmount <= 0){
+        alert("Enter valid points");
         return;
     }
 
     lockedChoice = selected;
 
     document.getElementById("result").innerText =
-        "⏳ Bet Placed";
+        "⏳ Choice Locked";
 }
 
 function settleRound(){
 
-    if(lockedChoice === null){
-        document.getElementById("result").innerText =
-            "No choice made this round.";
-        return;
-    }
+    if(lockedChoice === null) return;
 
     const outcome =
-        Math.random() < 0.5
-        ? "Big"
-        : "Small";
+        Math.random() < 0.5 ? "Big" : "Small";
 
-    let text = "";
+    let msg = "";
 
     if(outcome === lockedChoice){
 
-        wins++;
-        score++;
+        const reward =
+            Math.round(stakeAmount * 1.9);
 
-        text =
-            "✅ WIN | Result: " + outcome;
+        points += reward;
+        wins++;
+
+        msg =
+            "✅ WIN | Result: " +
+            outcome +
+            " | +" +
+            reward +
+            " points";
 
     }else{
 
+        points -= stakeAmount;
         losses++;
-        score--;
 
-        text =
-            "❌ LOSS | Result: " + outcome;
+        msg =
+            "❌ LOSS | Result: " +
+            outcome +
+            " | -" +
+            stakeAmount +
+            " points";
     }
 
-    document.getElementById("score").innerText = score;
-    document.getElementById("wins").innerText = wins;
-    document.getElementById("losses").innerText = losses;
-    document.getElementById("result").innerText = text;
+    document.getElementById("points").innerText =
+        points;
 
-    let li = document.createElement("li");
+    document.getElementById("wins").innerText =
+        wins;
+
+    document.getElementById("losses").innerText =
+        losses;
+
+    document.getElementById("result").innerText =
+        msg;
+
+    const li =
+        document.createElement("li");
 
     li.innerText =
         new Date().toLocaleTimeString() +
-        " - " + text;
+        " - " +
+        msg;
 
-    document.getElementById("historyList")
+    document.getElementById("history")
         .prepend(li);
 
     selected = "";
     lockedChoice = null;
+    stakeAmount = 0;
 
-    document.getElementById("selectedChoice")
-        .innerText = "";
+    document.getElementById("choice").innerText =
+        "";
 }
 
 let time = 20;
@@ -269,16 +182,14 @@ setInterval(() => {
     time--;
 
     if(time < 0){
-
         settleRound();
-
         time = 20;
     }
 
     document.getElementById("timer").innerText =
         time;
 
-},1000);
+}, 1000);
 </script>
 
 </body>
