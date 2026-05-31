@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mines Game</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #1e1e2f;
+        color: white;
+    }
+
+    h1 {
+        margin-top: 20px;
+    }
+
+    #grid {
+        display: grid;
+        grid-template-columns: repeat(5, 70px);
+        gap: 8px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .cell {
+        width: 70px;
+        height: 70px;
+        background: #333;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .safe {
+        background: #2ecc71;
+    }
+
+    .mine {
+        background: #e74c3c;
+    }
+
+    button {
+        padding: 10px 20px;
+        margin-top: 15px;
+        font-size: 16px;
+    }
+
+    #status {
+        margin-top: 15px;
+        font-size: 18px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Mines Game</h1>
+
+<p>Find gems 💎 and avoid mines 💣</p>
+
+<button onclick="startGame()">New Game</button>
+
+<div id="status">Game Started</div>
+
+<div id="grid"></div>
+
+<script>
+const grid = document.getElementById("grid");
+const statusText = document.getElementById("status");
+
+let mines = [];
+let gameOver = false;
+let gemsFound = 0;
+
+function startGame() {
+    grid.innerHTML = "";
+    gameOver = false;
+    gemsFound = 0;
+    statusText.textContent = "Game Started";
+
+    mines = [];
+    while (mines.length < 5) {
+        let r = Math.floor(Math.random() * 25);
+        if (!mines.includes(r)) mines.push(r);
+    }
+
+    for (let i = 0; i < 25; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.index = i;
+        cell.addEventListener("click", revealCell);
+        grid.appendChild(cell);
+    }
+}
+
+function revealCell() {
+    if (gameOver || this.textContent) return;
+
+    const index = Number(this.dataset.index);
+
+    if (mines.includes(index)) {
+        this.textContent = "💣";
+        this.classList.add("mine");
+
+        gameOver = true;
+        statusText.textContent = "Game Over!";
+
+        document.querySelectorAll(".cell").forEach((cell, i) => {
+            if (mines.includes(i)) {
+                cell.textContent = "💣";
+                cell.classList.add("mine");
+            }
+        });
+
+    } else {
+        this.textContent = "💎";
+        this.classList.add("safe");
+        gemsFound++;
+        statusText.textContent = `Gems Found: ${gemsFound}`;
+    }
+}
+
+startGame();
+</script>
+
+</body>
+</html>
