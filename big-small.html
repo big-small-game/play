@@ -3,438 +3,282 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Big Small Arena</title>
+<title>Big Small Learning Game</title>
 
 <style>
-
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
 }
 
 body{
-min-height:100vh;
-background:linear-gradient(135deg,#ff6b6b,#6c5ce7,#00cec9);
-color:white;
+    min-height:100vh;
+    background:linear-gradient(135deg,#ff6b6b,#6c5ce7,#00cec9);
+    color:white;
 }
 
 .topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
 }
 
 .account-btn{
-background:white;
-color:black;
-border:none;
-padding:10px 15px;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
+    background:white;
+    color:black;
+    border:none;
+    padding:10px 15px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
 }
 
-.balance-box{
-background:rgba(255,255,255,0.2);
-padding:10px 15px;
-border-radius:10px;
-font-weight:bold;
+.score-box{
+    background:rgba(255,255,255,0.2);
+    padding:10px 15px;
+    border-radius:10px;
+    font-weight:bold;
 }
 
 .container{
-max-width:800px;
-margin:auto;
-padding:20px;
-text-align:center;
+    max-width:800px;
+    margin:auto;
+    padding:20px;
+    text-align:center;
 }
 
 .timer{
-font-size:60px;
-font-weight:bold;
-margin:20px 0;
-}
-
-.bet-input{
-padding:12px;
-width:250px;
-border:none;
-border-radius:10px;
-font-size:16px;
+    font-size:60px;
+    font-weight:bold;
+    margin:20px 0;
 }
 
 .choice-btn{
-padding:15px 40px;
-margin:15px;
-border:none;
-border-radius:15px;
-font-size:22px;
-cursor:pointer;
-color:white;
-font-weight:bold;
+    padding:15px 40px;
+    margin:15px;
+    border:none;
+    border-radius:15px;
+    font-size:22px;
+    cursor:pointer;
+    color:white;
+    font-weight:bold;
 }
 
 .big{
-background:#00b894;
+    background:#00b894;
 }
 
 .small{
-background:#d63031;
+    background:#d63031;
 }
 
-.play-btn{
-padding:15px 35px;
-border:none;
-border-radius:15px;
-cursor:pointer;
-font-size:18px;
-margin-top:15px;
+.lock-btn{
+    padding:15px 35px;
+    border:none;
+    border-radius:15px;
+    cursor:pointer;
+    font-size:18px;
+    margin-top:15px;
 }
 
 .result{
-margin-top:20px;
-font-size:24px;
-font-weight:bold;
+    margin-top:20px;
+    font-size:24px;
+    font-weight:bold;
 }
 
 .panel{
-margin-top:20px;
-background:rgba(255,255,255,0.15);
-padding:15px;
-border-radius:15px;
-display:none;
+    margin-top:20px;
+    background:rgba(255,255,255,0.15);
+    padding:15px;
+    border-radius:15px;
+    display:none;
 }
 
 .history{
-margin-top:25px;
-background:rgba(255,255,255,0.15);
-padding:15px;
-border-radius:15px;
-text-align:left;
+    margin-top:25px;
+    background:rgba(255,255,255,0.15);
+    padding:15px;
+    border-radius:15px;
+    text-align:left;
 }
 
 .history ul{
-padding-left:20px;
+    padding-left:20px;
 }
 
-.logout-btn{
-padding:10px 20px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-margin-top:10px;
+li{
+    margin-top:5px;
 }
-
 </style>
 </head>
-
 <body>
 
 <div class="topbar">
+    <button class="account-btn" onclick="togglePanel()">
+        📊 Stats
+    </button>
 
-<button class="account-btn" onclick="toggleAccount()">
-👤 Account
-</button>
-
-<div class="balance-box">
-Balance:
-<span id="balance">10</span>
-</div>
-
+    <div class="score-box">
+        Score: <span id="score">0</span>
+    </div>
 </div>
 
 <div class="container">
 
-<h1>🎲 BIG SMALL ARENA</h1>
+    <h1>🎲 BIG SMALL GAME</h1>
 
-<div class="panel" id="accountPanel">
+    <div class="panel" id="statsPanel">
+        <p><b>Wins:</b> <span id="wins">0</span></p>
+        <p><b>Losses:</b> <span id="losses">0</span></p>
+    </div>
 
-<p><b>Email:</b>
-<span id="userEmail"></span>
-</p>
+    <div class="timer" id="timer">20</div>
 
-<p><b>Wins:</b>
-<span id="wins">0</span>
-</p>
+    <button class="choice-btn big" onclick="choose('Big')">
+        BIG
+    </button>
 
-<p><b>Losses:</b>
-<span id="losses">0</span>
-</p>
+    <button class="choice-btn small" onclick="choose('Small')">
+        SMALL
+    </button>
 
-<button class="logout-btn" onclick="logout()">
-Logout
-</button>
+    <p id="selectedChoice" style="margin-top:10px;"></p>
 
-</div>
+    <button class="lock-btn" onclick="lockChoice()">
+        Place Bet
+    </button>
 
-<div class="timer" id="timer">20</div>
+    <div class="result" id="result"></div>
 
-<input
-class="bet-input"
-type="number"
-id="betAmount"
-placeholder="Minimum Bet = 10">
-
-<br>
-
-<button
-class="choice-btn big"
-onclick="choose('Big')">
-BIG
-</button>
-
-<button
-class="choice-btn small"
-onclick="choose('Small')">
-SMALL
-</button>
-
-<p id="selectedChoice"></p>
-
-<button
-class="play-btn"
-onclick="playGame()">
-Place Bet
-</button>
-
-<div class="result" id="result"></div>
-
-<div class="history">
-
-<h3>Bet History</h3>
-
-<ul id="historyList">
-
-</ul>
-
-</div>
+    <div class="history">
+        <h3>Round History</h3>
+        <ul id="historyList"></ul>
+    </div>
 
 </div>
 
 <script>
+let selected = "";
+let lockedChoice = null;
 
-const BALANCE_URL =
-"https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
-
-let balance = 10;
+let score = 0;
 let wins = 0;
 let losses = 0;
-let selected = "";
 
-let currentUser =
-localStorage.getItem("currentUser");
+function togglePanel(){
+    let panel = document.getElementById("statsPanel");
 
-document.getElementById("userEmail")
-.innerHTML =
-currentUser || "Guest";
-
-function toggleAccount(){
-
-let panel =
-document.getElementById("accountPanel");
-
-panel.style.display =
-panel.style.display==="block"
-? "none"
-: "block";
-
+    panel.style.display =
+        panel.style.display === "block"
+        ? "none"
+        : "block";
 }
-
-async function loadBalance(){
-
-try{
-
-let response =
-await fetch(BALANCE_URL);
-
-let data =
-await response.json();
-
-for(let i=1;i<data.length;i++){
-
-if(data[i][0]===currentUser){
-
-balance =
-Number(data[i][1]);
-
-wins =
-Number(data[i][2]);
-
-losses =
-Number(data[i][3]);
-
-document.getElementById("balance")
-.innerHTML =
-balance;
-
-document.getElementById("wins")
-.innerHTML =
-wins;
-
-document.getElementById("losses")
-.innerHTML =
-losses;
-
-break;
-}
-
-}
-
-}catch(err){
-
-console.log(err);
-
-}
-
-}
-
-loadBalance();
 
 function choose(choice){
 
-if(selected!==""){
+    if(lockedChoice !== null){
+        alert("Bet already placed for this round.");
+        return;
+    }
 
-alert("Choice already selected");
+    selected = choice;
 
-return;
-
+    document.getElementById("selectedChoice").innerText =
+        "Selected: " + choice;
 }
 
-selected=choice;
+function lockChoice(){
 
-document.getElementById("selectedChoice")
-.innerHTML =
-"Selected: " + choice;
+    if(selected === ""){
+        alert("Choose Big or Small first.");
+        return;
+    }
 
+    if(lockedChoice !== null){
+        alert("Bet already Placed.");
+        return;
+    }
+
+    lockedChoice = selected;
+
+    document.getElementById("result").innerText =
+        "⏳ Bet Placed";
 }
 
-function playGame(){
+function settleRound(){
 
-let bet =
-Number(
-document.getElementById("betAmount").value
-);
+    if(lockedChoice === null){
+        document.getElementById("result").innerText =
+            "No choice made this round.";
+        return;
+    }
 
-if(bet<10){
+    const outcome =
+        Math.random() < 0.5
+        ? "Big"
+        : "Small";
 
-alert("Minimum bet is 10");
+    let text = "";
 
-return;
+    if(outcome === lockedChoice){
 
+        wins++;
+        score++;
+
+        text =
+            "✅ WIN | Result: " + outcome;
+
+    }else{
+
+        losses++;
+        score--;
+
+        text =
+            "❌ LOSS | Result: " + outcome;
+    }
+
+    document.getElementById("score").innerText = score;
+    document.getElementById("wins").innerText = wins;
+    document.getElementById("losses").innerText = losses;
+    document.getElementById("result").innerText = text;
+
+    let li = document.createElement("li");
+
+    li.innerText =
+        new Date().toLocaleTimeString() +
+        " - " + text;
+
+    document.getElementById("historyList")
+        .prepend(li);
+
+    selected = "";
+    lockedChoice = null;
+
+    document.getElementById("selectedChoice")
+        .innerText = "";
 }
 
-if(bet>balance){
+let time = 20;
 
-alert("Not enough balance");
+setInterval(() => {
 
-return;
+    time--;
 
-}
+    if(time < 0){
 
-if(selected===""){
+        settleRound();
 
-alert("Choose Big or Small");
+        time = 20;
+    }
 
-return;
-
-}
-
-balance -= bet;
-
-let outcome =
-Math.random()<0.5
-? "Big"
-: "Small";
-
-let text="";
-
-if(outcome===selected){
-
-let reward =
-bet*1.9;
-
-balance += reward;
-
-wins++;
-
-text =
-"✅ WIN | +" +
-reward.toFixed(0);
-
-}else{
-
-losses++;
-
-text =
-"❌ LOSS | -" +
-bet;
-
-}
-
-document.getElementById("balance")
-.innerHTML =
-balance.toFixed(0);
-
-document.getElementById("wins")
-.innerHTML =
-wins;
-
-document.getElementById("losses")
-.innerHTML =
-losses;
-
-document.getElementById("result")
-.innerHTML =
-text;
-
-let li =
-document.createElement("li");
-
-li.innerText =
-new Date().toLocaleTimeString()
-+ " - " + text;
-
-document.getElementById("historyList")
-.prepend(li);
-
-selected="";
-
-document.getElementById("selectedChoice")
-.innerHTML="";
-
-}
-
-let time=20;
-
-setInterval(()=>{
-
-time--;
-
-if(time<0){
-
-time=20;
-
-}
-
-document.getElementById("timer")
-.innerHTML =
-time;
+    document.getElementById("timer").innerText =
+        time;
 
 },1000);
-
-function logout(){
-
-localStorage.removeItem(
-"currentUser"
-);
-
-window.location.href =
-"login.html";
-
-}
-
 </script>
 
 </body>
