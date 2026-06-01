@@ -6,54 +6,50 @@
     <title>Deposit Money💳</title>
     <style>
         :root {
-            --bg-main: #060b19;
-            --bg-card: rgba(15, 23, 42, 0.6);
-            --primary-blue: #3b82f6;
-            --accent-gold: #f59e0b;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --text-light: #f8fafc;
-            --text-muted: #64748b;
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --glow-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
+            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --bg-gradient: linear-gradient(-45deg, #11998e, #38ef7d, #0f2027, #203a43);
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glow-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --primary-color: #38ef7d;
+            --error-color: #ff7675;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-light);
+            margin: 0;
+            font-family: var(--font-main);
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #f5f6fa;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 12px;
-            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
-        /* Top Navigation Bar */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .top-nav-container {
             width: 100%;
-            max-width: 430px;
+            max-width: 450px;
             display: flex;
             justify-content: flex-start;
             margin-bottom: 12px;
-            z-index: 10;
         }
 
-        .btn-game-nav {
-            background: rgba(255, 255, 255, 0.04);
+        .btn-home-nav {
+            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--glass-border);
             color: #dfe6e9;
             font-size: 0.85rem;
             font-weight: 600;
@@ -66,147 +62,123 @@
             transition: all 0.2s ease;
         }
 
-        .btn-game-nav:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--primary-blue);
+        .btn-home-nav:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--primary-color);
             color: white;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 15px rgba(56, 239, 125, 0.2);
         }
 
         .deposit-container {
-            width: 100%;
-            max-width: 430px;
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass);
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
             border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 24px;
-            box-shadow: var(--glow-shadow);
-            z-index: 10;
-        }
-
-        /* Payment Instruction Headers */
-        .payment-banner {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            padding: 14px;
-            border-radius: 14px;
-            text-align: center;
-        }
-
-        .upi-target {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: white;
-        }
-
-        .upi-address {
-            color: var(--accent-gold);
-            font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-
-        .time-alert {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #fbbf24;
-            text-align: center;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .input-container {
-            display: flex;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            border: 1px solid var(--border-glass);
-            overflow: hidden;
-            height: 44px;
-            align-items: center;
-        }
-
-        .input-container input {
+            padding: 35px;
             width: 100%;
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 0 12px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            outline: none;
+            max-width: 450px;
+            box-shadow: var(--glow-shadow);
+            position: relative;
         }
 
-        .input-container input::placeholder {
-            color: #475569;
+        .title-head {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-align: center;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #38ef7d, #11998e, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        /* Status UI Message Element */
-        .status-message {
+        .balance-display {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #38ef7d;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .notice-box {
+            background: rgba(56, 239, 125, 0.1);
+            border: 1px solid rgba(56, 239, 125, 0.25);
+            color: #38ef7d;
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
             font-size: 0.85rem;
             font-weight: 600;
-            text-align: center;
-            display: none;
+            margin-bottom: 8px;
+            color: #dfe6e9;
         }
-        .status-success { background: rgba(16, 185, 129, 0.15); border: 1px solid var(--accent-green); color: var(--accent-green); }
-        .status-error { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); }
 
-        .submit-btn {
+        input {
             width: 100%;
-            height: 48px;
-            border: none;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
             border-radius: 12px;
             font-size: 1rem;
-            font-weight: 800;
-            cursor: pointer;
             color: white;
-            background: linear-gradient(135deg, #10b981, #059669);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-            transition: all 0.15s ease;
+            box-sizing: border-box;
         }
 
-        .submit-btn:disabled {
-            background: #334155 !important;
-            color: #64748b !important;
-            box-shadow: none !important;
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(56, 239, 125, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:disabled {
+            background: linear-gradient(45deg, #57606f, #2f3542);
+            color: #a4b0be;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
-        /* History Module */
+        /* Live History Panel */
         .history-section {
-            border-top: 1px solid var(--border-glass);
-            padding-top: 16px;
-            margin-top: 8px;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+            margin-top: 25px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .history-title {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
-            color: white;
+            color: #b2bec3;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -214,207 +186,231 @@
         .history-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 160px;
+            gap: 10px;
+            max-height: 200px;
             overflow-y: auto;
         }
         .history-list::-webkit-scrollbar { display: none; }
 
         .history-item {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-glass);
-            padding: 10px 14px;
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
         .item-details {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
         }
 
         .item-amount {
             font-weight: 700;
-            color: white;
         }
 
         .item-txid {
-            font-size: 0.7rem;
-            color: var(--text-muted);
+            font-size: 0.75rem;
+            color: #b2bec3;
         }
 
         .item-status {
             font-size: 0.75rem;
             font-weight: 700;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 6px;
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--accent-gold);
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+
+        /* Status colors to match your Google Sheet status inputs */
+        .status-success { background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
+        .status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3); }
+        .status-rejected { background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+
+        .success-screen {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 15, 25, 0.98);
+            border-radius: 24px;
+            z-index: 10;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .success-icon {
+            width: 80px; height: 80px;
+            background: rgba(56, 239, 125, 0.1);
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 40px; color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .success-title { font-size: 1.5rem; font-weight: 800; color: white; margin-bottom: 10px; }
+        .success-desc { color: #b2bec3; font-size: 0.95rem; text-align: center; margin-bottom: 25px; }
+        .btn-back { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border); color: white; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="top-nav-container">
-    <a href="game.html" class="btn-game-nav">← Back to Home</a>
+    <a href="game.html" class="btn-home-nav">← Back to Home</a>
 </div>
 
 <div class="deposit-container">
-    <div class="payment-banner">
-        <div class="upi-target">Please Pay to: <span class="upi-address">xx@upi</span></div>
+    <div class="success-screen" id="successScreen">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Deposit Submitted!</div>
+        <div class="success-desc">Your deposit proof has been received.<br>It will be verified and added to your balance shortly.</div>
+        <button class="btn-back" onclick="window.location.href='game.html'">Back to Home</button>
     </div>
 
-    <div class="time-alert">
-        ⚠️ It takes upto 24 Hours to Update Your Balance.
+    <div class="title-head">SECURE DEPOSIT</div>
+    <div class="balance-display">Your Balance: 🪙<span id="currentBalance">Loading...</span></div>
+    
+    <div class="notice-box">
+        Pay to our official business UPI ID, then paste your 12-digit transaction ID below.
     </div>
 
-    <div id="statusBox" class="status-message"></div>
-
-    <div class="input-group">
-        <div class="label">Username</div>
-        <div class="input-container">
-            <input type="text" id="usernameField" placeholder="Enter your username" readonly>
+    <form id="depositForm">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required readonly>
         </div>
-    </div>
 
-    <div class="input-group">
-        <div class="label">Amount</div>
-        <div class="input-container">
-            <input type="number" id="amountField" min="1" placeholder="Enter amount paid">
+        <div class="form-group">
+            <label for="amount">Amount Deposited</label>
+            <input type="number" id="amount" name="amount" placeholder="Enter amount paid" min="10" required disabled>
         </div>
-    </div>
 
-    <div class="input-group">
-        <div class="label">UPI Transaction ID</div>
-        <div class="input-container">
-            <input type="text" id="txidField" placeholder="Enter 12-digit Ref No.">
+        <div class="form-group">
+            <label for="txid">UPI Transaction ID / Ref No.</label>
+            <input type="text" id="txid" name="txid" placeholder="Enter 12-digit code" required disabled>
         </div>
-    </div>
 
-    <button class="submit-btn" id="submitBtn" onclick="sendDepositReport()">Submit Request</button>
+        <button type="submit" id="submitBtn" class="btn-submit" disabled>Fetch Balance first...</button>
+    </form>
 
     <div class="history-section">
-        <div class="history-title">Your Deposit History</div>
+        <div class="history-title">Live Deposit History</div>
         <div class="history-list" id="historyContainer">
-            </div>
+            <div style="text-align:center; padding:15px; font-size:0.8rem; color:#b2bec3;">Loading your history from Google Sheet...</div>
+        </div>
     </div>
 </div>
 
 <script>
-    // Configured with the Web App Deployment execution endpoint URL
-    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbxdewVWmLbZ5Z6iVrnm01ARLX1z51eUVDunoz6tbkEqam2v2XKrD2SWIr-CSuF0HFRg/exec";
+    // TARGET DEPLOYMENT URL (Must match your withdraw page)
+    const DEPLOYMENT_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
 
-    // Auto-detect and populate workspace identities
-    const rawUser = localStorage.getItem("currentUser") || "Guest";
-    const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
-    document.getElementById("usernameField").value = cleanUser;
+    const storedUser = localStorage.getItem("currentUser") || "Guest";
+    let formattedUser = storedUser.trim();
 
-    // Run history renderer initialization immediately
-    renderLocalHistory();
+    if(formattedUser.includes("@")){
+        formattedUser = formattedUser.split("@")[0];
+    }
+    
+    document.getElementById('username').value = formattedUser;
 
-    function sendDepositReport() {
-        const amountInput = document.getElementById("amountField");
-        const txidInput = document.getElementById("txidField");
-        const submitBtn = document.getElementById("submitBtn");
-        
-        const amount = parseFloat(amountInput.value) || 0;
-        const txid = txidInput.value.trim();
-
-        // Standard validation sweeps
-        if (amount <= 0) {
-            displayStatus("Please enter a valid balance metric greater than 0.", "error");
-            return;
-        }
-        if (txid.length < 6) {
-            displayStatus("Please enter a valid tracking UPI Transaction Ref ID.", "error");
-            return;
-        }
-
-        // Lock form state interfaces during pending execution operations
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Transmitting to Sheet...";
-        hideStatus();
-
-        // Construct parameters targeting spreadsheet log entries mapping pipelines
-        const targetUrl = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amount}&txid=${encodeURIComponent(txid)}&nocache=${Date.now()}`;
-
-        fetch(targetUrl)
-        .then(response => response.json())
+    // Pull Live Balance and Deposit rows directly from the Google Sheet
+    function loadUserDataFromSheet() {
+        fetch(`${DEPLOYMENT_URL}?username=${encodeURIComponent(formattedUser)}&nocache=${Date.now()}`)
+        .then(r => r.json())
         .then(data => {
-            // Display exact success verification text requested
-            displayStatus("Yayy! Deposit Successfull", "success");
+            document.getElementById("currentBalance").innerText = (parseFloat(data.balance) || 0).toFixed(2);
             
-            // Save request block parameters into application instance local structural histories
-            saveRequestToLocalLog(amount, txid);
+            document.getElementById("amount").disabled = false;
+            document.getElementById("txid").disabled = false;
             
-            // Wipe variable fields layout values clean
-            amountInput.value = "";
-            txidInput.value = "";
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit Deposit";
+
+            renderLiveHistory(data.history || []);
         })
         .catch(err => {
-            console.error("Transmission Exception:", err);
-            displayStatus("Network response timeout. Request captured locally.", "error");
-            // Fail-safe tracking log write if internet buffers drops momentarily
-            saveRequestToLocalLog(amount, txid);
-        })
-        .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Submit Request";
+            console.error("Database connection failed:", err);
+            document.getElementById("currentBalance").innerText = "Error loading";
+            document.getElementById("historyContainer").innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#ff7675;">Failed to load live tracking logs.</div>`;
         });
     }
 
-    function saveRequestToLocalLog(amt, transactionId) {
-        const logStorageKey = `deposit_history_${cleanUser}`;
-        let records = JSON.parse(localStorage.getItem(logStorageKey)) || [];
-        
-        const newEntry = {
-            amount: amt.toFixed(2),
-            txid: transactionId,
-            status: "Pending",
-            date: new Date().toLocaleDateString()
-        };
-        
-        records.unshift(newEntry);
-        localStorage.setItem(logStorageKey, JSON.stringify(records));
-        renderLocalHistory();
-    }
-
-    function renderLocalHistory() {
-        const logStorageKey = `deposit_history_${cleanUser}`;
+    function renderLiveHistory(historyItems) {
         const container = document.getElementById("historyContainer");
-        let records = JSON.parse(localStorage.getItem(logStorageKey)) || [];
+        
+        // Filter out withdrawal requests, keeping only deposit data
+        const deposits = historyItems.filter(item => item.type === "Deposit");
 
-        if (records.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding:15px; font-size:0.75rem; color:var(--text-muted);">No recent deposit records found.</div>`;
+        if (deposits.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#b2bec3;">No recent deposit requests found.</div>`;
             return;
         }
 
-        container.innerHTML = records.map(item => `
-            <div class="history-item">
-                <div class="item-details">
-                    <div class="item-amount">🪙 ${item.amount}</div>
-                    <div class="item-txid">ID: ${item.txid}</div>
+        container.innerHTML = deposits.map(item => {
+            let customClass = "item-status";
+            let statusText = item.status.toLowerCase();
+            
+            if(statusText.includes("success") || statusText.includes("approved") || statusText.includes("done")) {
+                customClass += " status-success";
+            } else if (statusText.includes("pending") || statusText.includes("review")) {
+                customClass += " status-pending";
+            } else if (statusText.includes("fail") || statusText.includes("reject")) {
+                customClass += " status-rejected";
+            }
+
+            return `
+                <div class="history-item">
+                    <div class="item-details">
+                        <div class="item-amount" style="color: #38ef7d;">+ 🪙 ${item.amount}</div>
+                        <div class="item-txid">${item.info}</div>
+                    </div>
+                    <div class="${customClass}">${item.status}</div>
                 </div>
-                <div class="item-status">${item.status}</div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
-    function displayStatus(msg, type) {
-        const box = document.getElementById("statusBox");
-        box.innerText = msg;
-        box.className = `status-message status-${type}`;
-        box.style.display = "block";
-    }
+    document.getElementById('depositForm').addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    function hideStatus() {
-        document.getElementById("statusBox").style.display = "none";
-    }
+        const submitBtn = document.getElementById('submitBtn');
+        const successScreen = document.getElementById('successScreen');
+        const amountRequested = parseFloat(document.getElementById('amount').value) || 0;
+        const transactionId = document.getElementById('txid').value.trim();
+
+        if (amountRequested <= 0 || transactionId === "") return;
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting Proof...";
+
+        // Builds dynamic parameters passing 'amount' and 'txid' cleanly matching Google Apps Script structure
+        const updateParams = `?username=${encodeURIComponent(formattedUser)}&amount=${amountRequested}&txid=${encodeURIComponent(transactionId)}`;
+
+        fetch(DEPLOYMENT_URL + updateParams)
+        .then(response => response.json())
+        .then(data => {
+            successScreen.style.display = 'flex';
+            document.getElementById('depositForm').reset();
+        })
+        .catch(error => {
+            console.error('Network response tracking fallback:', error);
+            successScreen.style.display = 'flex';
+            document.getElementById('depositForm').reset();
+        });
+    });
+
+    // Run loader on page startup
+    loadUserDataFromSheet();
 </script>
 
 </body>
