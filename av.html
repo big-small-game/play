@@ -319,6 +319,7 @@
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanedUser)}&amount=${deltaValue}`)
         .then(res => res.json())
         .then(data => {
+            // CRITICAL FIX: Only update the screen UI balance from the server if forceUpdateUI is explicitly true
             if(forceUpdateUI && data && data.balance !== undefined) {
                 balance = parseFloat(data.balance);
                 document.getElementById('balanceText').innerText = balance.toFixed(2);
@@ -350,7 +351,6 @@
         const btn = document.getElementById('actionBtn');
         
         if(!betPlaced && !inGame) {
-            // State A: User locking stake configuration rules
             const desiredBet = parseInt(document.getElementById('betVal').value) || 0;
             if(desiredBet < 1 || desiredBet > balance) {
                 alert("Stake bounds violation! Verify your wallet contents.");
@@ -358,21 +358,19 @@
             }
 
             currentBetAmount = desiredBet;
-            balance -= currentBetAmount; // Deduct stake locally instantly
+            balance -= currentBetAmount; // Deduct stake locally on the screen instantly
             document.getElementById('balanceText').innerText = balance.toFixed(2);
             
-            // Push bet subtraction securely in the background without updating UI instantly
+            // CRITICAL FIX: Pass "false" here so the laggy sheet response does not overwrite our visual subtraction!
             sendDeltaToDatabase(-currentBetAmount, false);
 
             betPlaced = true;
             btn.className = "main-action-trigger btn-state-waiting";
             btn.innerText = "WAITING...";
             
-            // Automatically launch automated flight path sequence 1 second later
             timelineTimeout = setTimeout(engineLaunchSequence, 1200);
         } 
         else if(inGame && betPlaced) {
-            // State B: Successful manual flight extraction operation hit
             cashoutExecution();
         }
     }
@@ -387,15 +385,13 @@
         plane.style.bottom = '20px';
         plane.style.left = '20px';
 
-        // Math algorithm calculation framework logic
-        // 10% instant crash rate, else logarithmic curve allocation properties
         const calcRand = Math.random();
         if (calcRand < 0.10) {
             crashPoint = 1.00;
         } else if (calcRand < 0.85) {
-            crashPoint = parseFloat((1 + Math.random() * 4).toFixed(2)); // Mid-range ceiling caps
+            crashPoint = parseFloat((1 + Math.random() * 4).toFixed(2));
         } else {
-            crashPoint = parseFloat((5 + Math.random() * 25).toFixed(2)); // Ultra multiplier bounds
+            crashPoint = parseFloat((5 + Math.random() * 25).toFixed(2));
         }
 
         currentMultiplier = 1.00;
@@ -406,11 +402,9 @@
         btn.className = "main-action-trigger btn-state-cashout";
         btn.innerText = `CASH OUT\n${(currentBetAmount * currentMultiplier).toFixed(2)}`;
 
-        // Game tick processing loops
         loopInterval = setInterval(() => {
             currentMultiplier += 0.01;
             
-            // Scale plane vector positions visually on mobile grid spaces dynamically
             let currentProgression = Math.min(80, (currentMultiplier - 1) * 15);
             plane.style.bottom = `${20 + (currentProgression * 1.2)}px`;
             plane.style.left = `${20 + (currentProgression * 2)}px`;
@@ -424,7 +418,7 @@
             if(currentMultiplier >= crashPoint) {
                 handleCrashSequences();
             }
-        }, 45); // Standard smooth loop pacing metrics
+        }, 45);
     }
 
     function cashoutExecution() {
@@ -433,7 +427,7 @@
         balance += winAmount;
         document.getElementById('balanceText').innerText = balance.toFixed(2);
         
-        // Sync win profit data straight back to Google Sheets safely
+        // WIN: Update the sheet and allow it to overwrite the UI balance securely
         sendDeltaToDatabase(winAmount, true);
 
         const btn = document.getElementById('actionBtn');
@@ -465,12 +459,13 @@
         btn.innerText = "RESETTING...";
         btn.disabled = true;
 
-        // Fetch fresh balance from Google Sheets to clean up tracking values
+        // CRITICAL FIX: DO NOT fetch balance instantly here. Let the interface hold onto the lower balance.
+        // It will only enable the button once it's fully reset.
         setTimeout(() => {
             document.getElementById('statusMessage').innerText = "WAITING FOR NEXT ROUND";
             liveText.className = "multiplier-text";
             liveText.innerText = "1.00x";
-            pullLiveSystemBalance();
+            unlockBetButton();
         }, 3000);
     }
 
@@ -486,7 +481,7 @@
         }
     }
 
-    // Initialize core system state balances parameters on load phase
+    // Initialize core system state balances on loading phase
     pullLiveSystemBalance();
 </script>
 
