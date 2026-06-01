@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Big Small Pro Mobile</title>
+    <title>Big Small Pro</title>
     <style>
         :root {
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
+            --bg-main: #060b19;
+            --bg-card: rgba(15, 23, 42, 0.6);
             --primary-blue: #3b82f6;
-            --primary-hover: #2563eb;
             --accent-gold: #f59e0b;
             --accent-green: #10b981;
             --accent-red: #ef4444;
             --text-light: #f8fafc;
             --text-muted: #64748b;
             --border-glass: rgba(255, 255, 255, 0.08);
+            --glow-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -36,29 +36,30 @@
             align-items: center;
             padding: 12px;
             overflow: hidden;
+            position: relative;
         }
 
         .game-container {
             width: 100%;
             max-width: 430px;
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-glass);
             border-radius: 24px;
             display: flex;
             flex-direction: column;
             gap: 16px;
-            padding: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            box-shadow: var(--glow-shadow);
+            z-index: 10;
         }
 
-        /* Top Header Area */
-        .header-bar {
+        /* Header Navigation Widget */
+        .header-widget {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 4px;
         }
 
         .user-tag {
@@ -66,112 +67,127 @@
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .wallet-pill {
-            background: rgba(0, 0, 0, 0.3);
+        .wallet-display {
+            background: rgba(0, 0, 0, 0.4);
             padding: 6px 14px;
             border-radius: 30px;
             border: 1px solid var(--border-glass);
-            font-weight: 700;
+            font-weight: 800;
             color: var(--accent-gold);
         }
 
-        /* Dice Display Studio Arena */
-        .dice-arena {
-            background: rgba(15, 23, 42, 0.4);
+        /* Dice Theatre Stage Container */
+        .dice-theater {
+            background: rgba(10, 15, 30, 0.6);
             border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            padding: 24px;
+            border-radius: 20px;
+            height: 160px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            min-height: 160px;
             justify-content: center;
+            align-items: center;
+            gap: 12px;
             position: relative;
         }
 
-        .dice-wrapper {
+        .dice-row {
             display: flex;
-            gap: 20px;
+            gap: 16px;
         }
 
         .die {
-            width: 60px;
-            height: 60px;
-            background: white;
-            color: #1e293b;
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #ffffff, #e2e8f0);
+            color: #0f172a;
             border-radius: 12px;
-            font-size: 2.2rem;
-            font-weight: bold;
+            font-size: 2rem;
+            font-weight: 800;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15), inset 0 -4px 0 #cbd5e1;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 -4px 0 #cbd5e1;
             transition: transform 0.1s ease;
         }
 
-        .die.rolling {
-            animation: shakeAnimate 0.1s infinite alternate;
+        .dice-rolling {
+            animation: shakeAndRoll 0.15s infinite alternate;
         }
 
-        @keyframes shakeAnimate {
-            0% { transform: translate(2px, 1px) rotate(0deg); }
-            100% { transform: translate(-1px, -2px) rotate(-3deg); }
+        @keyframes shakeAndRoll {
+            0% { transform: translate(3px, -3px) rotate(-8deg); }
+            100% { transform: translate(-3px, 3px) rotate(8deg); }
         }
 
-        .outcome-badge {
-            font-size: 1.25rem;
+        .total-badge {
+            font-size: 1.1rem;
             font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            color: var(--text-light);
+            background: rgba(255,255,255,0.05);
+            padding: 4px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--border-glass);
         }
 
-        /* Selection Choice Matrix Buttons */
-        .choice-matrix {
+        /* History Ribbons */
+        .history-ribbon {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+        .history-ribbon::-webkit-scrollbar { display: none; }
+
+        .history-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass);
+        }
+        .pill-big { color: var(--primary-blue); border-color: rgba(59, 130, 246, 0.3); }
+        .pill-small { color: var(--accent-gold); border-color: rgba(245, 158, 11, 0.3); }
+
+        /* Betting Space Selector Zones */
+        .betting-zones {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
-        .choice-btn {
-            background: #334155;
+        .zone-btn {
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-glass);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 16px;
-            color: white;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            font-weight: 700;
             transition: all 0.2s ease;
-            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15);
         }
 
-        .choice-btn .subtext {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
+        .zone-btn .title { font-size: 1.3rem; font-weight: 900; }
+        .zone-btn .odds { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; }
 
-        .choice-btn.selected {
-            background: var(--primary-blue);
-            border-color: #60a5fa;
-            transform: translateY(2px);
-            box-shadow: none;
-        }
+        .zone-big { color: var(--primary-blue); }
+        .zone-big.selected { background: rgba(59, 130, 246, 0.15); border-color: var(--primary-blue); box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
 
-        /* Control Input Workspace */
+        .zone-small { color: var(--accent-gold); }
+        .zone-small.selected { background: rgba(245, 158, 11, 0.15); border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
+
+        /* Control Input Deck */
         .control-deck {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(10, 15, 30, 0.4);
             padding: 14px;
-            border-radius: 16px;
+            border-radius: 18px;
             border: 1px solid var(--border-glass);
         }
 
@@ -185,8 +201,8 @@
 
         .input-container {
             display: flex;
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
             border: 1px solid var(--border-glass);
             overflow: hidden;
             height: 44px;
@@ -199,279 +215,280 @@
             color: white;
             padding: 0 12px;
             font-weight: 700;
-            font-size: 1.05rem;
+            font-size: 1rem;
             outline: none;
-            text-align: center;
         }
 
-        .step-btn {
-            background: rgba(255, 255, 255, 0.05);
+        .scale-btn {
+            background: rgba(255, 255, 255, 0.04);
             border: none;
             color: white;
-            width: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
+            padding: 0 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            border-left: 1px solid var(--border-glass);
         }
-        .step-btn:hover { background: rgba(255, 255, 255, 0.1); }
-        .step-btn:first-of-type { border-right: 1px solid var(--border-glass); }
-        .step-btn:last-of-type { border-left: 1px solid var(--border-glass); }
 
-        .action-btn {
+        .roll-btn {
             width: 100%;
-            height: 50px;
+            height: 52px;
             border: none;
             border-radius: 12px;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 800;
             cursor: pointer;
-            transition: all 0.15s ease;
             color: white;
-            background: var(--primary-blue);
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
-        }
-        .action-btn:hover:not(:disabled) { background: var(--primary-hover); }
-        .action-btn:disabled {
-            background: #475569;
-            color: #94a3b8;
-            box-shadow: none;
-            cursor: not-allowed;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            transition: all 0.15s ease;
         }
 
-        /* Roll History Pill Strip */
-        .history-strip {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding: 2px 4px 6px 4px;
+        .roll-btn:disabled {
+            background: #334155 !important;
+            color: #64748b !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
         }
-        .history-strip::-webkit-scrollbar { display: none; }
-        
-        .history-pill {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-        .pill-big { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .pill-small { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
     </style>
 </head>
 <body>
 
 <div class="game-container">
-    <div class="header-bar">
-        <div class="user-tag">👤 <span id="profileName">Guest</span></div>
-        <div class="wallet-pill">🪙 <span id="walletDisplay">Loading...</span></div>
+    <!-- Header -->
+    <div class="header-widget">
+        <div class="user-tag">👤 <span id="userName">Guest</span></div>
+        <div class="wallet-display">🪙 <span id="userBalance">Loading...</span></div>
     </div>
 
-    <div class="dice-arena">
-        <div class="dice-wrapper">
-            <div id="dice1" class="die">1</div>
-            <div id="dice2" class="die">1</div>
+    <!-- Dice Theater Arena Layout -->
+    <div class="dice-theater">
+        <div class="dice-row">
+            <div class="die" id="die1">⚀</div>
+            <div class="die" id="die2">⚄</div>
+            <div class="die" id="die3">⚃</div>
         </div>
-        <div id="resultText" class="outcome-badge" style="color: var(--text-muted);">Place a bet to roll</div>
+        <div class="total-badge" id="totalScoreText">Total: --</div>
     </div>
 
-    <div class="history-strip" id="historyRibbon"></div>
+    <!-- History Ribbon Log Strip -->
+    <div class="history-ribbon" id="historyBox"></div>
 
-    <div class="choice-matrix">
-        <button class="choice-btn" id="choiceSmall" onclick="selectPrediction('small')">
-            <span>SMALL</span>
-            <span class="subtext">2x Payout (2 - 6)</span>
+    <!-- Interactive Choice Layout Blocks -->
+    <div class="betting-zones">
+        <button class="zone-btn zone-big" id="zoneBig" onclick="selectPredictionZone('BIG')">
+            <span class="title">BIG</span>
+            <span class="odds">11 - 17 (x2.0)</span>
         </button>
-        <button class="choice-btn" id="choiceBig" onclick="selectPrediction('big')">
-            <span>BIG</span>
-            <span class="subtext">2x Payout (8 - 12)</span>
+        <button class="zone-btn zone-small" id="zoneSmall" onclick="selectPredictionZone('SMALL')">
+            <span class="title">SMALL</span>
+            <span class="odds">4 - 10 (x2.0)</span>
         </button>
     </div>
 
+    <!-- Operating System Input Blocks -->
     <div class="control-deck">
         <div>
             <div class="label">Bet Amount</div>
             <div class="input-container">
-                <button class="step-btn" onclick="offsetBetScaling(-5)">-</button>
-                <input type="number" id="betInput" value="10" min="1">
-                <button class="step-btn" onclick="offsetBetScaling(5)">+</button>
+                <input type="number" id="betValue" value="10" min="1">
+                <button class="scale-btn" onclick="adjustStakeScale('half')">½</button>
+                <button class="scale-btn" onclick="adjustStakeScale('double')">2x</button>
             </div>
         </div>
 
-        <button class="action-btn" id="playBtn" onclick="executeRollSequence()" disabled>Syncing Balance...</button>
+        <button class="roll-btn" id="rollActionBtn" onclick="executeBetAndRollCycle()" disabled>Syncing Wallet...</button>
     </div>
 </div>
 
 <script>
-    // CORE SCRIPT DATABASE BRIDGE URL
+    // CENTRAL BACKEND APPS SCRIPT PATH ENDPOINT
     const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
     let balance = 0;
-    let selectedPrediction = null; 
-    let rollingStateActive = false;
+    let selectedZone = null;
+    let isRolling = false;
+    const diceGlyphs = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
-    // Filter clean structural context identifier handles
+    // Filter dynamic clean local user identification details handles
     const rawUser = localStorage.getItem("currentUser") || "Guest";
-    const userHandle = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
-    document.getElementById("profileName").innerText = userHandle;
+    const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    document.getElementById("userName").innerText = cleanUser;
 
-    // 1. LIVE REFRESH SYNC BALANCE CALL DIRECT FROM SHEET
-    function pullLiveSheetBalance() {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(userHandle)}`)
+    // 1. LIVE REFRESH SYNC FROM SHEET DATA DIRECT
+    function fetchLiveWallet() {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
         .then(r => r.json())
         .then(data => {
             if (data && data.balance !== undefined) {
                 balance = parseFloat(data.balance) || 0;
-                document.getElementById('walletDisplay').innerText = balance.toFixed(2);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
                 
-                if (!rollingStateActive) {
-                    const btn = document.getElementById("playBtn");
-                    btn.disabled = false;
-                    btn.innerText = "Place Bet";
+                if (!isRolling) {
+                    document.getElementById("rollActionBtn").disabled = false;
+                    updateRollButtonStateText();
                 }
             }
         }).catch(err => {
-            console.error("Database compilation exception:", err);
-            document.getElementById('walletDisplay').innerText = "Offline";
+            console.error("Database sync fault:", err);
+            document.getElementById('userBalance').innerText = "Offline";
         });
     }
 
-    // 2. BACKEND API BACKGROUND DATA WRITER PIPELINE
-    function sendBalanceDeltaToDatabase(deltaValue, overwriteScreenUI = true) {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(userHandle)}&amount=${deltaValue}`)
+    // 2. BACKEND TRANSACTION DISPATCH PIPE PACKET
+    function syncTxToDatabase(amountChange, updateScreenUI = true) {
+        return fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
         .then(r => r.json())
         .then(data => {
-            // Only apply response balance back onto screen if explicitly requested (e.g. on Wins)
-            if (overwriteScreenUI && data && data.balance !== undefined) {
+            if (updateScreenUI && data && data.balance !== undefined) {
                 balance = parseFloat(data.balance);
-                document.getElementById('walletDisplay').innerText = balance.toFixed(2);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
-        }).catch(e => console.error("Transactional transport loss:", e));
+            return data;
+        }).catch(e => console.error("Database tracking connection lost:", e));
     }
 
-    function selectPrediction(choice) {
-        if (rollingStateActive) return;
-        selectedPrediction = choice;
+    function selectPredictionZone(zone) {
+        if (isRolling) return;
+        selectedZone = zone;
         
-        document.getElementById("choiceSmall").classList.remove("selected");
-        document.getElementById("choiceBig").classList.remove("selected");
+        document.getElementById("zoneBig").classList.remove("selected");
+        document.getElementById("zoneSmall").classList.remove("selected");
 
-        if (choice === 'small') document.getElementById("choiceSmall").classList.add("selected");
-        if (choice === 'big') document.getElementById("choiceBig").classList.add("selected");
+        if (zone === 'BIG') document.getElementById("zoneBig").classList.add("selected");
+        if (zone === 'SMALL') document.getElementById("zoneSmall").classList.add("selected");
+
+        updateRollButtonStateText();
     }
 
-    function offsetBetScaling(amt) {
-        if (rollingStateActive) return;
-        const input = document.getElementById("betInput");
-        let nextValue = parseInt(input.value) + amt;
-        if (nextValue >= 1 && nextValue <= balance) input.value = nextValue;
+    function adjustStakeScale(type) {
+        if (isRolling) return;
+        const input = document.getElementById("betValue");
+        let current = parseInt(input.value) || 0;
+        if (type === 'half') input.value = Math.max(1, Math.floor(current / 2));
+        if (type === 'double') input.value = Math.min(balance, current * 2);
     }
 
-    function executeRollSequence() {
-        if (rollingStateActive) return;
-
-        const inputEl = document.getElementById("betInput");
-        const betAmount = parseInt(inputEl.value) || 0;
-
-        if (!selectedPrediction) {
-            alert("Please select your prediction (BIG or SMALL) before rolling!");
-            return;
+    function updateRollButtonStateText() {
+        const btn = document.getElementById("rollActionBtn");
+        if (!selectedZone) {
+            btn.innerText = "Select BIG or SMALL";
+            btn.disabled = true;
+        } else {
+            btn.innerText = `Roll for ${selectedZone}`;
+            btn.disabled = false;
         }
+    }
+
+    function executeBetAndRollCycle() {
+        if (isRolling || !selectedZone) return;
+
+        const betInput = document.getElementById("betValue");
+        const betAmount = parseInt(betInput.value) || 0;
 
         if (betAmount < 1 || betAmount > balance) {
-            alert("Stake bound violation! Adjust values according to wallet parameters.");
+            alert("Stake bounds error! Balance metrics mismatched.");
             return;
         }
 
-        // VISUAL SYNC FIX: Deduct the bet layout amount instantly locally 
+        // BALANCE BUG RESOLUTION: Subtract local variable values and display layout views instantly
+        isRolling = true;
         balance -= betAmount;
-        document.getElementById('walletDisplay').innerText = balance.toFixed(2);
+        document.getElementById('userBalance').innerText = balance.toFixed(2);
 
-        // Send subtraction query to server quietly in background without modifying local values
-        sendBalanceDeltaToDatabase(-betAmount, false);
+        // Lock workspace interaction components inputs fields
+        betInput.disabled = true;
+        document.getElementById("rollActionBtn").disabled = true;
+        document.getElementById("zoneBig").style.opacity = "0.6";
+        document.getElementById("zoneSmall").style.opacity = "0.6";
 
-        // Lock state machine locks parameters
-        rollingStateActive = true;
-        inputEl.disabled = true;
-        
-        const mainBtn = document.getElementById("playBtn");
-        mainBtn.disabled = true;
-        mainBtn.innerText = "Rolling Dice...";
+        // Transmit background write command to server spreadsheet structure quietly
+        syncTxToDatabase(-betAmount, false);
 
-        const d1Element = document.getElementById("dice1");
-        const d2Element = document.getElementById("dice2");
-        const resText = document.getElementById("resultText");
+        // Trigger Dice Graphical CSS Animation Sequence
+        const d1 = document.getElementById("die1");
+        const d2 = document.getElementById("die2");
+        const d3 = document.getElementById("die3");
+        d1.classList.add("dice-rolling");
+        d2.classList.add("dice-rolling");
+        d3.classList.add("dice-rolling");
 
-        d1Element.classList.add("rolling");
-        d2Element.classList.add("rolling");
-        resText.innerText = "Dices are tumbling...";
-        resText.style.color = "var(--text-muted)";
+        // Run rolling ticker loops visually changing numbers inside element views frames
+        let rollingTickerInterval = setInterval(() => {
+            d1.innerText = diceGlyphs[Math.floor(Math.random() * 6) + 1];
+            d2.innerText = diceGlyphs[Math.floor(Math.random() * 6) + 1];
+            d3.innerText = diceGlyphs[Math.floor(Math.random() * 6) + 1];
+        }, 80);
 
-        // Core Physics Timing Delay Loop Simulation Transition
+        // Terminate sequence cycle updates executions outcomes passes after exactly 1.8 seconds
         setTimeout(() => {
-            d1Element.classList.remove("rolling");
-            d2Element.classList.remove("rolling");
+            clearInterval(rollingTickerInterval);
+            
+            d1.classList.remove("dice-rolling");
+            d2.classList.remove("dice-rolling");
+            d3.classList.remove("dice-rolling");
 
-            // Calculate Random Dice Results
-            const roll1 = Math.floor(Math.random() * 6) + 1;
-            const roll2 = Math.floor(Math.random() * 6) + 1;
-            const absoluteSum = roll1 + roll2;
+            // Compute math scores values results drops properties
+            const val1 = Math.floor(Math.random() * 6) + 1;
+            const val2 = Math.floor(Math.random() * 6) + 1;
+            const val3 = Math.floor(Math.random() * 6) + 1;
+            const absoluteTotalSum = val1 + val2 + val3;
 
-            d1Element.innerText = roll1;
-            d2Element.innerText = roll2;
+            d1.innerText = diceGlyphs[val1];
+            d2.innerText = diceGlyphs[val2];
+            d3.innerText = diceGlyphs[val3];
 
-            let finalOutcomeCategory = "";
-            if (absoluteSum >= 2 && absoluteSum <= 6) finalOutcomeCategory = "small";
-            else if (absoluteSum >= 8 && absoluteSum <= 12) finalOutcomeCategory = "big";
-            else finalOutcomeCategory = "house_tie"; // Sum of 7 represents a structural House Tie rules breaker
+            // Resolve game engine logic outcomes states calculations
+            let outcomeGroupText = "SMALL";
+            if (absoluteTotalSum >= 11) outcomeGroupText = "BIG";
+            // Specific exception rules context handle definitions bounds: 3 and 18 are automatic losses (triple house rules edge)
+            if (absoluteTotalSum <= 3 || absoluteTotalSum >= 18) outcomeGroupText = "TRIPLE_LOSS";
 
-            // Render matching states evaluation conditions checks
-            let roundWon = (selectedPrediction === finalOutcomeCategory);
+            document.getElementById("totalScoreText").innerText = `Total: ${absoluteTotalSum} (${outcomeGroupText})`;
 
-            if (finalOutcomeCategory === "house_tie") {
-                resText.innerText = `Total: 7 (House Tie) - Loser!`;
-                resText.style.color = "var(--accent-red)";
-                pushHistoryRibbonLog(7, "Tie");
-            } else {
-                resText.innerText = `Total: ${absoluteSum} (${finalOutcomeCategory.toUpperCase()})`;
-                resText.style.color = roundWon ? "var(--accent-green)" : "var(--accent-red)";
-                pushHistoryRibbonLog(absoluteSum, finalOutcomeCategory);
-            }
+            const userWonGame = (selectedZone === outcomeGroupText);
 
-            if (roundWon) {
-                const totalWinPrize = betAmount * 2;
-                balance += totalWinPrize;
-                document.getElementById('walletDisplay').innerText = balance.toFixed(2);
+            if (userWonGame) {
+                const totalWinReturnFunds = betAmount * 2;
+                balance += totalWinReturnFunds;
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
                 
-                // WIN: Sync transaction payload values securely to spreadsheet server and allow visual updates
-                sendBalanceDeltaToDatabase(totalWinPrize, true);
+                // WIN CONDITION: Dispatch transaction update payload packet directly to server sheet architectures pipeline safely
+                syncTxToDatabase(totalWinWinReturnFunds, true);
+                document.getElementById("rollActionBtn").innerText = `WINNINGS +🪙${totalWinReturnFunds}`;
             } else {
-                // LOSS: DO NOT check server data inline right here. Retain local visual deductions locked.
+                // LOSS CONDITION: DO NOT pull from database endpoint now to avoid breaking UI local memory changes states visualization workflows
+                document.getElementById("rollActionBtn").innerText = "YOU LOST";
             }
 
-            // Cleanup routine triggers
+            if (outcomeGroupText !== "TRIPLE_LOSS") {
+                pushLogToHistoryRibbon(outcomeGroupText);
+            }
+
+            // Restore active interface functionalities access paths blocks maps hooks loops
             setTimeout(() => {
-                rollingStateActive = false;
-                inputEl.disabled = false;
-                mainBtn.disabled = false;
-                mainBtn.innerText = "Place Bet";
-            }, 1200);
+                isRolling = false;
+                betInput.disabled = false;
+                document.getElementById("zoneBig").style.opacity = "1";
+                document.getElementById("zoneSmall").style.opacity = "1";
+                updateRollButtonStateText();
+            }, 2000);
 
-        }, 1500);
+        }, 1800);
     }
 
-    function pushHistoryRibbonLog(sum, side) {
-        const container = document.getElementById("historyRibbon");
+    function pushLogToHistoryRibbon(outcome) {
+        const box = document.getElementById("historyBox");
         const pill = document.createElement("div");
-        pill.className = `history-pill ${side === 'big' ? 'pill-big' : 'pill-small'}`;
-        pill.innerText = `${sum} - ${side.toUpperCase()}`;
+        pill.className = `history-pill ${outcome === 'BIG' ? 'pill-big' : 'pill-small'}`;
+        pill.innerText = outcome;
 
-        container.insertBefore(pill, container.firstChild);
-        if (container.children.length > 7) container.removeChild(container.lastChild);
+        box.insertBefore(pill, box.firstChild);
+        if (box.children.length > 8) box.removeChild(box.lastChild);
     }
 
-    // Pull database metrics once configuration pass completes
-    pullLiveSheetBalance();
+    // Direct immediate launch sequences initialization passes
+    fetchLiveWallet();
 </script>
 
 </body>
