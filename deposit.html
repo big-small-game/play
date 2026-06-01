@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Deposit</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --background: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --alert-bg: #fffbeb;
+            --alert-text: #b45309;
+            --alert-border: #fef3c7;
+            --success-color: #16a34a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .deposit-container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .pay-to {
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        .notice-box {
+            background-color: var(--alert-bg);
+            border: 1px solid var(--alert-border);
+            color: var(--alert-text);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .form-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-submit:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        /* Success Message styling */
+        #successMessage {
+            display: none;
+            text-align: center;
+            color: var(--success-color);
+            font-weight: 600;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="deposit-container">
+    <div class="pay-to">PAY TO: xx</div>
+    
+    <div class="notice-box">
+        ⚠️ It will take 24 Hours to update the payment.
+    </div>
+
+    <form id="depositForm">
+        <div class="form-title">Please fill the details below:</div>
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                placeholder="Enter your username" 
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <input 
+                type="number" 
+                id="amount" 
+                name="amount" 
+                placeholder="Enter amount" 
+                min="1" 
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="upi_id">UPI Transaction ID</label>
+            <input 
+                type="text" 
+                id="upi_id" 
+                name="upi_id" 
+                placeholder="Enter 12-digit UPI Ref No." 
+                pattern="[0-9]{12}" 
+                title="UPI Transaction ID must be exactly a 12-digit number"
+                required
+            >
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit">Submit Deposit</button>
+        <div id="successMessage">✓ Deposit details submitted successfully! Your sheet has been updated.</div>
+    </form>
+</div>
+
+<script>
+    // ⚠️ REPLACE THE URL BELOW WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+    const SCRIPT_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
+
+    document.getElementById('depositForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevents the page from redirecting or refreshing
+
+        const submitBtn = document.getElementById('submitBtn');
+        const successMessage = document.getElementById('successMessage');
+        const upiInput = document.getElementById('upi_id').value;
+
+        // Final security check for UPI length
+        if (upiInput.length !== 12 || isNaN(upiInput)) {
+            alert('Please enter a valid 12-digit UPI Transaction ID.');
+            return;
+        }
+
+        // Change button state to loading
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        // Collect form data
+        const formData = new FormData(this);
+
+        // Send data directly to Google Sheets Web App
+        fetch(https://script.google.com/macros/s/AKfycbxdewVWmLbZ5Z6iVrnm01ARLX1z51eUVDunoz6tbkEqam2v2XKrD2SWIr-CSuF0HFRg/exec, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.result === 'success') {
+                successMessage.style.display = 'block';
+                submitBtn.innerText = "Submitted Successfully";
+                document.getElementById('depositForm').reset(); // Clears form fields
+            } else {
+                alert('Something went wrong: ' + data.error);
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Submit Deposit";
+            }
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            alert('Submission failed. Make sure your Web App access settings are set to "Anyone".');
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit Deposit";
+        });
+    });
+</script>
+
+</body>
+</html>
