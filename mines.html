@@ -4,20 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mines Pro | Stake Edition</title>
+    <!-- Premium Cyber/Casino Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-main: #0f172a;
-            --bg-sidebar: #1e293b;
-            --bg-card: #0b0f19;
-            --primary-blue: #3b82f6;
-            --accent-gold: #f59e0b;
-            --accent-green: #00e676;
-            --accent-red: #ff3333;
+            --bg-main: #060b19;
+            --bg-sidebar: #0f172a;
+            --bg-card: #020617;
+            --primary-blue: #2563eb;
+            --accent-gold: #fbbf24;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
             --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-glass: rgba(255, 255, 255, 0.05);
-            --tile-unopened: #2f455e;
-            --tile-unopened-hover: #3c5674;
+            --text-muted: #64748b;
+            --border-glass: rgba(255, 255, 255, 0.06);
+            --tile-unopened: #1e293b;
+            --tile-unopened-hover: #334155;
+            --font-fancy: 'Orbitron', system-ui, sans-serif;
+            --font-sub: 'Rajdhani', system-ui, sans-serif;
         }
 
         * {
@@ -29,7 +36,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: var(--font-sub);
             background-color: var(--bg-main);
             color: var(--text-light);
             min-height: 100vh;
@@ -38,32 +45,67 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Top-Left Back Button Platform */
+        .back-nav-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .btn-back {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-glass);
+            color: var(--text-light);
+            font-family: var(--font-fancy);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-back:hover {
+            background: var(--primary-blue);
+            border-color: transparent;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
         }
 
         .game-wrapper {
             width: 100%;
             max-width: 900px;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border-glass);
-            border-radius: 16px;
+            border-radius: 20px;
             display: flex;
             flex-direction: row;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
         }
 
-        /* Left Side: Stake Control Panel */
+        /* Left Control Dashboard */
         .sidebar-controls {
             width: 320px;
             background: var(--bg-sidebar);
             padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 22px;
             border-right: 1px solid var(--border-glass);
         }
 
-        /* Right Side: Game Grid Arena */
+        /* Right Grid Theater */
         .grid-theater {
             flex: 1;
             background: var(--bg-card);
@@ -75,30 +117,33 @@
             position: relative;
         }
 
-        /* Header Navigation Info */
+        /* Nav Stats Header Widget */
         .header-widget {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             max-width: 900px;
-            padding: 0 8px;
+            padding: 0 4px;
         }
 
         .user-tag {
-            font-size: 0.85rem;
+            font-family: var(--font-fancy);
+            font-size: 0.8rem;
             font-weight: 700;
             color: var(--text-muted);
         }
 
         .wallet-display {
+            font-family: var(--font-fancy);
             background: var(--bg-sidebar);
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 8px 18px;
+            border-radius: 10px;
             border: 1px solid var(--border-glass);
             font-weight: 800;
             color: var(--accent-gold);
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
         }
 
         /* 5x5 Matrix Layout Grid */
@@ -107,120 +152,131 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 12px;
             width: 100%;
-            max-width: 460px;
+            max-width: 440px;
             aspect-ratio: 1 / 1;
         }
 
         .tile-btn {
             background: var(--tile-unopened);
-            border: none;
-            border-radius: 8px;
+            border: 2px solid transparent;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 0 #1b2a3a;
-            transition: all 0.1s ease;
+            box-shadow: 0 4px 0 #0f172a;
+            transition: transform 0.1s ease, background-color 0.15s ease, border-color 0.15s ease;
+            /* Fixes the static sizing map structure constraints */
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            line-height: 1;
         }
 
         .tile-btn:hover:not(:disabled) {
             background: var(--tile-unopened-hover);
             transform: translateY(-2px);
-            box-shadow: 0 6px 0 #1b2a3a;
+            box-shadow: 0 6px 0 #0f172a;
         }
 
         .tile-btn:active:not(:disabled) {
             transform: translateY(2px);
-            box-shadow: 0 1px 0 #1b2a3a;
+            box-shadow: 0 1px 0 #0f172a;
         }
 
-        /* Revealed Tile Override Profiles */
+        /* Static non-shifting outcome profiles */
         .tile-gem {
-            background: #071824 !important;
-            border: 2px solid var(--accent-green) !important;
-            box-shadow: 0 0 15px rgba(0, 230, 118, 0.2) !important;
+            background: #022c22 !important;
+            border-color: var(--accent-green) !important;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.25) !important;
             transform: none !important;
         }
 
         .tile-mine {
-            background: #1e1015 !important;
-            border: 2px solid var(--accent-red) !important;
-            box-shadow: 0 0 15px rgba(255, 51, 51, 0.2) !important;
+            background: #450a0a !important;
+            border-color: var(--accent-red) !important;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.25) !important;
             transform: none !important;
         }
 
-        /* Input Controls */
+        /* Inputs Console */
         .label {
+            font-family: var(--font-fancy);
             font-size: 0.75rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
         }
 
         .input-container {
             display: flex;
             background: var(--bg-main);
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            border: 1px solid var(--border-glass);
             overflow: hidden;
-            height: 44px;
+            height: 46px;
         }
 
-        .input-container input, .input-container select {
+        .input-container input {
             width: 100%;
             background: transparent;
             border: none;
             color: white;
             padding: 0 14px;
-            font-weight: 700;
+            font-family: var(--font-fancy);
+            font-weight: 600;
             font-size: 0.95rem;
             outline: none;
         }
 
         .scale-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border: none;
             color: var(--text-light);
-            padding: 0 14px;
-            font-size: 0.8rem;
+            padding: 0 16px;
+            font-family: var(--font-fancy);
+            font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
-            border-left: 1px solid rgba(255,255,255,0.1);
+            border-left: 1px solid var(--border-glass);
             transition: background 0.2s;
         }
 
         .scale-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .action-btn {
             width: 100%;
-            height: 50px;
+            height: 52px;
             border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 700;
+            border-radius: 8px;
+            font-family: var(--font-fancy);
+            font-size: 0.95rem;
+            font-weight: 800;
             cursor: pointer;
             color: white;
             transition: all 0.15s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn-bet {
             background: var(--primary-blue);
             box-shadow: 0 4px 0 #1d4ed8;
         }
-        .btn-bet:hover:not(:disabled) { background: #2563eb; }
+        .btn-bet:hover:not(:disabled) { background: #3b82f6; }
 
         .btn-cashout {
             background: var(--accent-green);
-            color: #000;
-            box-shadow: 0 4px 0 #00b359;
-            font-weight: 800;
+            color: #060b19;
+            box-shadow: 0 4px 0 #059669;
         }
-        .btn-cashout:hover:not(:disabled) { background: #33ff99; }
+        .btn-cashout:hover:not(:disabled) { background: #34d399; }
 
         .action-btn:active:not(:disabled) {
             transform: translateY(3px);
@@ -228,38 +284,36 @@
         }
 
         .action-btn:disabled {
-            background: #334155 !important;
-            color: #64748b !important;
+            background: #1e293b !important;
+            color: #475569 !important;
             box-shadow: none !important;
             cursor: not-allowed;
         }
 
-        /* Responsive Breakpoint for Mobile Interfaces */
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            .game-wrapper {
-                flex-direction: column-reverse;
-            }
-            .sidebar-controls {
-                width: 100%;
-                border-right: none;
-                border-top: 1px solid var(--border-glass);
-            }
-            .grid-theater {
-                padding: 20px;
-            }
+            .game-wrapper { flex-direction: column-reverse; }
+            .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); }
+            .grid-theater { padding: 24px; }
+            .back-nav-container { padding-left: 6px; }
         }
     </style>
 </head>
 <body>
 
-<!-- Top Navigation Data Hub Widget -->
+<!-- Dynamic Redirection Navigation Bar -->
+<div class="back-nav-container">
+    <a href="game.html" class="btn-back">← BACK TO GAMES</a>
+</div>
+
+<!-- Game Data Metrics Widget -->
 <div class="header-widget">
-    <div class="user-tag">👤 User: <span id="userName">Guest</span></div>
+    <div class="user-tag">👤 ID: <span id="userName">Guest</span></div>
     <div class="wallet-display">🪙 <span id="userBalance">0.00</span></div>
 </div>
 
 <div class="game-wrapper">
-    <!-- Left Hand Stake Console Command Deck Menu -->
+    <!-- Action Operating Panel Control Console -->
     <div class="sidebar-controls">
         <div>
             <div class="label">Bet Amount</div>
@@ -271,23 +325,16 @@
         </div>
 
         <div>
-            <div class="label">Mines</div>
+            <div class="label">Mines Count (1-24)</div>
             <div class="input-container">
-                <select id="minesCountSelector">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3" selected>3</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="24">24</option>
-                </select>
+                <input type="number" id="minesQuantityInput" value="3" min="1" max="24" onchange="validateMinesBoundsRange(this)">
             </div>
         </div>
 
-        <button class="action-btn btn-bet" id="mainActionBtn" onclick="toggleMinesEngineLoopState()" disabled>Syncing Balance...</button>
+        <button class="action-btn btn-bet" id="mainActionBtn" onclick="toggleMinesEngineLoopState()" disabled>Syncing Ledger...</button>
     </div>
 
-    <!-- Right Hand Interactive Graphic Grid Arena Arena -->
+    <!-- Active Visual Game Display Theater -->
     <div class="grid-theater">
         <div class="mines-grid" id="minesGridMatrix"></div>
     </div>
@@ -305,7 +352,7 @@
     let openedTilesCount = 0;
     let currentPayoutMultiplier = 1.00;
 
-    // Native Browser Sound Effects Synthesizer Engine
+    // Browser Sound FX Synthesis Hub
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSyntheticSound(frequency, type, duration, slideTo = 0) {
         try {
@@ -316,21 +363,21 @@
             if (slideTo > 0) {
                 osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
             }
-            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
             osc.connect(gainNode);
             gainNode.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + duration);
-        } catch(e) { console.log("Audio not allowed yet"); }
+        } catch(e) {}
     }
 
-    // Clean user account profile configuration tags handles
+    // Process local login handles
     const rawUser = localStorage.getItem("currentUser") || "Guest";
     const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
     document.getElementById("userName").innerText = cleanUser;
 
-    // Render Matrix Layout Elements
+    // Render Matrix Structural Grid Nodes
     const gridContainer = document.getElementById("minesGridMatrix");
     for (let i = 0; i < 25; i++) {
         const btn = document.createElement("button");
@@ -341,7 +388,13 @@
         gridContainer.appendChild(btn);
     }
 
-    // 1. Fetch live profile sync database values
+    function validateMinesBoundsRange(input) {
+        let val = parseInt(input.value) || 3;
+        if (val < 1) input.value = 1;
+        if (val > 24) input.value = 24;
+    }
+
+    // 1. Core Profile Balance Fetch Sync Direct Link
     function fetchLiveWallet() {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
         .then(r => r.json())
@@ -357,12 +410,12 @@
                     actionBtn.className = "action-btn btn-bet";
                 }
             }
-        }).catch(err => {
+        }).catch(() => {
             document.getElementById('userBalance').innerText = "Offline";
         });
     }
 
-    // 2. Transmit ledger logs change events background pipeline parameters
+    // 2. Transaction Dispatch Ledger Background Engine Links 
     function syncTxToDatabase(amountChange, updateScreenUI = true) {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
         .then(r => r.json())
@@ -388,14 +441,17 @@
         if (!gameActive) {
             const betInput = document.getElementById("betValue");
             const desiredBet = parseInt(betInput.value) || 0;
-            minesQuantity = parseInt(document.getElementById("minesCountSelector").value);
+            
+            const minesInput = document.getElementById("minesQuantityInput");
+            validateMinesBoundsRange(minesInput);
+            minesQuantity = parseInt(minesInput.value);
 
             if (desiredBet < 1 || desiredBet > balance) {
-                alert("Mismatched allocation balance bounds details!");
+                alert("Stake balance parameter error!");
                 return;
             }
 
-            // INSTANT DEDUCTION PARADIGM LAYER
+            // INSTANT DEDUCTION CONSOLE METRICS PASS
             betAmount = desiredBet;
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
@@ -407,18 +463,19 @@
             generateRandomHiddenMinesPlacement();
 
             betInput.disabled = true;
-            document.getElementById("minesCountSelector").disabled = true;
+            minesInput.disabled = true;
 
             actionBtn.innerText = "Cash Out";
             actionBtn.className = "action-btn btn-cashout";
             actionBtn.disabled = true;
 
-            playSyntheticSound(587.33, 'triangle', 0.15); // Start game chime
+            playSyntheticSound(587.33, 'triangle', 0.15);
 
             const tiles = gridContainer.children;
             for (let i = 0; i < tiles.length; i++) {
                 tiles[i].className = "tile-btn";
                 tiles[i].innerText = "";
+                tiles[i].style.opacity = "1";
                 tiles[i].disabled = false;
             }
         } else {
@@ -464,7 +521,6 @@
             targetTile.className = "tile-btn tile-gem";
             targetTile.innerText = "💎";
 
-            // Synthesize crisp ascending note scale sweep for gem discover alerts
             playSyntheticSound(440 + (openedTilesCount * 60), 'sine', 0.12, 600 + (openedTilesCount * 60));
 
             currentPayoutMultiplier = calculateNextMinesMultiplier();
@@ -489,7 +545,6 @@
         document.getElementById('userBalance').innerText = balance.toFixed(2);
         syncTxToDatabase(totalWinningsReturn, true);
 
-        // Success cash-out arpeggio wave sound cascade
         playSyntheticSound(523.25, 'sine', 0.1);
         setTimeout(() => playSyntheticSound(659.25, 'sine', 0.1), 80);
         setTimeout(() => playSyntheticSound(783.99, 'sine', 0.2, 1200), 160);
@@ -508,7 +563,7 @@
         revealEntireBoardState();
         
         gridContainer.children[explodedIndex].innerText = "💥";
-        playSyntheticSound(120, 'sawtooth', 0.4, 30); // Bass explosion sound crash
+        playSyntheticSound(120, 'sawtooth', 0.4, 30);
 
         const actionBtn = document.getElementById("mainActionBtn");
         actionBtn.disabled = true;
@@ -538,7 +593,7 @@
     function resetGameArenaEnvironmentDelayed() {
         setTimeout(() => {
             document.getElementById("betValue").disabled = false;
-            document.getElementById("minesCountSelector").disabled = false;
+            document.getElementById("minesQuantityInput").disabled = false;
             
             const actionBtn = document.getElementById("mainActionBtn");
             actionBtn.innerText = "Bet";
