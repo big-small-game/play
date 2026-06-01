@@ -6,11 +6,11 @@
     <title>Deposit Money💳</title>
     <style>
         :root {
-            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            --bg-gradient: linear-gradient(-45deg, #11998e, #38ef7d, #0f2027, #203a43);
-            --glass-bg: rgba(255, 255, 255, 0.06);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --glow-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --bg-gradient: linear-gradient(-45deg, #11998e, #38ef7d, #060b19, #0c152b);
+            --glass-bg: rgba(15, 23, 42, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --glow-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
             --primary-color: #38ef7d;
             --error-color: #ff7675;
         }
@@ -21,13 +21,13 @@
             background: var(--bg-gradient);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
-            color: #f5f6fa;
+            color: #f8fafc;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
             box-sizing: border-box;
         }
 
@@ -39,22 +39,22 @@
 
         .top-nav-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 440px;
             display: flex;
             justify-content: flex-start;
             margin-bottom: 12px;
         }
 
         .btn-home-nav {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            color: #dfe6e9;
+            color: #f8fafc;
             font-size: 0.85rem;
             font-weight: 600;
             padding: 10px 18px;
-            border-radius: 12px;
+            border-radius: 50px;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
@@ -65,29 +65,28 @@
         .btn-home-nav:hover {
             background: rgba(255, 255, 255, 0.12);
             border-color: var(--primary-color);
-            color: white;
             box-shadow: 0 0 15px rgba(56, 239, 125, 0.2);
         }
 
         .deposit-container {
             background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            padding: 35px;
+            padding: 30px;
             width: 100%;
-            max-width: 450px;
+            max-width: 440px;
             box-shadow: var(--glow-shadow);
             position: relative;
         }
 
         .title-head {
             font-size: 1.4rem;
-            font-weight: 800;
-            letter-spacing: 1.5px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
             text-align: center;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             background: linear-gradient(45deg, #38ef7d, #11998e, #ffffff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -95,7 +94,7 @@
 
         .balance-display {
             font-size: 1.1rem;
-            font-weight: 700;
+            font-weight: 800;
             color: #38ef7d;
             margin-bottom: 15px;
             text-align: center;
@@ -107,29 +106,31 @@
             color: #38ef7d;
             padding: 12px;
             border-radius: 14px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 22px;
             font-weight: 600;
             line-height: 1.4;
         }
 
         .form-group {
-            margin-bottom: 22px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.8rem;
+            font-weight: 700;
             margin-bottom: 8px;
-            color: #dfe6e9;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         input {
             width: 100%;
             padding: 14px 16px;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             font-size: 1rem;
@@ -140,32 +141,32 @@
         input:focus {
             outline: none;
             border-color: var(--primary-color);
-            background: rgba(0, 0, 0, 0.3);
-            box-shadow: 0 0 15px rgba(56, 239, 125, 0.2);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 15px rgba(56, 239, 125, 0.15);
         }
 
         .btn-submit {
             width: 100%;
-            background: linear-gradient(45deg, #11998e, #38ef7d);
+            background: linear-gradient(135deg, #11998e, #38ef7d);
             color: white;
             padding: 16px;
             border: none;
             border-radius: 14px;
-            font-size: 1.05rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.2);
             transition: all 0.3s ease;
         }
 
         .btn-submit:disabled {
-            background: linear-gradient(45deg, #57606f, #2f3542);
-            color: #a4b0be;
+            background: rgba(30, 41, 59, 0.4);
+            color: #64748b;
             cursor: not-allowed;
             box-shadow: none;
         }
 
-        /* Live History Panel */
+        /* Live History Timeline */
         .history-section {
             border-top: 1px solid var(--glass-border);
             padding-top: 20px;
@@ -176,18 +177,18 @@
         }
 
         .history-title {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #b2bec3;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #64748b;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         .history-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            max-height: 200px;
+            max-height: 180px;
             overflow-y: auto;
         }
         .history-list::-webkit-scrollbar { display: none; }
@@ -210,12 +211,12 @@
         }
 
         .item-amount {
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .item-txid {
             font-size: 0.75rem;
-            color: #b2bec3;
+            color: #64748b;
         }
 
         .item-status {
@@ -223,11 +224,10 @@
             font-weight: 700;
             padding: 4px 10px;
             border-radius: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Status colors to match your Google Sheet status inputs */
         .status-success { background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
         .status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3); }
         .status-rejected { background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
@@ -236,7 +236,7 @@
             display: none;
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 15, 25, 0.98);
+            background: #060b19;
             border-radius: 24px;
             z-index: 10;
             flex-direction: column;
@@ -247,71 +247,71 @@
         }
 
         .success-icon {
-            width: 80px; height: 80px;
+            width: 70px; height: 70px;
             background: rgba(56, 239, 125, 0.1);
             border: 2px solid var(--primary-color);
             border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            font-size: 40px; color: var(--primary-color);
+            font-size: 35px; color: var(--primary-color);
             margin-bottom: 20px;
         }
 
-        .success-title { font-size: 1.5rem; font-weight: 800; color: white; margin-bottom: 10px; }
-        .success-desc { color: #b2bec3; font-size: 0.95rem; text-align: center; margin-bottom: 25px; }
-        .btn-back { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border); color: white; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; }
+        .success-title { font-size: 1.4rem; font-weight: 900; color: white; margin-bottom: 10px; }
+        .success-desc { color: #64748b; font-size: 0.9rem; text-align: center; margin-bottom: 25px; line-height: 1.5; }
+        .btn-back { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: white; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="top-nav-container">
-    <a href="game.html" class="btn-home-nav">← Back to Home</a>
+    <a href="game.html" class="btn-home-nav">← Back to Hub</a>
 </div>
 
 <div class="deposit-container">
     <div class="success-screen" id="successScreen">
         <div class="success-icon">✓</div>
         <div class="success-title">Deposit Submitted!</div>
-        <div class="success-desc">Your deposit proof has been received.<br>It will be verified and added to your balance shortly.</div>
-        <button class="btn-back" onclick="window.location.href='game.html'">Back to Home</button>
+        <div class="success-desc">Your proof has been posted to manual review logs.<br>Your coins will be released immediately upon balance confirmation.</div>
+        <button class="btn-back" onclick="window.location.href='game.html'">Back to Hub</button>
     </div>
 
-    <div class="title-head">SECURE DEPOSIT</div>
-    <div class="balance-display">Your Balance: 🪙<span id="currentBalance">Loading...</span></div>
+    <div class="title-head">DEPOSIT COINS</div>
+    <div class="balance-display">Live Wallet: 🪙<span id="currentBalance">Syncing...</span></div>
     
     <div class="notice-box">
-        Pay to our official business UPI ID, then paste your 12-digit transaction ID below.
+        Send funds to our official business merchant node, then submit your transaction record trace ID token.
     </div>
 
     <form id="depositForm">
         <div class="form-group">
-            <label for="username">Username</label>
+            <label for="username">Profile Handle</label>
             <input type="text" id="username" name="username" required readonly>
         </div>
 
         <div class="form-group">
-            <label for="amount">Amount Deposited</label>
-            <input type="number" id="amount" name="amount" placeholder="Enter amount paid" min="10" required disabled>
+            <label for="amount">Deposit Principal</label>
+            <input type="number" id="amount" name="amount" placeholder="Enter transaction amount" min="10" required disabled>
         </div>
 
         <div class="form-group">
-            <label for="txid">UPI Transaction ID / Ref No.</label>
-            <input type="text" id="txid" name="txid" placeholder="Enter 12-digit code" required disabled>
+            <label for="txid">UPI Ref Number / Txn ID</label>
+            <input type="text" id="txid" name="txid" placeholder="Enter 12-digit transaction ID" required disabled>
         </div>
 
-        <button type="submit" id="submitBtn" class="btn-submit" disabled>Fetch Balance first...</button>
+        <button type="submit" id="submitBtn" class="btn-submit" disabled>Connecting Database Node...</button>
     </form>
 
     <div class="history-section">
-        <div class="history-title">Live Deposit History</div>
+        <div class="history-title">Real-Time Deposit Logs</div>
         <div class="history-list" id="historyContainer">
-            <div style="text-align:center; padding:15px; font-size:0.8rem; color:#b2bec3;">Loading your history from Google Sheet...</div>
+            <div style="text-align:center; padding:15px; font-size:0.8rem; color:#64748b;">Loading logs from database...</div>
         </div>
     </div>
 </div>
 
 <script>
-    // TARGET DEPLOYMENT URL (Must match your withdraw page)
-    const DEPLOYMENT_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
+    // SHARED CENTRAL DATABASE TARGET URL Framework
+    const SYNC_TARGET_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
     const storedUser = localStorage.getItem("currentUser") || "Guest";
     let formattedUser = storedUser.trim();
@@ -322,9 +322,8 @@
     
     document.getElementById('username').value = formattedUser;
 
-    // Pull Live Balance and Deposit rows directly from the Google Sheet
-    function loadUserDataFromSheet() {
-        fetch(`${DEPLOYMENT_URL}?username=${encodeURIComponent(formattedUser)}&nocache=${Date.now()}`)
+    function fetchLiveDatabaseData() {
+        fetch(`${SYNC_TARGET_URL}?username=${encodeURIComponent(formattedUser)}&nocache=${Date.now()}`)
         .then(r => r.json())
         .then(data => {
             document.getElementById("currentBalance").innerText = (parseFloat(data.balance) || 0).toFixed(2);
@@ -334,25 +333,23 @@
             
             const submitBtn = document.getElementById("submitBtn");
             submitBtn.disabled = false;
-            submitBtn.innerText = "Submit Deposit";
+            submitBtn.innerText = "Submit Deposit Verification";
 
-            renderLiveHistory(data.history || []);
+            renderLogs(data.history || []);
         })
         .catch(err => {
-            console.error("Database connection failed:", err);
-            document.getElementById("currentBalance").innerText = "Error loading";
-            document.getElementById("historyContainer").innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#ff7675;">Failed to load live tracking logs.</div>`;
+            console.error("Database tracking failed:", err);
+            document.getElementById("currentBalance").innerText = "Sync Failed";
+            document.getElementById("historyContainer").innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#ff7675;">Connection error syncing transaction timeline.</div>`;
         });
     }
 
-    function renderLiveHistory(historyItems) {
+    function renderLogs(historyItems) {
         const container = document.getElementById("historyContainer");
-        
-        // Filter out withdrawal requests, keeping only deposit data
         const deposits = historyItems.filter(item => item.type === "Deposit");
 
         if (deposits.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#b2bec3;">No recent deposit requests found.</div>`;
+            container.innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#64748b;">No recent deposit logs found.</div>`;
             return;
         }
 
@@ -391,27 +388,24 @@
         if (amountRequested <= 0 || transactionId === "") return;
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Submitting Proof...";
+        submitBtn.innerText = "Broadcasting Packet...";
 
-        // Builds dynamic parameters passing 'amount' and 'txid' cleanly matching Google Apps Script structure
-        const updateParams = `?username=${encodeURIComponent(formattedUser)}&amount=${amountRequested}&txid=${encodeURIComponent(transactionId)}`;
+        const networkPayload = `?username=${encodeURIComponent(formattedUser)}&amount=${amountRequested}&txid=${encodeURIComponent(transactionId)}`;
 
-        fetch(DEPLOYMENT_URL + updateParams)
+        fetch(SYNC_TARGET_URL + networkPayload)
         .then(response => response.json())
         .then(data => {
             successScreen.style.display = 'flex';
             document.getElementById('depositForm').reset();
         })
         .catch(error => {
-            console.error('Network response tracking fallback:', error);
+            console.error('Submission fallback:', error);
             successScreen.style.display = 'flex';
             document.getElementById('depositForm').reset();
         });
     });
 
-    // Run loader on page startup
-    loadUserDataFromSheet();
+    fetchLiveDatabaseData();
 </script>
-
 </body>
 </html>
