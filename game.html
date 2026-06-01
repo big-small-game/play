@@ -7,15 +7,14 @@
 <style>
 :root {
   --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --bg-main: #0f172a;
-  --bg-card: rgba(30, 41, 59, 0.7);
+  --bg-main: #060b19;
+  --bg-card: rgba(15, 23, 42, 0.55);
   --primary-blue: #3b82f6;
-  --primary-hover: #2563eb;
   --accent-gold: #f59e0b;
   --text-light: #f8fafc;
   --text-muted: #64748b;
-  --border-glass: rgba(255, 255, 255, 0.08);
-  --glow-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --border-glass: rgba(255, 255, 255, 0.07);
+  --glow-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 * {
@@ -34,9 +33,21 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 12px;
-  padding-bottom: 30px;
+  padding: 16px;
+  padding-bottom: 40px;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Fancy Animated Background Canvas Canvas */
+#bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* Master Mobile Workspace Wrapper */
@@ -45,7 +56,8 @@ body {
   max-width: 440px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  z-index: 10;
 }
 
 /* Sticky Navigation Header Bar */
@@ -53,57 +65,133 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 12px 16px;
-  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 10px 14px;
+  border-radius: 50px;
   border: 1px solid var(--border-glass);
   box-shadow: var(--glow-shadow);
 }
 
+/* Completely Round Account Button */
 .account-trigger {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-glass);
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+  border: 1px solid rgba(255,255,255,0.2);
   color: white;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.85rem;
+  border-radius: 50%;
+  font-size: 1.25rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.account-trigger:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
+.account-trigger:active { 
+  transform: scale(0.9) rotate(-15deg); 
+  background: rgba(255,255,255,0.15); 
+}
 
 .wallet-badge {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-weight: 700;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-weight: 800;
   color: var(--accent-gold);
   font-size: 0.95rem;
+  letter-spacing: 0.5px;
 }
 
-/* Identity Hero Banner Section */
-.hero-card {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 41, 59, 0.4) 100%);
-  border: 1px solid var(--border-glass);
-  border-radius: 20px;
+/* Floating Modular Drawer Hub Container */
+.account-drawer {
+  display: none;
+  position: absolute;
+  top: 76px;
+  left: 0;
+  right: 0;
+  background: rgba(10, 15, 30, 0.96);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 20px;
+  border-radius: 24px;
+  box-shadow: 0 24px 50px rgba(0,0,0,0.8);
+  z-index: 9999;
+  animation: slideDownIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDownIn {
+  from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.drawer-user-info {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+/* Call to Action Transaction Button Container */
+.gateway-box {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px dashed rgba(59, 130, 246, 0.3);
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #93c5fd;
+  text-align: center;
+}
+
+.drawer-btn {
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  width: 100%;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.1s;
+}
+.btn-dep { background: linear-gradient(135deg, #10b981, #059669); }
+.btn-wd { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.btn-lo { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); color: #f87171; }
+.drawer-btn:active { opacity: 0.85; }
+
+/* Identity Hero Profile Card Banner */
+.hero-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-glass);
+  border-radius: 24px;
+  padding: 22px;
   text-align: left;
   box-shadow: var(--glow-shadow);
 }
 
 .hero-card h1 {
-  font-size: 1.4rem;
-  font-weight: 800;
-  letter-spacing: 1px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
   margin-bottom: 4px;
-  background: linear-gradient(45deg, #60a5fa, #a78bfa);
+  background: linear-gradient(45deg, #60a5fa, #a78bfa, #f472b6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -111,70 +199,19 @@ body {
 .hero-card p {
   font-size: 0.85rem;
   color: var(--text-muted);
-  font-weight: 500;
-}
-
-/* Floating Account Context Drawer */
-.account-drawer {
-  display: none;
-  position: absolute;
-  top: 70px;
-  left: 12px;
-  right: 12px;
-  background: rgba(15, 23, 42, 0.98);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 16px;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-  z-index: 9999;
-  animation: slideDownIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideDownIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.drawer-user-info {
-  font-size: 0.95rem;
-  font-weight: 700;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid var(--border-glass);
-}
-
-.drawer-btn {
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 10px;
-  width: 100%;
-  font-size: 0.95rem;
   font-weight: 600;
-  margin-top: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
 }
-.btn-dep { background: linear-gradient(45deg, #10b981, #059669); }
-.btn-wd { background: linear-gradient(45deg, #f59e0b, #d97706); }
-.btn-lo { background: linear-gradient(45deg, #ef4444, #dc2626); }
-.drawer-btn:active { transform: scale(0.98); }
 
-/* Premium Game Card Layout Grid */
+/* Premium Matrix Game Grid Framework */
 .games-grid-title {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
   color: var(--text-muted);
   text-align: left;
   margin-left: 4px;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .games-matrix-grid {
@@ -186,8 +223,8 @@ body {
 
 .game-card-btn {
   border: 1px solid var(--border-glass);
-  border-radius: 16px;
-  padding: 20px 14px;
+  border-radius: 20px;
+  padding: 22px 14px;
   color: white;
   cursor: pointer;
   display: flex;
@@ -198,40 +235,39 @@ body {
   position: relative;
   overflow: hidden;
   aspect-ratio: 1 / 1;
-  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1);
-  transition: transform 0.15s ease;
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 0 8px 16px rgba(0,0,0,0.2);
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .game-card-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.95);
 }
 
 .game-card-btn .game-icon {
-  font-size: 2rem;
-  margin-bottom: 2px;
+  font-size: 2.2rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
 }
 
 .game-card-btn .game-title {
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.3px;
 }
 
 .game-card-btn .sub-desc {
   font-size: 0.7rem;
   font-weight: 500;
-  opacity: 0.6;
+  opacity: 0.55;
   line-height: 1.2;
 }
 
-/* Row-spanning button style for "Coming Soon" */
 .span-full {
   grid-column: span 2;
   aspect-ratio: auto;
   padding: 16px;
 }
 
-/* Brand Grid Custom Color Spectra */
+/* App Palette Themes Profiles */
 .bg-bigsmall { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); }
 .bg-mines { background: linear-gradient(135deg, #475569 0%, #1e293b 100%); }
 .bg-dragon { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
@@ -239,80 +275,87 @@ body {
 .bg-plinko { background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); }
 
 .bg-soon { 
-  background: #1e293b; 
+  background: rgba(30, 41, 59, 0.4); 
   color: var(--text-muted); 
   cursor: not-allowed; 
   box-shadow: none;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 </style>
 </head>
 <body>
 
+<!-- Interactive Canvas Engine Background Matrix -->
+<canvas id="bgCanvas"></canvas>
+
 <div class="app-wrapper">
-    <!-- Header Top Navigation Bar -->
+    <!-- Header Navigation Section Bar -->
     <div class="app-header">
-        <button class="account-trigger" onclick="toggleAccountMenu()">👤 Account</button>
+        <button class="account-trigger" onclick="toggleAccountMenu()">👤</button>
         <div class="wallet-badge">🪙 <span id="coins">Syncing...</span></div>
     </div>
 
-    <!-- Dropdown Account Context Drawer Menu Container -->
+    <!-- Dropdown Modal Account Context Drawer Container -->
     <div class="account-drawer" id="accountMenu">
-        <div class="drawer-user-info">User ID: <span id="userHandleDisplay">Loading...</span></div>
+        <div class="drawer-user-info">ID: <span id="userHandleDisplay" style="color: white;">Loading...</span></div>
+        
+        <!-- Requested Gateway Target Banner Module -->
+        <div class="gateway-box">💡 Click here to deposit and withdraw money</div>
+
         <button class="drawer-btn btn-dep" onclick="routeTo('deposit.html')">➕ Deposit Money</button>
         <button class="drawer-btn btn-wd" onclick="routeTo('withdraw.html')">➖ Withdraw Money</button>
-        <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out</button>
+        <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out Account</button>
     </div>
 
-    <!-- Identity Hero Banner Section Banner Section -->
+    <!-- Identity Hero Profile Card Banner Header Section -->
     <div class="hero-card">
         <h1>MINI GAMES HUB PRO</h1>
         <p>Session Active: <span id="sessionEmail" style="color: var(--text-light);">Loading...</span></p>
     </div>
 
-    <div class="games-grid-title">Game Matrix Modules</div>
+    <div class="games-grid-title">Arena Game Grid</div>
 
-    <!-- 2-Column Responsive Matrix Grid Systems Selection Layout -->
+    <!-- 2-Column Crypto Casino Grid Engine Layout Module Selection -->
     <div class="games-matrix-grid">
         <button class="game-card-btn bg-bigsmall" onclick="routeTo('big-small.html')">
             <span class="game-icon">🎲</span>
             <span class="game-title">Big Small</span>
-            <span class="sub-desc">Predict range sets</span>
+            <span class="sub-desc">Predict range sums</span>
         </button>
 
         <button class="game-card-btn bg-mines" onclick="routeTo('mines.html')">
             <span class="game-icon">💣</span>
             <span class="game-title">Mines</span>
-            <span class="sub-desc">Find safe gems</span>
+            <span class="sub-desc">Find safe diamonds</span>
         </button>
 
         <button class="game-card-btn bg-dragon" onclick="routeTo('drgn.html')">
             <span class="game-icon">🐉</span>
             <span class="game-title">Dragon Tower</span>
-            <span class="sub-desc">Scale brick rows</span>
+            <span class="sub-desc">Scale brick steps</span>
         </button>
 
         <button class="game-card-btn bg-crash" onclick="routeTo('av.html')">
             <span class="game-icon">✈️</span>
             <span class="game-title">Crash</span>
-            <span class="sub-desc">Multiplier flight</span>
+            <span class="sub-desc">Flight multiplier</span>
         </button>
 
         <button class="game-card-btn bg-plinko" onclick="routeTo('plinko.html')">
             <span class="game-icon">⚽</span>
             <span class="game-title">Plinko</span>
-            <span class="sub-desc">Peg boards drop</span>
+            <span class="sub-desc">Peg path drops</span>
         </button>
 
         <button class="game-card-btn bg-soon span-full" disabled>
-            <span class="game-title">🚀 More Modules Coming Soon</span>
-            <span class="sub-desc">New real-time engines under construction</span>
+            <span class="game-title">🚀 More Modules Pending</span>
+            <span class="sub-desc">New real-time game matrix engines coming soon</span>
         </button>
     </div>
 </div>
 
 <script>
-// CENTRAL GOOGLE APPS SCRIPT DATABASE CONNECTION ENDPOINT
+// WEB APP DEPLOYMENT DATABASE URL API CONNECTION
 const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
 let rawStorageUser = localStorage.getItem("currentUser") || "Guest";
@@ -325,11 +368,9 @@ if(dynamicUserHandle.includes("@")) {
 document.getElementById("sessionEmail").innerText = dynamicUserHandle;
 document.getElementById("userHandleDisplay").innerText = dynamicUserHandle;
 
-// Core balance syncing function
+// Core balance syncing function (with Cache-Busting protection)
 function forceSyncWalletData() {
     document.getElementById("coins").innerText = "Syncing...";
-    
-    // Append a microsecond timestamp parameter onto query requests to destroy browser cache metrics
     fetch(`${DATABASE_URL}?username=${encodeURIComponent(dynamicUserHandle)}&nocache=${Date.now()}`)
     .then(response => response.json())
     .then(data => {
@@ -341,7 +382,7 @@ function forceSyncWalletData() {
         }
     })
     .catch(error => {
-        console.error("Network dashboard tracking sync failure:", error);
+        console.error("Database pipeline syncing network failure:", error);
         document.getElementById("coins").innerText = "Offline";
     });
 }
@@ -360,7 +401,7 @@ function triggerSignout() {
     window.location.href = "login.html";
 }
 
-// CRITICAL CACHE FIXED LOGIC PIPELINE
+// CRITICAL MEMORY REFRESH CACHE DESTROY LIFECYCLES
 window.addEventListener("pageshow", function(event) {
     forceSyncWalletData();
 });
@@ -370,6 +411,57 @@ document.addEventListener("visibilitychange", function() {
         forceSyncWalletData();
     }
 });
+
+// Fancy Animated Starfield Background Shader Simulation Node Engine Script 
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Generate slow glowing nebula dust points configurations 
+for (let i = 0; i < 45; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2.5 + 0.5,
+        alpha: Math.random() * 0.5 + 0.1,
+        speed: Math.random() * 0.15 + 0.05
+    });
+}
+
+function animateBackgroundMesh() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw subtle linear core gradient
+    let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, '#060b19');
+    grad.addColorStop(1, '#0c152b');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Update and draw particles nodes connections 
+    for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        p.y -= p.speed;
+        if (p.y < -10) {
+            p.y = canvas.height + 10;
+            p.x = Math.random() * canvas.width;
+        }
+        
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(96, 165, 250, ${p.alpha})`;
+        ctx.fill();
+    }
+    requestAnimationFrame(animateBackgroundMesh);
+}
+animateBackgroundMesh();
 </script>
 </body>
 </html>
