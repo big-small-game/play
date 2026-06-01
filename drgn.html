@@ -369,15 +369,14 @@
     }
 
     // 2. LIVE UPDATE TRANSACTION DIRECT BACK TO THE CENTRAL GOOGLE SHEET
-    function syncBalanceToDatabase(balanceChangeAmount) {
-        // Prepare payload containing changes to run calculations inside your Sheets manager script
-        // Makes an asynchronous call using query string variables natively mapped
+    function syncBalanceToDatabase(balanceChangeAmount, shouldUpdateUI = true) {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(formattedUser)}&amount=${balanceChangeAmount}`, {
-            method: 'GET' // Keeps alignment structure matching your simple update scripts handlers
+            method: 'GET'
         })
         .then(r => r.json())
         .then(data => {
-            if(data && data.balance !== undefined){
+            // ONLY update the screen balance if we tell it to (like at cashout/end game)
+            if(shouldUpdateUI && data && data.balance !== undefined){
                 walletBalance = parseFloat(data.balance);
                 document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
             }
@@ -437,13 +436,13 @@
             return;
         }
 
-        // Deduct bet amount immediately via remote call
+        // Deduct bet amount immediately on the user's screen visually
         currentBet = betValue;
         walletBalance -= betValue;
         document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
         
-        // Pass a negative value to the database to subtract the bet stake amount
-        syncBalanceToDatabase(-betValue);
+        // CRITICAL FIX: Pass "false" here so the laggy Google Sheet reply doesn't overwrite our visual subtraction!
+        syncBalanceToDatabase(-betValue, false);
 
         gameActive = true;
         currentRow = 0;
@@ -527,12 +526,13 @@
         if(won) {
             walletBalance += prize;
             document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
-            // Send prize winnings directly to the database script configuration balance column
-            syncBalanceToDatabase(prize);
+            // Game over and won: Send data and update the final clean balance text!
+            syncBalanceToDatabase(prize, true);
             alert(`Victory! You won 🪙 ${prize.toFixed(2)}`);
         } else {
-            // No action needed for negative balance adjustments since bet stake was already deducted on start
             alert(`Boom! The dragon caught you. Better luck next time.`);
+            // Since bet was deducted at start, just fetch a fresh layout confirmation balance
+            fetchLiveBalance();
         }
 
         // Reveal whole board elements layout properties transparency
