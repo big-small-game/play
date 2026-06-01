@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request a Withdrawal</title>
+    <style>
+        :root {
+            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --bg-gradient: linear-gradient(-45deg, #1f1c2c, #928dab, #0f2027, #203a43);
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glow-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --primary-color: #ff9100;
+            --primary-hover: #e17055;
+            --error-color: #ff7675;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-main);
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #f5f6fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .withdraw-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 35px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: var(--glow-shadow);
+            position: relative;
+            animation: containerEntry 0.5s ease-out;
+        }
+
+        @keyframes containerEntry {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title-head {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-align: center;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #ff9100, #fdcb6e, #ff7675);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .balance-display {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fdcb6e;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .notice-box {
+            background: rgba(255, 145, 0, 0.1);
+            border: 1px solid rgba(255, 145, 0, 0.25);
+            color: #ff9100;
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .form-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #b2bec3;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #dfe6e9;
+            letter-spacing: 0.5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: white;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        select option {
+            background: #1f1c2c;
+            color: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(255, 145, 0, 0.2);
+        }
+
+        input::placeholder {
+            color: #636e72;
+        }
+
+        .error-msg {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 6px;
+            display: none;
+        }
+
+        /* Dynamic Field Sections */
+        .dynamic-section {
+            display: none;
+            animation: fadeInField 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeInField {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(45deg, var(--primary-color), #e17055);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 145, 0, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 145, 0, 0.5);
+        }
+
+        .btn-submit:disabled {
+            background: linear-gradient(45deg, #57606f, #2f3542);
+            color: #a4b0be;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Luxury Success Screen Overlay */
+        .success-screen {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 15, 25, 0.98);
+            border-radius: 24px;
+            z-index: 10;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 145, 0, 0.1);
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(255, 145, 0, 0.3);
+            animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.6); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .success-desc {
+            color: #b2bec3;
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+<div class="withdraw-container">
+    <div class="success-screen" id="successScreen">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Withdrawal Submitted!</div>
+        <div class="success-desc">Your payout request has been registered.<br>It takes up to 24 Hours to process your withdrawal.</div>
+        <button class="btn-back" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+
+    <div class="title-head">SECURE WITHDRAWAL</div>
+    <div class="balance-display">Your Balance: 🪙<span id="currentBalance">Loading...</span></div>
+    
+    <div class="notice-box">
+        ⚠️ Minimum withdrawal is 🪙100.<br>It will take a maximum of 24 Hours to process your payout.
+    </div>
+
+    <form id="withdrawForm">
+        <div class="form-title">Provide your payment details:</div>
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                placeholder="Enter your system username" 
+                required
+                readonly
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="amount">Amount to Withdraw</label>
+            <input 
+                type="number" 
+                id="amount" 
+                name="amount" 
+                placeholder="Minimum 100" 
+                min="100" 
+                required
+                disabled
+            >
+            <div id="balanceError" class="error-msg">❌ Amount exceeds your current balance!</div>
+            <div id="minError" class="error-msg">❌ Minimum withdrawal amount is 🪙100!</div>
+        </div>
+
+        <div class="form-group">
+            <label for="payout_method">Select Payout Method</label>
+            <select id="payout_method" name="payout_method" onchange="handleMethodChange()" required>
+                <option value="" disabled selected>Choose a method...</option>
+                <option value="UPI">UPI Transfer</option>
+                <option value="BANK">Bank Account Wire</option>
+            </select>
+        </div>
+
+        <div id="upiSection" class="dynamic-section">
+            <div class="form-group">
+                <label for="upi_id">UPI ID</label>
+                <input 
+                    type="text" 
+                    id="upi_id" 
+                    name="upi_id" 
+                    placeholder="example@upi"
+                >
+            </div>
+        </div>
+
+        <div id="bankSection" class="dynamic-section">
+            <div class="form-group">
+                <label for="acc_no">Bank Account Number</label>
+                <input 
+                    type="password" 
+                    id="acc_no" 
+                    name="acc_no" 
+                    placeholder="Enter account number"
+                >
+            </div>
+            <div class="form-group">
+                <label for="confirm_acc_no">Confirm Account Number</label>
+                <input 
+                    type="text" 
+                    id="confirm_acc_no" 
+                    name="confirm_acc_no" 
+                    placeholder="Re-enter account number"
+                >
+            </div>
+            <div class="form-group">
+                <label for="ifsc_code">IFSC Code</label>
+                <input 
+                    type="text" 
+                    id="ifsc_code" 
+                    name="ifsc_code" 
+                    placeholder="e.g., SBIN0001234"
+                    style="text-transform: uppercase;"
+                >
+            </div>
+            <div class="form-group">
+                <label for="holder_name">Account Holder Name</label>
+                <input 
+                    type="text" 
+                    id="holder_name" 
+                    name="holder_name" 
+                    placeholder="Full name matching bank statement"
+                >
+            </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit" disabled>Fetch Balance first...</button>
+    </form>
+</div>
+
+<script>
+    let accountBalance = 0;
+    const storedUser = localStorage.getItem("currentUser") || "Guest";
+    let formattedUser = storedUser;
+
+    if(formattedUser.includes("@game.local")){
+        formattedUser = formattedUser.replace("@game.local","");
+    }
+    
+    // Autofill Username field
+    document.getElementById('username').value = formattedUser;
+
+    // Fetch account limits directly from your exact game database balance endpoint
+    fetch("https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec?username=" + formattedUser)
+    .then(r => r.json())
+    .then(data => {
+        accountBalance = parseFloat(data.balance) || 0;
+        document.getElementById("currentBalance").innerText = accountBalance;
+        
+        // Unlock input elements once values load
+        document.getElementById("amount").disabled = false;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit Withdrawal";
+    })
+    .catch(err => {
+        console.error("Balance retrieval failed:", err);
+        document.getElementById("currentBalance").innerText = "Error loading";
+    });
+
+    // Real-time Input Validator Protection System
+    document.getElementById('amount').addEventListener('input', function() {
+        const val = parseFloat(this.value) || 0;
+        const balError = document.getElementById('balanceError');
+        const minError = document.getElementById('minError');
+        const submitBtn = document.getElementById('submitBtn');
+
+        let hasError = false;
+
+        if (val > accountBalance) {
+            balError.style.display = 'block';
+            hasError = true;
+        } else {
+            balError.style.display = 'none';
+        }
+
+        if (this.value !== "" && val < 100) {
+            minError.style.display = 'block';
+            hasError = true;
+        } else {
+            minError.style.display = 'none';
+        }
+
+        submitBtn.disabled = hasError;
+    });
+
+    // Toggle showing fields dynamically based on select choice
+    function handleMethodChange() {
+        const method = document.getElementById('payout_method').value;
+        const upiSection = document.getElementById('upiSection');
+        const bankSection = document.getElementById('bankSection');
+        
+        const upiInput = document.getElementById('upi_id');
+        const bankInputs = ['acc_no', 'confirm_acc_no', 'ifsc_code', 'holder_name'].map(id => document.getElementById(id));
+
+        if(method === "UPI") {
+            upiSection.style.display = "block";
+            bankSection.style.display = "none";
+            upiInput.required = true;
+            bankInputs.forEach(input => { input.required = false; input.value = ""; });
+        } else if(method === "BANK") {
+            upiSection.style.display = "none";
+            bankSection.style.display = "block";
+            upiInput.required = false;
+            upiInput.value = "";
+            bankInputs.forEach(input => input.required = true);
+        }
+    }
+
+    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submitBtn');
+        const successScreen = document.getElementById('successScreen');
+        const method = document.getElementById('payout_method').value;
+        const amountRequested = parseFloat(document.getElementById('amount').value) || 0;
+
+        // Double check balance parameters locally upon interaction context
+        if (amountRequested > accountBalance) {
+            alert("Transaction Denied: Withdrawal request exceeds available wallet balance!");
+            return;
+        }
+        if (amountRequested < 100) {
+            alert("Transaction Denied: Minimum payout amount threshold is 100.");
+            return;
+        }
+
+        // Custom validation check if Bank Option is chosen
+        if(method === "BANK") {
+            const acc = document.getElementById('acc_no').value;
+            const confirmAcc = document.getElementById('confirm_acc_no').value;
+            if(acc !== confirmAcc) {
+                alert("Account numbers do not match! Please verify account strings.");
+                return;
+            }
+        }
+
+        // Processing state UI change
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Registering Request...";
+
+        const formData = new FormData(this);
+
+        // Dispatches payload straight to your custom standalone Web App URL
+        fetch("https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec", {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.result === 'success' || data.status === 'success') {
+                successScreen.style.display = 'flex';
+                document.getElementById('withdrawForm').reset();
+            } else {
+                alert('Backend processing error: ' + (data.error || 'Request Rejected by deployment rule.'));
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Submit Withdrawal";
+            }
+        })
+        .catch(error => {
+            console.error('Network Exception Error!', error);
+            alert('Submission failed. Check your configuration deployment permissions settings mapping rules.');
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit Withdrawal";
+        });
+    });
+</script>
+
+</body>
+</html>
