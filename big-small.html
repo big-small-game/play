@@ -313,11 +313,11 @@
     <div class="betting-zones">
         <button class="zone-btn zone-big" id="zoneBig" onclick="selectPredictionZone('BIG')">
             <span class="title">BIG</span>
-            <span class="odds">11 - 17 (x2.0)</span>
+            <span class="odds">11 - 17 (x1.9)</span>
         </button>
         <button class="zone-btn zone-small" id="zoneSmall" onclick="selectPredictionZone('SMALL')">
             <span class="title">SMALL</span>
-            <span class="odds">4 - 10 (x2.0)</span>
+            <span class="odds">4 - 10 (x1.9)</span>
         </button>
     </div>
 
@@ -483,7 +483,7 @@
             const userWonGame = (selectedZone === outcomeGroupText);
 
             if (userWonGame) {
-                const totalWinReturnFunds = betAmount * 2;
+                const totalWinReturnFunds = betAmount * 1.9;
                 balance += totalWinReturnFunds;
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
                 
