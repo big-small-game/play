@@ -6,93 +6,124 @@
     <title>Make a Deposit</title>
     <style>
         :root {
-            --primary-color: #4f46e5;
-            --primary-hover: #4338ca;
-            --background: #f3f4f6;
-            --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #4b5563;
-            --alert-bg: #fffbeb;
-            --alert-text: #b45309;
-            --alert-border: #fef3c7;
-            --success-color: #16a34a;
+            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --bg-gradient: linear-gradient(-45deg, #1f1c2c, #928dab, #0f2027, #203a43);
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glow-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --primary-color: #00cec9;
+            --primary-hover: #00b894;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background-color: var(--background);
-            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            font-family: var(--font-main);
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #f5f6fa;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .deposit-container {
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 35px;
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            box-shadow: var(--glow-shadow);
+            position: relative;
+            animation: containerEntry 0.5s ease-out;
+        }
+
+        @keyframes containerEntry {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .pay-to {
-            font-size: 1.25rem;
-            font-weight: 700;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
             text-align: center;
             margin-bottom: 15px;
-            color: var(--primary-color);
-            text-transform: uppercase;
+            background: linear-gradient(45deg, #ff7675, #74b9ff, #a29bfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .notice-box {
-            background-color: var(--alert-bg);
-            border: 1px solid var(--alert-border);
-            color: var(--alert-text);
+            background: rgba(253, 203, 110, 0.1);
+            border: 1px solid rgba(253, 203, 110, 0.25);
+            color: #fbc531;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 14px;
             font-size: 0.9rem;
             text-align: center;
             margin-bottom: 25px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .form-title {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            color: #b2bec3;
+            text-align: left;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
+            text-align: left;
         }
 
         label {
             display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 6px;
-            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #dfe6e9;
+            letter-spacing: 0.5px;
         }
 
         input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
             font-size: 1rem;
+            color: white;
             box-sizing: border-box;
+            transition: all 0.3s ease;
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(0, 206, 201, 0.2);
         }
 
+        input::placeholder {
+            color: #636e72;
+        }
+
+        /* Standardize input styles across devices */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -104,47 +135,122 @@
 
         .btn-submit {
             width: 100%;
-            background-color: var(--primary-color);
+            background: linear-gradient(45deg, var(--primary-color), #00b894);
             color: white;
-            padding: 12px;
+            padding: 16px;
             border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 206, 201, 0.3);
+            transition: all 0.3s ease;
         }
 
         .btn-submit:hover {
-            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 206, 201, 0.5);
         }
 
         .btn-submit:disabled {
-            background-color: #9ca3af;
+            background: linear-gradient(45deg, #57606f, #2f3542);
+            color: #a4b0be;
             cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
 
-        /* Success Message styling */
-        #successMessage {
+        /* Luxury Success Screen Overlay */
+        .success-screen {
             display: none;
-            text-align: center;
-            color: var(--success-color);
-            font-weight: 600;
-            margin-top: 15px;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 15, 25, 0.98);
+            border-radius: 24px;
+            z-index: 10;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 206, 201, 0.1);
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0, 206, 201, 0.3);
+            animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.6); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .success-desc {
+            color: #b2bec3;
             font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.15);
         }
     </style>
 </head>
 <body>
 
 <div class="deposit-container">
-    <div class="pay-to">PAY TO: xx</div>
+    <div class="success-screen" id="successScreen">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Deposit Successful!</div>
+        <div class="success-desc">Your transaction request was received.<br>Please wait up to 24 hours for manual approval.</div>
+        <button class="btn-back" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+
+    <div class="pay-to">PAY TO: yourupi@upi</div>
     
     <div class="notice-box">
-        ⚠️ It will take 24 Hours to update the payment.
+        ⚠️ Processing times may take up to 24 Hours.
     </div>
 
     <form id="depositForm">
-        <div class="form-title">Please fill the details below:</div>
+        <div class="form-title">Enter your deposit details:</div>
 
         <div class="form-group">
             <label for="username">Username</label>
@@ -152,7 +258,7 @@
                 type="text" 
                 id="username" 
                 name="username" 
-                placeholder="Enter your username" 
+                placeholder="Enter your system username" 
                 required
             >
         </div>
@@ -163,7 +269,7 @@
                 type="number" 
                 id="amount" 
                 name="amount" 
-                placeholder="Enter amount" 
+                placeholder="Enter deposit amount" 
                 min="1" 
                 required
             >
@@ -183,59 +289,29 @@
         </div>
 
         <button type="submit" id="submitBtn" class="btn-submit">Submit Deposit</button>
-        <div id="successMessage">✓ Deposit details submitted successfully! Your sheet has been updated.</div>
     </form>
 </div>
 
 <script>
-    // ⚠️ REPLACE THE URL BELOW WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
-    const SCRIPT_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
+    // Autofill username from LocalStorage if logged in
+    const storedUser = localStorage.getItem("currentUser") || "";
+    if(storedUser) {
+        document.getElementById('username').value = storedUser.replace("@game.local", "");
+    }
 
     document.getElementById('depositForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevents the page from redirecting or refreshing
+        e.preventDefault();
 
         const submitBtn = document.getElementById('submitBtn');
-        const successMessage = document.getElementById('successMessage');
+        const successScreen = document.getElementById('successScreen');
         const upiInput = document.getElementById('upi_id').value;
 
-        // Final security check for UPI length
+        // Validation fallback
         if (upiInput.length !== 12 || isNaN(upiInput)) {
             alert('Please enter a valid 12-digit UPI Transaction ID.');
             return;
         }
 
-        // Change button state to loading
+        // Processing state animation
         submitBtn.disabled = true;
-        submitBtn.innerText = "Submitting...";
-
-        // Collect form data
-        const formData = new FormData(this);
-
-        // Send data directly to Google Sheets Web App
-        fetch(https://script.google.com/macros/s/AKfycbxdewVWmLbZ5Z6iVrnm01ARLX1z51eUVDunoz6tbkEqam2v2XKrD2SWIr-CSuF0HFRg/exec, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.result === 'success') {
-                successMessage.style.display = 'block';
-                submitBtn.innerText = "Submitted Successfully";
-                document.getElementById('depositForm').reset(); // Clears form fields
-            } else {
-                alert('Something went wrong: ' + data.error);
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Submit Deposit";
-            }
-        })
-        .catch(error => {
-            console.error('Error!', error.message);
-            alert('Submission failed. Make sure your Web App access settings are set to "Anyone".');
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Submit Deposit";
-        });
-    });
-</script>
-
-</body>
-</html>
+        submitBtn.innerText = "Processing
