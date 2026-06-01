@@ -1,280 +1,288 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mini Games Hub Pro</title>
 <style>
-body{
-margin:0;
-font-family:Segoe UI,sans-serif;
-background:linear-gradient(-45deg,#ff6b6b,#6c5ce7,#00cec9,#fdcb6e);
-background-size:400% 400%;
-animation:bg 12s ease infinite;
-color:white;
-min-height:100vh;
-text-align:center;
-}
-@keyframes bg{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
-}
-.card{
-background:rgba(255,255,255,.15);
-backdrop-filter:blur(12px);
-border-radius:20px;
-padding:20px;
-margin:20px auto;
-width:90%;
-max-width:600px;
-box-shadow:0 0 25px rgba(255,255,255,.2);
-}
-.coin-box,.account-btn{
-position:fixed;
-top:20px;
-padding:12px 18px;
-border-radius:15px;
-background:rgba(255,255,255,.2);
-backdrop-filter:blur(10px);
-}
-.coin-box{
-position:fixed;
-top:10px;
-right:10px;
-font-size:14px;
-padding:10px;
-z-index:1000;
+:root {
+  --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --bg-gradient: linear-gradient(-45deg, #1f1c2c, #928dab, #0f2027, #203a43);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glow-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.account-btn{
-position:fixed;
-top:10px;
-left:10px;
-font-size:14px;
-padding:10px;
-z-index:1000;
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  background: var(--bg-gradient);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  color: #f5f6fa;
+  min-height: 100vh;
+  text-align: center;
+  overflow-x: hidden;
 }
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating Status Bars */
+.coin-box, .account-btn {
+  position: fixed;
+  top: 15px;
+  padding: 12px 24px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glow-shadow);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.account-btn {
+  left: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+.account-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.coin-box {
+  right: 20px;
+  background: rgba(255, 215, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+/* Base Cards */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 30px;
+  margin: 40px auto;
+  width: 90%;
+  max-width: 650px;
+  box-shadow: var(--glow-shadow);
+  transition: transform 0.3s ease;
+}
+
+.card:first-of-type {
+  margin-top: 100px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+}
+
+h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin: 0 0 10px 0;
+  background: linear-gradient(45deg, #ff7675, #74b9ff, #a29bfe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.card p {
+  color: #b2bec3;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Elegant Account Menu Dropdown */
+.account-menu {
+  display: none;
+  position: fixed;
+  top: 75px;
+  left: 20px;
+  width: 280px;
+  max-width: 90vw;
+  background: rgba(15, 15, 25, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 24px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  z-index: 999999;
+  text-align: left;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.account-menu p {
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 1.05rem;
+}
+
+/* Menu Action Buttons */
+.deposit-btn, .withdraw-btn, .logout-btn {
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 14px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.deposit-btn { background: linear-gradient(45deg, #00b894, #00cec9); }
+.deposit-btn:hover { box-shadow: 0 0 15px rgba(0,206,201,0.4); transform: translateY(-2px); }
+
+.withdraw-btn { background: linear-gradient(45deg, #e17055, #fdcb6e); }
+.withdraw-btn:hover { box-shadow: 0 0 15px rgba(225,112,85,0.4); transform: translateY(-2px); }
+
+.logout-btn { background: linear-gradient(45deg, #d63031, #e84393); }
+.logout-btn:hover { box-shadow: 0 0 15px rgba(214,48,49,0.4); transform: translateY(-2px); }
+
+
+/* Fancy Premium Grid Game Buttons */
+.game-btn {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 18px auto;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  min-height: 70px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.game-btn:hover::before {
+  left: 150%;
+}
+
+.game-btn:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* Individual Game Styles */
+.big-small {
+  background: linear-gradient(45deg, #ff9f43, #ff5252);
+  color: white;
+  box-shadow: 0 6px 20px rgba(255, 159, 67, 0.3);
+}
+.big-small:hover { box-shadow: 0 12px 25px rgba(255, 159, 67, 0.5); }
+
+.mines {
+  background: linear-gradient(45deg, #2c3e50, #000000);
+  color: white;
+  box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
+}
+.mines:hover { box-shadow: 0 12px 25px rgba(44, 62, 80, 0.6); }
+
+.guess {
+  background: linear-gradient(45deg, #10ac84, #1dd1a1);
+  color: white;
+  box-shadow: 0 6px 20px rgba(29, 209, 161, 0.3);
+}
+.guess:hover { box-shadow: 0 12px 25px rgba(29, 209, 161, 0.5); }
+
+.memory {
+  background: linear-gradient(45deg, #0abde3, #2e86de);
+  color: white;
+  box-shadow: 0 6px 20px rgba(10, 189, 227, 0.3);
+}
+.memory:hover { box-shadow: 0 12px 25px rgba(10, 189, 227, 0.5); }
+
+.rps {
+  background: linear-gradient(45deg, #5f27cd, #341f97);
+  color: white;
+  box-shadow: 0 6px 20px rgba(95, 39, 205, 0.3);
+}
+.rps:hover { box-shadow: 0 12px 25px rgba(95, 39, 205, 0.5); }
+
+.reaction {
+  background: linear-gradient(45deg, #ee5253, #ff6b6b);
+  color: white;
+  box-shadow: 0 6px 20px rgba(238, 82, 83, 0.3);
+}
+.reaction:hover { box-shadow: 0 12px 25px rgba(238, 82, 83, 0.5); }
+
+.quiz {
+  background: linear-gradient(45deg, #00d2d3, #01a3a4);
+  color: white;
+  box-shadow: 0 6px 20px rgba(0, 210, 211, 0.3);
+}
+.quiz:hover { box-shadow: 0 12px 25px rgba(0, 210, 211, 0.5); }
+
+.soon {
+  background: linear-gradient(45deg, #57606f, #2f3542);
+  color: #a4b0be;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.soon:hover { transform: none; border-color: rgba(255,255,255,0.1); }
+
+
+/* Responsive Scaling fixes */
 @media(max-width:600px){
+  h1 { font-size: 1.7rem; }
+  
+  .card {
+    width: 92%;
+    padding: 20px;
+    margin: 20px auto;
+  }
+  
+  .card:first-of-type { margin-top: 85px; }
 
-h1{
-font-size:24px;
-margin-top:70px;
-}
+  .account-menu {
+    left: 10px;
+    width: calc(100vw - 60px);
+    top: 70px;
+  }
 
-.card{
-width:95%;
-padding:15px;
-}
-
-.game-btn{
-font-size:16px;
-padding:15px;
-}
-
-.account-menu{
-display:none;
-position:absolute;
-top:55px;
-left:0;
-width:230px;
-background:rgba(20,20,20,0.95);
-padding:15px;
-border-radius:15px;
-text-align:left;
-box-shadow:0 4px 20px rgba(0,0,0,0.5);
-z-index:99999;
-}
-.account-box{
-position:fixed;
-top:15px;
-left:15px;
-z-index:99999;
-}
-.modal-content{
-width:90%;
-margin:25% auto;
-}
-
-}
-.account-menu{
-display:none;
-position:fixed;
-top:65px;
-left:10px;
-width:280px;
-max-width:90vw;
-background:rgba(20,20,20,0.95);
-backdrop-filter:blur(15px);
-padding:18px;
-border-radius:18px;
-box-shadow:0 8px 30px rgba(0,0,0,0.5);
-z-index:999999;
-}
-@media(max-width:600px){
-.account-menu{
-width:300px;
-left:10px;
-top:60px;
-}
-
-.modal-content{
-width:95%;
-padding:20px;
-}
-
-input{
-font-size:16px;
-padding:14px;
-}
-
-.game-btn{
-display:block;
-width:95%;
-margin:15px auto;
-padding:22px;
-border:none;
-border-radius:20px;
-font-size:22px;
-font-weight:bold;
-cursor:pointer;
-min-height:75px;
-transition:.3s;
-}
-
-.game-btn:hover{
-transform:translateY(-5px) scale(1.03);
-}
-
-.big-small{
-background:linear-gradient(45deg,#ffb300,#ff6f00);
-color:white;
-box-shadow:0 0 20px rgba(255,179,0,.5);
-}
-
-.guess{
-background:linear-gradient(45deg,#00c853,#00e676);
-color:white;
-box-shadow:0 0 20px rgba(0,200,83,.5);
-}
-
-.memory{
-background:linear-gradient(45deg,#00b8d4,#18ffff);
-color:white;
-box-shadow:0 0 20px rgba(0,184,212,.5);
-}
-
-.rps{
-background:linear-gradient(45deg,#7c4dff,#b388ff);
-color:white;
-box-shadow:0 0 20px rgba(124,77,255,.5);
-}
-
-.reaction{
-background:linear-gradient(45deg,#ff1744,#ff4081);
-color:white;
-box-shadow:0 0 20px rgba(255,23,68,.5);
-}
-
-.quiz{
-background:linear-gradient(45deg,#2979ff,#00b0ff);
-color:white;
-box-shadow:0 0 20px rgba(41,121,255,.5);
-}
-
-.soon{
-background:linear-gradient(45deg,#616161,#9e9e9e);
-color:white;
-box-shadow:0 0 20px rgba(158,158,158,.5);
-}
-
-.deposit-btn{
-background:#00c853;
-color:white;
-border:none;
-padding:14px;
-border-radius:12px;
-width:100%;
-font-size:18px;
-margin-top:10px;
-}
-
-.withdraw-btn{
-background:#ff9100;
-color:white;
-border:none;
-padding:14px;
-border-radius:12px;
-width:100%;
-font-size:18px;
-margin-top:10px;
-}
-
-.logout-btn{
-background:#ff1744;
-color:white;
-border:none;
-padding:14px;
-border-radius:12px;
-width:100%;
-font-size:18px;
-margin-top:10px;
-}
-
-}
-.modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.85);
-z-index:999999;
-
-justify-content:center;
-align-items:center;
-}
-.modal-content{
-background:white;
-color:black;
-width:90%;
-max-width:400px;
-padding:25px;
-border-radius:20px;
-text-align:center;
-box-shadow:0 0 30px rgba(0,0,0,.4);
-}
-input{
-width:95%;
-padding:10px;
-margin:8px 0;
-}
-.pay-info{
-font-size:16px;
-font-weight:bold;
-margin:10px 0;
-color:#2563eb;
-}
-
-@media(max-width:600px){
-
-.deposit-btn,
-.withdraw-btn,
-.logout-btn{
-font-size:20px;
-padding:18px;
-}
-
-.account-btn{
-font-size:18px;
-padding:14px 20px;
-}
-
-.coin-box{
-font-size:18px;
-}
+  .coin-box, .account-btn {
+    top: 12px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  .account-btn { left: 10px; }
+  .coin-box { right: 10px; }
 }
 </style>
 </head>
@@ -305,73 +313,36 @@ font-size:18px;
 </div>
 
 <div class="card">
-<button class="game-btn big-small"
-onclick="location.href='big-small.html'">
+<button class="game-btn big-small" onclick="location.href='big-small.html'">
 🎲 Big Small Game
 </button>
-<button class="game-btn mines"
-onclick="location.href='mines.html'">
-💣Mines
+<button class="game-btn mines" onclick="location.href='mines.html'">
+💣 Mines
 </button>
   
-<button class="game-btn guess"
-onclick="location.href='guess.html'">
+<button class="game-btn guess" onclick="location.href='guess.html'">
 🎯 Number Guess
 </button>
 
-<button class="game-btn memory"
-onclick="location.href='memory.html'">
+<button class="game-btn memory" onclick="location.href='memory.html'">
 🧠 Memory Game
 </button>
 
-<button class="game-btn rps"
-onclick="location.href='rps.html'">
+<button class="game-btn rps" onclick="location.href='rps.html'">
 ✊ Rock Paper Scissors
 </button>
 
-<button class="game-btn reaction"
-onclick="location.href='reaction.html'">
+<button class="game-btn reaction" onclick="location.href='reaction.html'">
 ⚡ Reaction Test
 </button>
 
-<button class="game-btn quiz"
-onclick="location.href='quiz.html'">
+<button class="game-btn quiz" onclick="location.href='quiz.html'">
 📚 Quiz Arena
 </button>
 
 <button class="game-btn soon">
 🚀 More Games Coming Soon
 </button>
-</div>
-
-<div class="modal" id="depositModal">
-<div class="modal-content">
-<h3>💰 Deposit</h3>
-
-<p class="pay-info">
-Pay To:
-<b>yourupi@upi</b>
-</p>
-
-<p class="pay-info">
-It takes a maximum of 24 Hours to Update Your Balance.
-</p>
-
-<input id="depAmount" placeholder="Amount">
-<input id="depId" placeholder="Payment ID">
-<button onclick="submitDeposit()">Submit</button>
-<button onclick="closeModals()">Close</button>
-</div>
-</div>
-
-<div class="modal" id="withdrawModal">
-<div class="modal-content">
-<h3>Withdraw</h3>
-<input id="withAmount" placeholder="Amount">
-<input id="withId" placeholder="Withdraw ID">
-<button onclick="submitWithdraw()">Submit</button>
-<button onclick="closeModals()">Close</button>
-</div>
 </div>
 
 <script>
@@ -394,71 +365,14 @@ let m=document.getElementById("menu");
 m.style.display=m.style.display==="block"?"none":"block";
 }
 function openDeposit(){
-
-document.getElementById("menu").style.display="none";
-
-document.getElementById("depositModal").style.display="block";
-
+window.location.href = "deposit.html";
 }
 function openWithdraw(){
-
-document.getElementById("menu").style.display="none";
-
-document.getElementById("withdrawModal").style.display="block";
-
-}
-function closeModals(){
-document.getElementById("depositModal").style.display="none";
-document.getElementById("withdrawModal").style.display="none";
-}
-
-function submitDeposit(){
-
-fetch("https://script.google.com/macros/s/AKfycbxdewVWmLbZ5Z6iVrnm01ARLX1z51eUVDunoz6tbkEqam2v2XKrD2SWIr-CSuF0HFRg/exec",{
-method:"POST",
-body:JSON.stringify({
-  username:user,
-  amount:document.getElementById("depAmount").value,
-  paymentId:document.getElementById("depId").value
-})
-})
-.then(r=>r.text())
-.then(data=>{
-console.log("Server Response:",data);
-alert("Deposit Request Submitted Successfully.\nBalance will be updated within 24 hours.");
-})
-.catch(err=>{
-console.error("Deposit Error:",err);
-alert("Deposit failed. Please try again.");
-});
-
-}
-
-function submitWithdraw(){
-fetch("https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec",{
-method:"POST",
-body:JSON.stringify({
-username:user,
-amount:document.getElementById("withAmount").value,
-withdrawId:document.getElementById("withId").value
-})
-})
-.then(r => r.text())
-.then(data => {
-console.log(data);
-alert("Withdraw submitted");
-})
-.catch(err => {
-console.error(err);
-alert("Withdraw failed");
-});
+window.location.href = "withdraw.html";
 }
 function logout(){
-
 localStorage.removeItem("currentUser");
-
 window.location.href="login.html";
-
 }
 </script>
 </body>
