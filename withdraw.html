@@ -383,7 +383,7 @@
     document.getElementById('username').value = formattedUser;
 
     // Fetch account limits directly from your exact game database balance endpoint
-    fetch("https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec?username=" + formattedUser)
+    fetch("https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec" + formattedUser)
     .then(r => r.json())
     .then(data => {
         accountBalance = parseFloat(data.balance) || 0;
