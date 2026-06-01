@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dragon Tower</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent-gold: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+
+        .game-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            width: 320px;
+            padding: 24px;
+            background: rgba(15, 23, 42, 0.6);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .balance-box {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .balance-value {
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+        }
+
+        .input-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .bet-input-container {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .bet-input-container input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 12px;
+            color: white;
+            font-weight: 600;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .bet-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: white;
+            width: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-left: 1px solid var(--glass-border);
+        }
+
+        .bet-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-bet { background: var(--primary); box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4); }
+        .btn-bet:hover:not(:disabled) { background: var(--primary-hover); }
+        .btn-cashout { background: var(--success); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); display: none; }
+        .btn-cashout:hover:not(:disabled) { background: #059669; }
+        
+        .action-btn:disabled {
+            background: #475569 !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+            color: #94a3b8;
+        }
+
+        /* Tower Window Graphic */
+        .tower-panel {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 20px;
+            position: relative;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.3), rgba(0,0,0,0.5));
+        }
+
+        .dragon-header {
+            text-align: center;
+            margin-bottom: 15px;
+            z-index: 2;
+        }
+
+        .dragon-header h3 {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        .tower-grid {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 8px;
+            width: 100%;
+            max-width: 360px;
+            z-index: 2;
+        }
+
+        .tower-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            opacity: 0.4;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .tower-row.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .tower-row.cleared {
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
+        .block {
+            flex: 1;
+            aspect-ratio: 2.8 / 1;
+            background: linear-gradient(135deg, #334155, #1e293b);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: transparent;
+        }
+
+        .tower-row.active .block:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Block Status Styles */
+        .block.selected-egg {
+            background: linear-gradient(135deg, #059669, #10b981) !important;
+            border-color: #34d399 !important;
+            color: white !important;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .block.selected-dragon {
+            background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+            border-color: #f87171 !important;
+            color: white !important;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .block.reveal-egg { background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); }
+        .block.reveal-dragon { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); }
+
+        /* Responsive Mobile Layout Override */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+                align-items: flex-start;
+            }
+            .game-wrapper {
+                flex-direction: column-reverse;
+                border-radius: 16px;
+            }
+            .control-panel {
+                width: 100%;
+                padding: 16px;
+                border-right: none;
+                border-top: 1px solid var(--glass-border);
+            }
+            .tower-panel {
+                padding: 16px 10px;
+                min-height: 420px;
+            }
+            .block {
+                aspect-ratio: 2.5 / 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-wrapper">
+    <div class="control-panel">
+        <div class="balance-box">
+            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Wallet Balance</span>
+            <span class="balance-value">🪙<span id="userBalance">Loading...</span></span>
+        </div>
+
+        <div>
+            <div class="input-label">Bet Amount</div>
+            <div class="bet-input-container">
+                <input type="number" id="betAmount" value="10" min="1" step="1" disabled>
+                <button class="bet-btn" onclick="modifyBet('half')">½</button>
+                <button class="bet-btn" onclick="modifyBet('double')">2x</button>
+            </div>
+        </div>
+
+        <div>
+            <div class="input-label">Difficulty</div>
+            <select id="difficulty" onchange="resetTowerLayout()">
+                <option value="easy">Easy (3 Blocks - 2 Eggs)</option>
+                <option value="medium" selected>Medium (4 Blocks - 2 Eggs)</option>
+                <option value="hard">Hard (5 Blocks - 2 Eggs)</option>
+            </select>
+        </div>
+
+        <div style="margin-top: auto; padding-top: 15px;">
+            <div id="profitDisplay" style="display:none; text-align:center; margin-bottom:12px;">
+                <div class="input-label" id="multiplierLabel">Next Multiplier: 1.20x</div>
+                <div style="font-size: 1.3rem; font-weight: 800; color: var(--success);">🪙<span id="profitValue">0.00</span></div>
+            </div>
+            <button id="mainBtn" class="action-btn btn-bet" onclick="handleMainAction()" disabled>Syncing Balance...</button>
+            <button id="cashoutBtn" class="action-btn btn-cashout" onclick="cashoutValue()">Cash Out</button>
+        </div>
+    </div>
+
+    <div class="tower-panel">
+        <div class="dragon-header">
+            <h3>DRAGON TOWER</h3>
+        </div>
+        <div class="tower-grid" id="towerGrid">
+            </div>
+    </div>
+</div>
+
+<script>
+    // System Configurations Mapping Rules
+    const TOTAL_ROWS = 9;
+    const DIFFICULTIES = {
+        easy: { blocks: 3, eggs: 2, multipliers: [1.38, 1.92, 2.67, 3.71, 5.15, 7.16, 9.94, 13.81, 19.18] },
+        medium: { blocks: 4, eggs: 2, multipliers: [1.84, 3.40, 6.25, 11.51, 21.18, 38.98, 71.72, 131.97, 242.82] },
+        hard: { blocks: 5, eggs: 2, multipliers: [2.30, 5.30, 12.19, 28.03, 64.48, 148.31, 341.12, 784.58, 1804.54] }
+    };
+
+    // YOUR EXPLICIT CENTRAL DATABASE APPS SCRIPT URL
+    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
+
+    let walletBalance = 0;
+    let currentBet = 0;
+    let currentRow = 0;
+    let gameActive = false;
+    let towerData = [];
+
+    // Extract user tracking handles dynamically from LocalStorage identity frame
+    const rawUser = localStorage.getItem("currentUser") || "Guest";
+    const formattedUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+
+    // 1. LIVE FETCH DIRECT FROM THE CENTRAL DATABASE SCRIPT
+    function fetchLiveBalance() {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(formattedUser)}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data && data.balance !== undefined) {
+                walletBalance = parseFloat(data.balance) || 0;
+                document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
+                
+                // Unlock game configurations once balance is synchronized
+                document.getElementById('betAmount').disabled = false;
+                const mainBtn = document.getElementById('mainBtn');
+                mainBtn.disabled = false;
+                mainBtn.innerText = "Place Bet";
+            } else {
+                document.getElementById('userBalance').innerText = "User Error";
+            }
+        })
+        .catch(err => {
+            console.error("handshake failed:", err);
+            document.getElementById('userBalance').innerText = "Offline Error";
+        });
+    }
+
+    // 2. LIVE UPDATE TRANSACTION DIRECT BACK TO THE CENTRAL GOOGLE SHEET
+    function syncBalanceToDatabase(balanceChangeAmount) {
+        // Prepare payload containing changes to run calculations inside your Sheets manager script
+        // Makes an asynchronous call using query string variables natively mapped
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(formattedUser)}&amount=${balanceChangeAmount}`, {
+            method: 'GET' // Keeps alignment structure matching your simple update scripts handlers
+        })
+        .then(r => r.json())
+        .then(data => {
+            if(data && data.balance !== undefined){
+                walletBalance = parseFloat(data.balance);
+                document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
+            }
+        })
+        .catch(e => console.error("Database synchronization anomaly:", e));
+    }
+
+    function modifyBet(type) {
+        if(gameActive) return;
+        let input = document.getElementById('betAmount');
+        let current = parseFloat(input.value) || 0;
+        if(type === 'half') input.value = Math.max(1, Math.floor(current / 2));
+        if(type === 'double') input.value = Math.min(walletBalance, current * 2);
+    }
+
+    function resetTowerLayout() {
+        if(gameActive) return;
+        const grid = document.getElementById('towerGrid');
+        const diff = document.getElementById('difficulty').value;
+        const numBlocks = DIFFICULTIES[diff].blocks;
+        grid.innerHTML = '';
+        towerData = [];
+
+        for(let r = 0; r < TOTAL_ROWS; r++) {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = `tower-row row-${r}`;
+            rowDiv.dataset.rowIndex = r;
+
+            let indices = Array.from({length: numBlocks}, (_, i) => i);
+            let eggPositions = [];
+            for(let e = 0; e < DIFFICULTIES[diff].eggs; e++) {
+                const randIndex = Math.floor(Math.random() * indices.length);
+                eggPositions.push(indices.splice(randIndex, 1)[0]);
+            }
+            towerData.push(eggPositions);
+
+            for(let b = 0; b < numBlocks; b++) {
+                const block = document.createElement('div');
+                block.className = 'block';
+                block.dataset.blockIndex = b;
+                block.innerText = eggPositions.includes(b) ? '🥚' : '🐉';
+                block.addEventListener('click', () => handleBlockClick(r, b));
+                rowDiv.appendChild(block);
+            }
+            grid.appendChild(rowDiv);
+        }
+    }
+
+    function handleMainAction() {
+        if(gameActive) return;
+
+        const betInput = document.getElementById('betAmount');
+        const betValue = parseFloat(betInput.value) || 0;
+
+        if(betValue < 1 || betValue > walletBalance) {
+            alert("Invalid Bet Amount! Check your central database wallet metrics.");
+            return;
+        }
+
+        // Deduct bet amount immediately via remote call
+        currentBet = betValue;
+        walletBalance -= betValue;
+        document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
+        
+        // Pass a negative value to the database to subtract the bet stake amount
+        syncBalanceToDatabase(-betValue);
+
+        gameActive = true;
+        currentRow = 0;
+        
+        document.getElementById('difficulty').disabled = true;
+        betInput.disabled = true;
+        
+        document.getElementById('mainBtn').style.display = 'none';
+        document.getElementById('cashoutBtn').style.display = 'block';
+        document.getElementById('profitDisplay').style.display = 'block';
+
+        updateRowFocus();
+        updateProfitEstimations();
+    }
+
+    function updateRowFocus() {
+        for(let r = 0; r < TOTAL_ROWS; r++) {
+            const row = document.querySelector(`.row-${r}`);
+            row.className = `tower-row row-${r}`;
+            if(r === currentRow && gameActive) {
+                row.classList.add('active');
+            } else if(r < currentRow) {
+                row.classList.add('cleared');
+            }
+        }
+    }
+
+    function updateProfitEstimations() {
+        const diff = document.getElementById('difficulty').value;
+        const mults = DIFFICULTIES[diff].multipliers;
+        const currentMult = currentRow > 0 ? mults[currentRow - 1] : 0;
+        const nextMult = mults[currentRow];
+
+        if(currentRow > 0) {
+            document.getElementById('cashoutBtn').disabled = false;
+            document.getElementById('cashoutBtn').innerText = `Cash Out (🪙 ${(currentBet * currentMult).toFixed(2)})`;
+        } else {
+            document.getElementById('cashoutBtn').disabled = true;
+            document.getElementById('cashoutBtn').innerText = `Select a Block`;
+        }
+        document.getElementById('multiplierLabel').innerText = `Next Multiplier: ${nextMult.toFixed(2)}x`;
+        document.getElementById('profitValue').innerText = (currentBet * nextMult).toFixed(2);
+    }
+
+    function handleBlockClick(rowIdx, blockIdx) {
+        if(!gameActive || rowIdx !== currentRow) return;
+
+        const rowElement = document.querySelector(`.row-${rowIdx}`);
+        const blockElement = rowElement.children[blockIdx];
+        const isEgg = towerData[rowIdx].includes(blockIdx);
+
+        if(isEgg) {
+            blockElement.classList.add('selected-egg');
+            currentRow++;
+
+            if(currentRow === TOTAL_ROWS) {
+                const diff = document.getElementById('difficulty').value;
+                const maxMult = DIFFICULTIES[diff].multipliers[TOTAL_ROWS - 1];
+                endGame(true, currentBet * maxMult);
+            } else {
+                updateRowFocus();
+                updateProfitEstimations();
+            }
+        } else {
+            blockElement.classList.add('selected-dragon');
+            endGame(false, 0);
+        }
+    }
+
+    function cashoutValue() {
+        if(!gameActive || currentRow === 0) return;
+        const diff = document.getElementById('difficulty').value;
+        const finalMult = DIFFICULTIES[diff].multipliers[currentRow - 1];
+        endGame(true, currentBet * finalMult);
+    }
+
+    function endGame(won, prize) {
+        gameActive = false;
+        document.getElementById('cashoutBtn').disabled = true;
+        
+        if(won) {
+            walletBalance += prize;
+            document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
+            // Send prize winnings directly to the database script configuration balance column
+            syncBalanceToDatabase(prize);
+            alert(`Victory! You won 🪙 ${prize.toFixed(2)}`);
+        } else {
+            // No action needed for negative balance adjustments since bet stake was already deducted on start
+            alert(`Boom! The dragon caught you. Better luck next time.`);
+        }
+
+        // Reveal whole board elements layout properties transparency
+        for(let r = 0; r < TOTAL_ROWS; r++) {
+            const row = document.querySelector(`.row-${r}`);
+            row.classList.add('cleared');
+            Array.from(row.children).forEach((block, idx) => {
+                const isEgg = towerData[r].includes(idx);
+                if(!block.classList.contains('selected-egg') && !block.classList.contains('selected-dragon')) {
+                    block.classList.add(isEgg ? 'reveal-egg' : 'reveal-dragon');
+                }
+            });
+        }
+
+        // Cool down interface state transition
+        setTimeout(() => {
+            document.getElementById('difficulty').disabled = false;
+            document.getElementById('betAmount').disabled = false;
+            document.getElementById('mainBtn').style.display = 'block';
+            document.getElementById('cashoutBtn').style.display = 'none';
+            document.getElementById('profitDisplay').style.display = 'none';
+            resetTowerLayout();
+        }, 3500);
+    }
+
+    // Trigger Initial Handshake Data Synchronizations on document loading phase
+    fetchLiveBalance();
+    resetTowerLayout();
+</script>
+
+</body>
+</html>
