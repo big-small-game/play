@@ -117,6 +117,11 @@ body {
   font-weight: 800;
   color: var(--accent-gold);
   font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.wallet-badge:active {
+  transform: scale(0.95);
 }
 
 .account-drawer {
@@ -238,18 +243,15 @@ body {
 <canvas id="bgCanvas"></canvas>
 
 <div class="app-wrapper">
-    <!-- Highlight Notification Alert Bar Box for New Users -->
     <div class="welcome-alert-banner" id="welcomeGuide">
-        👋 Welcome! Please click on the **Account icon** at the top left to deposit and withdraw money.
+        👋 Welcome! Please click on the **Account icon** or your **Balance** at the top right to deposit and withdraw money.
     </div>
 
-    <!-- Header Navigation Bar -->
     <div class="app-header">
         <button class="account-trigger" onclick="toggleAccountMenu()">👤</button>
-        <div class="wallet-badge">🪙 <span id="coins">Syncing...</span></div>
+        <button class="wallet-badge" onclick="toggleAccountMenu()">🪙 <span id="coins">Syncing...</span></button>
     </div>
 
-    <!-- Dropdown Account Modal Drawer Context Menu -->
     <div class="account-drawer" id="accountMenu">
         <div class="drawer-user-info">ID: <span id="userHandleDisplay" style="color: white;">Loading...</span></div>
         <button class="drawer-btn btn-dep" onclick="routeTo('deposit.html')">➕ Deposit Money</button>
@@ -257,7 +259,6 @@ body {
         <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out Account</button>
     </div>
 
-    <!-- Hero Card Profiler -->
     <div class="hero-card">
         <h1>MINI GAMES HUB PRO</h1>
         <p>Active Profile: <span id="sessionEmail" style="color: var(--text-light);">Loading...</span></p>
@@ -265,7 +266,6 @@ body {
 
     <div class="games-grid-title">Game Zone</div>
 
-    <!-- Grid Layout -->
     <div class="games-matrix-grid">
         <button class="game-card-btn bg-bigsmall" onclick="routeTo('big-small.html')">
             <span class="game-icon">🎲</span>
