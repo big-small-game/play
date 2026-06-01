@@ -48,7 +48,7 @@ body {
   gap: 14px;
 }
 
-/* Sticky Premium Navigation Header */
+/* Sticky Navigation Header Bar */
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -88,7 +88,7 @@ body {
   font-size: 0.95rem;
 }
 
-/* User Hero Banner Section */
+/* Identity Hero Banner Section */
 .hero-card {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 41, 59, 0.4) 100%);
   border: 1px solid var(--border-glass);
@@ -114,7 +114,7 @@ body {
   font-weight: 500;
 }
 
-/* Elegant Floating Account Context Drawer */
+/* Floating Account Context Drawer */
 .account-drawer {
   display: none;
   position: absolute;
@@ -165,7 +165,7 @@ body {
 .btn-lo { background: linear-gradient(45deg, #ef4444, #dc2626); }
 .drawer-btn:active { transform: scale(0.98); }
 
-/* Premium Grid System Game Selectors */
+/* Premium Game Card Layout Grid */
 .games-grid-title {
   font-size: 0.8rem;
   font-weight: 700;
@@ -177,124 +177,138 @@ body {
   margin-top: 6px;
 }
 
-.game-card-btn {
+.games-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   width: 100%;
+}
+
+.game-card-btn {
   border: 1px solid var(--border-glass);
   border-radius: 16px;
-  padding: 18px 16px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  padding: 20px 14px;
   color: white;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 8px;
   position: relative;
   overflow: hidden;
+  aspect-ratio: 1 / 1;
   box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1);
   transition: transform 0.15s ease;
 }
 
 .game-card-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
-.game-card-btn .btn-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+.game-card-btn .game-icon {
+  font-size: 2rem;
+  margin-bottom: 2px;
+}
+
+.game-card-btn .game-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
 }
 
 .game-card-btn .sub-desc {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
-  opacity: 0.75;
-}
-
-.game-card-btn .arrow-icon {
-  font-size: 1.2rem;
   opacity: 0.6;
+  line-height: 1.2;
 }
 
-/* Brand Grid Color Spectrum Maps */
-.bg-bigsmall { background: linear-gradient(135deg, #f97316, #ef4444); }
-.bg-mines { background: linear-gradient(135deg, #334155, #1e293b); }
-.bg-dragon { background: linear-gradient(135deg, #6366f1, #4f46e5); }
-.bg-crash { background: linear-gradient(135deg, #a855f7, #9333ea); }
-.bg-plinko { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
-.bg-reaction { background: linear-gradient(135deg, #f43f5e, #e11d48); }
-.bg-quiz { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+/* Row-spanning button style for "Coming Soon" */
+.span-full {
+  grid-column: span 2;
+  aspect-ratio: auto;
+  padding: 16px;
+}
+
+/* Brand Grid Custom Color Spectra */
+.bg-bigsmall { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); }
+.bg-mines { background: linear-gradient(135deg, #475569 0%, #1e293b 100%); }
+.bg-dragon { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+.bg-crash { background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); }
+.bg-plinko { background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); }
 
 .bg-soon { 
   background: #1e293b; 
   color: var(--text-muted); 
   cursor: not-allowed; 
   box-shadow: none;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 </style>
 </head>
 <body>
 
 <div class="app-wrapper">
+    <!-- Header Top Navigation Bar -->
     <div class="app-header">
         <button class="account-trigger" onclick="toggleAccountMenu()">👤 Account</button>
         <div class="wallet-badge">🪙 <span id="coins">Syncing...</span></div>
     </div>
 
+    <!-- Dropdown Account Context Drawer Menu Container -->
     <div class="account-drawer" id="accountMenu">
         <div class="drawer-user-info">User ID: <span id="userHandleDisplay">Loading...</span></div>
-        <button class="drawer-btn btn-dep" onclick="routeTo('deposit.html')">➕ Deposit Cash</button>
-        <button class="drawer-btn btn-wd" onclick="routeTo('withdraw.html')">➖ Withdraw Profits</button>
+        <button class="drawer-btn btn-dep" onclick="routeTo('deposit.html')">➕ Deposit Money</button>
+        <button class="drawer-btn btn-wd" onclick="routeTo('withdraw.html')">➖ Withdraw Money</button>
         <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out</button>
     </div>
 
+    <!-- Identity Hero Banner Section Banner Section -->
     <div class="hero-card">
         <h1>MINI GAMES HUB PRO</h1>
         <p>Session Active: <span id="sessionEmail" style="color: var(--text-light);">Loading...</span></p>
     </div>
 
-    <div class="games-grid-title">Available Arena Modules</div>
+    <div class="games-grid-title">Game Matrix Modules</div>
 
-    <button class="game-card-btn bg-bigsmall" onclick="routeTo('big-small.html')">
-        <div class="btn-meta"><span>🎲 Big Small Game</span><span class="sub-desc">Predict total sum ranges</span></div>
-        <span class="arrow-icon">➔</span>
-    </button>
+    <!-- 2-Column Responsive Matrix Grid Systems Selection Layout -->
+    <div class="games-matrix-grid">
+        <button class="game-card-btn bg-bigsmall" onclick="routeTo('big-small.html')">
+            <span class="game-icon">🎲</span>
+            <span class="game-title">Big Small</span>
+            <span class="sub-desc">Predict range sets</span>
+        </button>
 
-    <button class="game-card-btn bg-mines" onclick="routeTo('mines.html')">
-        <div class="btn-meta"><span>💣 Mines Sweeper</span><span class="sub-desc">Uncover safe diamond gems</span></div>
-        <span class="arrow-icon">➔</span>
-    </button>
+        <button class="game-card-btn bg-mines" onclick="routeTo('mines.html')">
+            <span class="game-icon">💣</span>
+            <span class="game-title">Mines</span>
+            <span class="sub-desc">Find safe gems</span>
+        </button>
 
-    <button class="game-card-btn bg-dragon" onclick="routeTo('drgn.html')">
-        <div class="btn-meta"><span>🐉 Dragon Tower</span><span class="sub-desc">Scale the brick levels safely</span></div>
-        <span class="arrow-icon">➔</span>
-    </button>
+        <button class="game-card-btn bg-dragon" onclick="routeTo('drgn.html')">
+            <span class="game-icon">🐉</span>
+            <span class="game-title">Dragon Tower</span>
+            <span class="sub-desc">Scale brick rows</span>
+        </button>
 
-    <button class="game-card-btn bg-crash" onclick="routeTo('av.html')">
-        <div class="btn-meta"><span>✈️ Crash Aviator</span><span class="sub-desc">Cashout before multiplier fails</span></div>
-        <span class="arrow-icon">➔</span>
-    </button>
+        <button class="game-card-btn bg-crash" onclick="routeTo('av.html')">
+            <span class="game-icon">✈️</span>
+            <span class="game-title">Crash</span>
+            <span class="sub-desc">Multiplier flight</span>
+        </button>
 
-    <button class="game-card-btn bg-plinko" onclick="routeTo('plinko.html')">
-        <div class="btn-meta"><span>⚽ Plinko Drop</span><span class="sub-desc">Classic peg distribution boards</span></div>
-        <span class="arrow-icon">➔</span>
-    </button>
+        <button class="game-card-btn bg-plinko" onclick="routeTo('plinko.html')">
+            <span class="game-icon">⚽</span>
+            <span class="game-title">Plinko</span>
+            <span class="sub-desc">Peg boards drop</span>
+        </button>
 
-    <button class="game-card-btn bg-reaction" onclick="routeTo('reaction.html')">
-        <div class="btn-meta"><span>⚡ Reaction Speed</span><span class="sub-desc">Test muscle impulse responses</span></div>
-        <span class="arrow-icon">➔</span>
-    </button>
-
-    <button class="game-card-btn bg-quiz" onclick="routeTo('quiz.html')">
-        <div class="btn-meta"><span>📚 Quiz Arena</span><span class="sub-desc">Wager tokens on smart answers</span></div>
-        <span class="arrow-icon">➔</span>
-    </button>
-
-    <button class="game-card-btn bg-soon" disabled>
-        <div class="btn-meta"><span>🚀 Upcoming Realtime Modules</span><span class="sub-desc">New code engines in construction</span></div>
-    </button>
+        <button class="game-card-btn bg-soon span-full" disabled>
+            <span class="game-title">🚀 More Modules Coming Soon</span>
+            <span class="sub-desc">New real-time engines under construction</span>
+        </button>
+    </div>
 </div>
 
 <script>
@@ -315,7 +329,7 @@ document.getElementById("userHandleDisplay").innerText = dynamicUserHandle;
 function forceSyncWalletData() {
     document.getElementById("coins").innerText = "Syncing...";
     
-    // Append a random timestamp parameter onto query requests to destroy browser cache metrics
+    // Append a microsecond timestamp parameter onto query requests to destroy browser cache metrics
     fetch(`${DATABASE_URL}?username=${encodeURIComponent(dynamicUserHandle)}&nocache=${Date.now()}`)
     .then(response => response.json())
     .then(data => {
@@ -346,12 +360,11 @@ function triggerSignout() {
     window.location.href = "login.html";
 }
 
-// CRITICAL FIX: Forces page to fetch un-cached balance data whenever it's shown
+// CRITICAL CACHE FIXED LOGIC PIPELINE
 window.addEventListener("pageshow", function(event) {
     forceSyncWalletData();
 });
 
-// Watch window visibility state changes (e.g., app minimizing or back-navigation patterns)
 document.addEventListener("visibilitychange", function() {
     if (document.visibilityState === "visible") {
         forceSyncWalletData();
