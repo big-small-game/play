@@ -278,18 +278,20 @@
     <div class="title-head">DEPOSIT COINS</div>
     <div class="balance-display">Live Wallet: 🪙<span id="currentBalance">Syncing...</span></div>
     
+    <!-- RESTORED INTERFACE NOTICE BOX -->
     <div class="notice-box">
-        Send funds to our official business merchant node, then submit your transaction record trace ID token.
+        Please pay to: <span style="color: #ffffff; text-decoration: underline; font-weight: 800;">xx@upi</span><br>
+        Then paste your 12-digit transaction ID reference code down below.
     </div>
 
     <form id="depositForm">
         <div class="form-group">
-            <label for="username">Profile Handle</label>
+            <label for="username">Username</label>
             <input type="text" id="username" name="username" required readonly>
         </div>
 
         <div class="form-group">
-            <label for="amount">Deposit Principal</label>
+            <label for="amount">Amount</label>
             <input type="number" id="amount" name="amount" placeholder="Enter transaction amount" min="10" required disabled>
         </div>
 
@@ -298,19 +300,18 @@
             <input type="text" id="txid" name="txid" placeholder="Enter 12-digit transaction ID" required disabled>
         </div>
 
-        <button type="submit" id="submitBtn" class="btn-submit" disabled>Connecting Database Node...</button>
+        <button type="submit" id="submitBtn" class="btn-submit" disabled>Submitting your request...</button>
     </form>
 
     <div class="history-section">
-        <div class="history-title">Real-Time Deposit Logs</div>
+        <div class="history-title">Deposit History</div>
         <div class="history-list" id="historyContainer">
-            <div style="text-align:center; padding:15px; font-size:0.8rem; color:#64748b;">Loading logs from database...</div>
+            <div style="text-align:center; padding:15px; font-size:0.8rem; color:#64748b;">Loading ...</div>
         </div>
     </div>
 </div>
 
 <script>
-    // SHARED CENTRAL DATABASE TARGET URL Framework
     const SYNC_TARGET_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
     const storedUser = localStorage.getItem("currentUser") || "Guest";
