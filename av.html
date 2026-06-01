@@ -3,26 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aviator Pro | Stake Edition</title>
-    <!-- Premium Cyber/Casino Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-    
+    <title>Aviator Pro | Standard Edition</title>
     <style>
         :root {
-            --bg-main: #060b19;
-            --bg-sidebar: #0f172a;
-            --bg-card: #020617;
-            --primary-blue: #2563eb;
-            --accent-gold: #fbbf24;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
+            --bg-main: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-card: #0b0f19;
+            --primary-blue: #3b82f6;
+            --accent-gold: #f59e0b;
+            --accent-green: #00e676;
+            --accent-red: #ff3333;
             --text-light: #f8fafc;
-            --text-muted: #64748b;
-            --border-glass: rgba(255, 255, 255, 0.06);
-            --font-fancy: 'Orbitron', system-ui, sans-serif;
-            --font-sub: 'Rajdhani', system-ui, sans-serif;
+            --text-muted: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.05);
         }
 
         * {
@@ -34,7 +27,7 @@
         }
 
         body {
-            font-family: var(--font-sub);
+            font-family: Arial, Helvetica, sans-serif; /* Clean, normal system font */
             background-color: var(--bg-main);
             color: var(--text-light);
             min-height: 100vh;
@@ -43,10 +36,8 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
-            letter-spacing: 0.5px;
         }
 
-        /* Top-Left Back Button Platform */
         .back-nav-container {
             width: 100%;
             max-width: 940px;
@@ -59,40 +50,34 @@
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid var(--border-glass);
             color: var(--text-light);
-            font-family: var(--font-fancy);
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: bold;
             padding: 8px 16px;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
             transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
         }
 
         .btn-back:hover {
             background: var(--accent-red);
             border-color: transparent;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
         }
 
         .game-wrapper {
             width: 100%;
             max-width: 940px;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.6);
             border: 1px solid var(--border-glass);
-            border-radius: 20px;
+            border-radius: 16px;
             display: flex;
             flex-direction: row;
             overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
 
-        /* Left Side Controls Panel Console */
         .sidebar-controls {
             width: 340px;
             background: var(--bg-sidebar);
@@ -103,7 +88,6 @@
             border-right: 1px solid var(--border-glass);
         }
 
-        /* Right Side Flight Simulation Theater */
         .grid-theater {
             flex: 1;
             background: var(--bg-card);
@@ -114,35 +98,31 @@
             min-height: 400px;
         }
 
-        /* Header Statistics Display widget */
         .header-widget {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             max-width: 940px;
-            padding: 0 4px;
+            padding: 0 8px;
         }
 
         .user-tag {
-            font-family: var(--font-fancy);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--text-muted);
         }
 
         .wallet-display {
-            font-family: var(--font-fancy);
             background: var(--bg-sidebar);
-            padding: 8px 18px;
-            border-radius: 10px;
+            padding: 8px 16px;
+            border-radius: 8px;
             border: 1px solid var(--border-glass);
-            font-weight: 800;
+            font-weight: bold;
             color: var(--accent-gold);
         }
 
-        /* Graphic Canvas Component Layer Styles */
         .canvas-container {
             width: 100%;
             flex: 1;
@@ -159,16 +139,15 @@
             height: 100%;
         }
 
-        /* Flying Multiplier Large Typography overlay tracking values */
         .live-multiplier-overlay {
             position: absolute;
             top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-family: var(--font-fancy);
             font-size: 3.5rem;
             font-weight: 900;
             color: white;
+            text-align: center;
             text-shadow: 0 4px 20px rgba(0,0,0,0.8);
             pointer-events: none;
             z-index: 10;
@@ -176,25 +155,24 @@
 
         .flew-away-text {
             color: var(--accent-red) !important;
-            font-size: 2.8rem;
+            font-size: 2.2rem;
+            font-weight: bold;
         }
 
-        /* Inputs Console styling architectures */
         .label {
-            font-family: var(--font-fancy);
             font-size: 0.75rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
             margin-bottom: 6px;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         .input-container {
             display: flex;
             background: var(--bg-main);
-            border-radius: 8px;
-            border: 1px solid var(--border-glass);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
             overflow: hidden;
             height: 44px;
             align-items: center;
@@ -206,13 +184,11 @@
             border: none;
             color: white;
             padding: 0 14px;
-            font-family: var(--font-fancy);
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.95rem;
             outline: none;
         }
 
-        /* Auto Switch Module Styles */
         .toggle-row {
             display: flex;
             justify-content: space-between;
@@ -255,33 +231,30 @@
         input:checked + .slider:before { transform: translateX(22px); }
 
         .scale-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.05);
             border: none;
             color: var(--text-light);
             padding: 0 14px;
-            font-family: var(--font-fancy);
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            border-left: 1px solid var(--border-glass);
+            border-left: 1px solid rgba(255,255,255,0.1);
             height: 100%;
         }
 
-        .scale-btn:hover { background: rgba(255, 255, 255, 0.08); }
+        .scale-btn:hover { background: rgba(255, 255, 255, 0.1); }
 
         .action-btn {
             width: 100%;
             height: 54px;
             border: none;
-            border-radius: 8px;
-            font-family: var(--font-fancy);
+            border-radius: 6px;
             font-size: 1rem;
-            font-weight: 900;
+            font-weight: 700;
             cursor: pointer;
             color: white;
             transition: all 0.15s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .btn-bet {
@@ -304,13 +277,12 @@
         }
 
         .action-btn:disabled {
-            background: #1e293b !important;
-            color: #475569 !important;
+            background: #334155 !important;
+            color: #64748b !important;
             box-shadow: none !important;
             cursor: not-allowed;
         }
 
-        /* Mobile Breakpoint Optimization */
         @media (max-width: 768px) {
             .game-wrapper { flex-direction: column-reverse; }
             .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); }
@@ -320,19 +292,16 @@
 </head>
 <body>
 
-<!-- Dynamic Navigation Redirect Bar -->
 <div class="back-nav-container">
-    <a href="game.html" class="btn-back">← BACK TO GAMES</a>
+    <a href="game.html" class="btn-back">← Back to Games</a>
 </div>
 
-<!-- Game Data Metrics Widget Header -->
 <div class="header-widget">
-    <div class="user-tag">👤 ID: <span id="userName">Guest</span></div>
+    <div class="user-tag">👤 User: <span id="userName">Guest</span></div>
     <div class="wallet-display">🪙 <span id="userBalance">0.00</span></div>
 </div>
 
 <div class="game-wrapper">
-    <!-- Action Control Deck Left Sidebar Panel -->
     <div class="sidebar-controls">
         <div>
             <div class="label">Bet Amount</div>
@@ -343,7 +312,6 @@
             </div>
         </div>
 
-        <!-- Auto Cashout Toggle Module Grid -->
         <div>
             <div class="toggle-row">
                 <span class="label" style="margin:0;">Auto Cashout</span>
@@ -364,7 +332,6 @@
         <button class="action-btn btn-bet" id="mainActionBtn" onclick="toggleAviatorEngineState()" disabled>Syncing Balance...</button>
     </div>
 
-    <!-- Active Visual Plane Flight Simulation Arena -->
     <div class="grid-theater">
         <div class="canvas-container">
             <div class="live-multiplier-overlay" id="multiplierDisplay">1.00x</div>
@@ -386,11 +353,9 @@
     let flightStartTime = 0;
     let animationFrameId = null;
 
-    // Canvas Render Objects
     const canvas = document.getElementById("flightCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Sound FX Framework Sythesizers 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSyntheticSound(frequency, type, duration, slideTo = 0) {
         try {
@@ -408,7 +373,6 @@
         } catch(e) {}
     }
 
-    // Process user session credentials profiles
     const rawUser = localStorage.getItem("currentUser") || "Guest";
     const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
     document.getElementById("userName").innerText = cleanUser;
@@ -425,7 +389,6 @@
         document.getElementById("autoCashoutInputContainer").style.display = checked ? "block" : "none";
     }
 
-    // 1. Core Profile Balance Fetch Sync Direct Link
     function fetchLiveWallet() {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
         .then(r => r.json())
@@ -433,7 +396,6 @@
             if (data && data.balance !== undefined) {
                 balance = parseFloat(data.balance) || 0;
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
-                
                 if (!gameActive) {
                     const actionBtn = document.getElementById("mainActionBtn");
                     actionBtn.disabled = false;
@@ -444,7 +406,6 @@
         });
     }
 
-    // 2. Transaction Dispatch Ledger Background Engine Links 
     function syncTxToDatabase(amountChange, updateScreenUI = true) {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
         .then(r => r.json())
@@ -470,20 +431,18 @@
             const desiredBet = parseInt(betInput.value) || 0;
 
             if (desiredBet < 1 || desiredBet > balance) {
-                alert("Stake bounds matching balance allocation bounds error!");
+                alert("Stake error!");
                 return;
             }
 
-            // INSTANT DEDUCTION PARADIGM
             betAmount = desiredBet;
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
             syncTxToDatabase(-betAmount, false);
 
-            // House math algorithms calculating flight limits profiles
             const rand = Math.random();
             if (rand < 0.08) {
-                crashPoint = 1.00; // Instant house crash event parameters
+                crashPoint = 1.00;
             } else {
                 crashPoint = parseFloat((1.01 + (Math.random() * 8) + (Math.random() * Math.random() * 20)).toFixed(2));
             }
@@ -512,17 +471,15 @@
         if (!gameActive) return;
 
         const timeElapsed = (performance.now() - flightStartTime) / 1000;
-        // Accurate parabolic scale speed multiplier logic curves
         currentMultiplier = parseFloat((1.00 + Math.pow(timeElapsed, 1.45) * 0.15).toFixed(2));
 
         const multText = document.getElementById("multiplierDisplay");
 
-        // Real-time automatic cash out threshold checker pass
         const autoActive = document.getElementById("autoCashoutToggle").checked;
         const autoTarget = parseFloat(document.getElementById("autoCashoutTarget").value) || 2.00;
 
         if (autoActive && !hasCashedOut && currentMultiplier >= autoTarget && currentMultiplier < crashPoint) {
-            currentMultiplier = autoTarget; // Bind execution perfectly right at targeted threshold
+            currentMultiplier = autoTarget;
             executeCashoutSequence();
         }
 
@@ -533,7 +490,6 @@
 
         multText.innerText = `${currentMultiplier.toFixed(2)}x`;
 
-        // Map flight coordinates profiles to drawing parameters boundaries
         const progressPercent = Math.min(1, timeElapsed / 10);
         const planeX = 60 + (canvas.width - 140) * progressPercent;
         const planeY = (canvas.height - 60) - (canvas.height - 140) * Math.sin(progressPercent * Math.PI / 2);
@@ -545,7 +501,6 @@
     function drawFlightEnvironment(planeX, planeY, renderTrail) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Draw background layout reference graph grids
         ctx.strokeStyle = "rgba(255, 255, 255, 0.02)";
         ctx.lineWidth = 1;
         const step = 40;
@@ -558,7 +513,6 @@
 
         if (!renderTrail) return;
 
-        // Draw parabolic flight path vector line stream
         ctx.beginPath();
         ctx.strokeStyle = "var(--accent-red)";
         ctx.lineWidth = 4;
@@ -567,24 +521,20 @@
         ctx.moveTo(60, canvas.height - 60);
         ctx.quadraticCurveTo(canvas.width * 0.4, canvas.height - 60, planeX, planeY);
         ctx.stroke();
-        ctx.shadowBlur = 0; // Reset canvas effects shadows definitions
+        ctx.shadowBlur = 0;
 
-        // Render dynamic vectorized Stake styled red prop plane engine
         ctx.save();
         ctx.translate(planeX, planeY);
-        ctx.rotate(-Math.PI / 12); // Steady aerodynamic angle ascent trajectory profiles
+        ctx.rotate(-Math.PI / 12);
         
-        // Plane fuselage structural core architecture profiles
         ctx.fillStyle = "#ef4444";
         ctx.beginPath();
         ctx.ellipse(0, 0, 16, 6, 0, 0, 2 * Math.PI);
         ctx.fill();
 
-        // Wings architecture
         ctx.fillStyle = "#b91c1c";
         ctx.fillRect(-4, -14, 6, 28);
 
-        // Tail stabilizer profile layout parameters
         ctx.fillStyle = "#ef4444";
         ctx.beginPath();
         ctx.moveTo(-14, 0);
@@ -594,7 +544,6 @@
         ctx.closePath();
         ctx.fill();
 
-        // Propeller hub tracking nodes
         ctx.fillStyle = "#ffffff";
         ctx.beginPath();
         ctx.arc(16, 0, 3, 0, 2 * Math.PI);
@@ -640,7 +589,7 @@
         setTimeout(() => {
             document.getElementById("betValue").disabled = false;
             document.getElementById("autoCashoutToggle").disabled = false;
-            toggleAutoInputVisibility(); // Evaluates toggle locking states layout boundaries values accurately
+            toggleAutoInputVisibility();
 
             const actionBtn = document.getElementById("mainActionBtn");
             actionBtn.innerText = "Fly Bet";
@@ -653,10 +602,8 @@
         }, 3800);
     }
 
-    // Initialize execution sequences hooks layout instances
     setTimeout(resizeSimulationCanvas, 150);
     fetchLiveWallet();
 </script>
-
 </body>
 </html>
