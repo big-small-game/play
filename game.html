@@ -2,362 +2,361 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Mini Games Hub Pro</title>
 <style>
 :root {
-  --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --bg-gradient: linear-gradient(-45deg, #1f1c2c, #928dab, #0f2027, #203a43);
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glow-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --bg-main: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --primary-blue: #3b82f6;
+  --primary-hover: #2563eb;
+  --accent-gold: #f59e0b;
+  --text-light: #f8fafc;
+  --text-muted: #64748b;
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --glow-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 body {
-  margin: 0;
   font-family: var(--font-main);
-  background: var(--bg-gradient);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-  color: #f5f6fa;
+  background-color: var(--bg-main);
+  color: var(--text-light);
   min-height: 100vh;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12px;
+  padding-bottom: 30px;
   overflow-x: hidden;
 }
 
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Master Mobile Workspace Wrapper */
+.app-wrapper {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-/* Floating Status Bars */
-.coin-box, .account-btn {
-  position: fixed;
-  top: 15px;
-  padding: 12px 24px;
-  border-radius: 50px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid var(--glass-border);
+/* Sticky Premium Navigation Header */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-glass);
   box-shadow: var(--glow-shadow);
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  z-index: 1000;
-  transition: all 0.3s ease;
 }
 
-.account-btn {
-  left: 20px;
+.account-trigger {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
   color: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
 }
+.account-trigger:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
 
-.account-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-}
-
-.coin-box {
-  right: 20px;
-  background: rgba(255, 215, 0, 0.15);
-  border-color: rgba(255, 215, 0, 0.3);
-}
-
-/* Base Cards */
-.card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  padding: 30px;
-  margin: 40px auto;
-  width: 90%;
-  max-width: 650px;
-  box-shadow: var(--glow-shadow);
-  transition: transform 0.3s ease;
-}
-
-.card:first-of-type {
-  margin-top: 100px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
-}
-
-h1 {
-  font-size: 2.2rem;
-  font-weight: 800;
-  letter-spacing: 2px;
-  margin: 0 0 10px 0;
-  background: linear-gradient(45deg, #ff7675, #74b9ff, #a29bfe);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.card p {
-  color: #b2bec3;
-  margin: 0;
+.wallet-badge {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  color: var(--accent-gold);
   font-size: 0.95rem;
 }
 
-/* Elegant Account Menu Dropdown */
-.account-menu {
-  display: none;
-  position: fixed;
-  top: 75px;
-  left: 20px;
-  width: 280px;
-  max-width: 90vw;
-  background: rgba(15, 15, 25, 0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 24px;
+/* User Hero Banner Section */
+.hero-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 41, 59, 0.4) 100%);
+  border: 1px solid var(--border-glass);
   border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-  z-index: 999999;
+  padding: 20px;
   text-align: left;
-  animation: fadeIn 0.25s ease-out;
+  box-shadow: var(--glow-shadow);
 }
 
-@keyframes fadeIn {
+.hero-card h1 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  background: linear-gradient(45deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Elegant Floating Account Context Drawer */
+.account-drawer {
+  display: none;
+  position: absolute;
+  top: 70px;
+  left: 12px;
+  right: 12px;
+  background: rgba(15, 23, 42, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  z-index: 9999;
+  animation: slideDownIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDownIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.account-menu p {
-  margin-top: 0;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  font-size: 1.05rem;
+.drawer-user-info {
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-glass);
 }
 
-/* Menu Action Buttons */
-.deposit-btn, .withdraw-btn, .logout-btn {
+.drawer-btn {
   color: white;
   border: none;
-  padding: 14px;
-  border-radius: 14px;
+  padding: 12px;
+  border-radius: 10px;
   width: 100%;
-  font-size: 16px;
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-top: 12px;
+  margin-top: 8px;
   cursor: pointer;
-  transition: all 0.25s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
+.btn-dep { background: linear-gradient(45deg, #10b981, #059669); }
+.btn-wd { background: linear-gradient(45deg, #f59e0b, #d97706); }
+.btn-lo { background: linear-gradient(45deg, #ef4444, #dc2626); }
+.drawer-btn:active { transform: scale(0.98); }
 
-.deposit-btn { background: linear-gradient(45deg, #00b894, #00cec9); }
-.deposit-btn:hover { box-shadow: 0 0 15px rgba(0,206,201,0.4); transform: translateY(-2px); }
-
-.withdraw-btn { background: linear-gradient(45deg, #e17055, #fdcb6e); }
-.withdraw-btn:hover { box-shadow: 0 0 15px rgba(225,112,85,0.4); transform: translateY(-2px); }
-
-.logout-btn { background: linear-gradient(45deg, #d63031, #e84393); }
-.logout-btn:hover { box-shadow: 0 0 15px rgba(214,48,49,0.4); transform: translateY(-2px); }
-
-
-/* Fancy Premium Grid Game Buttons */
-.game-btn {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  margin: 18px auto;
-  padding: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 18px;
-  font-size: 1.15rem;
+/* Premium Grid System Game Selectors */
+.games-grid-title {
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  text-align: left;
+  margin-left: 4px;
+  margin-top: 6px;
+}
+
+.game-card-btn {
+  width: 100%;
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 18px 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
   cursor: pointer;
-  min-height: 70px;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   position: relative;
   overflow: hidden;
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.15s ease;
 }
 
-.game-btn::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 50%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: all 0.6s ease;
+.game-card-btn:active {
+  transform: scale(0.97);
 }
 
-.game-btn:hover::before {
-  left: 150%;
+.game-card-btn .btn-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
 }
 
-.game-btn:hover {
-  transform: translateY(-4px) scale(1.02);
-  border-color: rgba(255,255,255,0.3);
+.game-card-btn .sub-desc {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.75;
 }
 
-/* Individual Game Styles */
-.big-small {
-  background: linear-gradient(45deg, #ff9f43, #ff5252);
-  color: white;
-  box-shadow: 0 6px 20px rgba(255, 159, 67, 0.3);
+.game-card-btn .arrow-icon {
+  font-size: 1.2rem;
+  opacity: 0.6;
 }
-.big-small:hover { box-shadow: 0 12px 25px rgba(255, 159, 67, 0.5); }
 
-.mines {
-  background: linear-gradient(45deg, #2c3e50, #000000);
-  color: white;
-  box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
-}
-.mines:hover { box-shadow: 0 12px 25px rgba(44, 62, 80, 0.6); }
+/* Brand Grid Color Spectrum Maps */
+.bg-bigsmall { background: linear-gradient(135deg, #f97316, #ef4444); }
+.bg-mines { background: linear-gradient(135deg, #334155, #1e293b); }
+.bg-dragon { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+.bg-crash { background: linear-gradient(135deg, #a855f7, #9333ea); }
+.bg-plinko { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
+.bg-reaction { background: linear-gradient(135deg, #f43f5e, #e11d48); }
+.bg-quiz { background: linear-gradient(135deg, #06b6d4, #0891b2); }
 
-.drgn {
-  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-  color: white;
-  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
-}
-.drgn:hover { box-shadow: 0 12px 25px rgba(108, 92, 231, 0.5); }
-
-.av {
-  background: linear-gradient(135deg, #9c27b0, #e040fb);
-  color: white;
-  box-shadow: 0 6px 20px rgba(156, 39, 176, 0.3);
-}
-.av:hover { box-shadow: 0 12px 25px rgba(156, 39, 176, 0.5); }
-
-.memory {
-  background: linear-gradient(45deg, #0abde3, #2e86de);
-  color: white;
-  box-shadow: 0 6px 20px rgba(10, 189, 227, 0.3);
-}
-.memory:hover { box-shadow: 0 12px 25px rgba(10, 189, 227, 0.5); }
-
-.reaction {
-  background: linear-gradient(45deg, #ee5253, #ff6b6b);
-  color: white;
-  box-shadow: 0 6px 20px rgba(238, 82, 83, 0.3);
-}
-.reaction:hover { box-shadow: 0 12px 25px rgba(238, 82, 83, 0.5); }
-
-.quiz {
-  background: linear-gradient(45deg, #00d2d3, #01a3a4);
-  color: white;
-  box-shadow: 0 6px 20px rgba(0, 210, 211, 0.3);
-}
-.quiz:hover { box-shadow: 0 12px 25px rgba(0, 210, 211, 0.5); }
-
-.soon {
-  background: linear-gradient(45deg, #57606f, #2f3542);
-  color: #a4b0be;
-  cursor: not-allowed;
+.bg-soon { 
+  background: #1e293b; 
+  color: var(--text-muted); 
+  cursor: not-allowed; 
   box-shadow: none;
-}
-.soon:hover { transform: none; border-color: rgba(255,255,255,0.1); }
-
-
-/* Responsive Scaling fixes */
-@media(max-width:600px){
-  h1 { font-size: 1.7rem; }
-  
-  .card {
-    width: 92%;
-    padding: 20px;
-    margin: 20px auto;
-  }
-  
-  .card:first-of-type { margin-top: 85px; }
-
-  .account-menu {
-    left: 10px;
-    width: calc(100vw - 60px);
-    top: 70px;
-  }
-
-  .coin-box, .account-btn {
-    top: 12px;
-    padding: 10px 16px;
-    font-size: 13px;
-  }
-  .account-btn { left: 10px; }
-  .coin-box { right: 10px; }
+  opacity: 0.6;
 }
 </style>
 </head>
 <body>
 
-<button class="account-btn" onclick="toggleMenu()">👤 Account</button>
+<div class="app-wrapper">
+    <div class="app-header">
+        <button class="account-trigger" onclick="toggleAccountMenu()">👤 Account</button>
+        <div class="wallet-badge">🪙 <span id="coins">Syncing...</span></div>
+    </div>
 
-<div class="account-menu" id="menu">
-<p><b>User:</b> <span id="user">Loading...</span></p>
-<button class="deposit-btn" onclick="openDeposit()">➕ Deposit</button>
-<button class="withdraw-btn" onclick="openWithdraw()">➖ Withdraw</button>
-<button class="logout-btn" onclick="logout()">🚪 Logout</button>
-</div>
+    <div class="account-drawer" id="accountMenu">
+        <div class="drawer-user-info">User ID: <span id="userHandleDisplay">Loading...</span></div>
+        <button class="drawer-btn btn-dep" onclick="routeTo('deposit.html')">➕ Deposit Cash</button>
+        <button class="drawer-btn btn-wd" onclick="routeTo('withdraw.html')">➖ Withdraw Profits</button>
+        <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out</button>
+    </div>
 
-<div class="coin-box">🪙 Balance: <span id="coins">Syncing...</span></div>
+    <div class="hero-card">
+        <h1>MINI GAMES HUB PRO</h1>
+        <p>Session Active: <span id="sessionEmail" style="color: var(--text-light);">Loading...</span></p>
+    </div>
 
-<div class="card">
-<h1>🎮 MINI GAMES HUB PRO</h1>
-<p>Logged In: <span id="email">Loading...</span></p>
-</div>
+    <div class="games-grid-title">Available Arena Modules</div>
 
-<div class="card">
-<button class="game-btn big-small" onclick="location.href='big-small.html'">🎲 Big Small Game</button>
-<button class="game-btn mines" onclick="location.href='mines.html'">💣 Mines</button>
-<button class="game-btn drgn" onclick="location.href='drgn.html'">🐉 Dragon Tower</button>
-<button class="game-btn av" onclick="location.href='av.html'">✈️ Crash</button>
-<button class="game-btn memory" onclick="location.href='plinko.html'">⚽ Plinko</button>
-<button class="game-btn soon">🚀 More Games Coming Soon</button>
+    <button class="game-card-btn bg-bigsmall" onclick="routeTo('big-small.html')">
+        <div class="btn-meta"><span>🎲 Big Small Game</span><span class="sub-desc">Predict total sum ranges</span></div>
+        <span class="arrow-icon">➔</span>
+    </button>
+
+    <button class="game-card-btn bg-mines" onclick="routeTo('mines.html')">
+        <div class="btn-meta"><span>💣 Mines Sweeper</span><span class="sub-desc">Uncover safe diamond gems</span></div>
+        <span class="arrow-icon">➔</span>
+    </button>
+
+    <button class="game-card-btn bg-dragon" onclick="routeTo('drgn.html')">
+        <div class="btn-meta"><span>🐉 Dragon Tower</span><span class="sub-desc">Scale the brick levels safely</span></div>
+        <span class="arrow-icon">➔</span>
+    </button>
+
+    <button class="game-card-btn bg-crash" onclick="routeTo('av.html')">
+        <div class="btn-meta"><span>✈️ Crash Aviator</span><span class="sub-desc">Cashout before multiplier fails</span></div>
+        <span class="arrow-icon">➔</span>
+    </button>
+
+    <button class="game-card-btn bg-plinko" onclick="routeTo('plinko.html')">
+        <div class="btn-meta"><span>⚽ Plinko Drop</span><span class="sub-desc">Classic peg distribution boards</span></div>
+        <span class="arrow-icon">➔</span>
+    </button>
+
+    <button class="game-card-btn bg-reaction" onclick="routeTo('reaction.html')">
+        <div class="btn-meta"><span>⚡ Reaction Speed</span><span class="sub-desc">Test muscle impulse responses</span></div>
+        <span class="arrow-icon">➔</span>
+    </button>
+
+    <button class="game-card-btn bg-quiz" onclick="routeTo('quiz.html')">
+        <div class="btn-meta"><span>📚 Quiz Arena</span><span class="sub-desc">Wager tokens on smart answers</span></div>
+        <span class="arrow-icon">➔</span>
+    </button>
+
+    <button class="game-card-btn bg-soon" disabled>
+        <div class="btn-meta"><span>🚀 Upcoming Realtime Modules</span><span class="sub-desc">New code engines in construction</span></div>
+    </button>
 </div>
 
 <script>
-// CENTRAL DATABASE SCRIPT REPOSITORY BRIDGE
+// CENTRAL GOOGLE APPS SCRIPT DATABASE CONNECTION ENDPOINT
 const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
-let rawUser = localStorage.getItem("currentUser") || "Guest";
-let processedUser = rawUser.trim();
+let rawStorageUser = localStorage.getItem("currentUser") || "Guest";
+let dynamicUserHandle = rawStorageUser.trim();
 
-if(processedUser.includes("@")) {
-    processedUser = processedUser.split("@")[0];
+if(dynamicUserHandle.includes("@")) {
+    dynamicUserHandle = dynamicUserHandle.split("@")[0];
 }
 
-document.getElementById("email").innerText = processedUser;
-document.getElementById("user").innerText = processedUser;
+document.getElementById("sessionEmail").innerText = dynamicUserHandle;
+document.getElementById("userHandleDisplay").innerText = dynamicUserHandle;
 
-// Fixed balance extraction pipeline logic with automatic error metrics fallbacks
-function refreshDashboardWallet() {
-    fetch(`${DATABASE_URL}?username=${encodeURIComponent(processedUser)}`)
-    .then(r => r.json())
+// Core balance syncing function
+function forceSyncWalletData() {
+    document.getElementById("coins").innerText = "Syncing...";
+    
+    // Append a random timestamp parameter onto query requests to destroy browser cache metrics
+    fetch(`${DATABASE_URL}?username=${encodeURIComponent(dynamicUserHandle)}&nocache=${Date.now()}`)
+    .then(response => response.json())
     .then(data => {
         if(data && data.balance !== undefined) {
-            let balanceValue = parseFloat(data.balance);
-            document.getElementById("coins").innerText = balanceValue.toFixed(2);
+            let extractedBalanceValue = parseFloat(data.balance);
+            document.getElementById("coins").innerText = extractedBalanceValue.toFixed(2);
         } else {
-            document.getElementById("coins").innerText = "Error";
+            document.getElementById("coins").innerText = "Sync Error";
         }
     })
-    .catch(err => {
-        console.error("Dashboard database handshake failure:", err);
+    .catch(error => {
+        console.error("Network dashboard tracking sync failure:", error);
         document.getElementById("coins").innerText = "Offline";
     });
 }
 
-function toggleMenu(){
-    let m = document.getElementById("menu");
-    m.style.display = m.style.display === "block" ? "none" : "block";
+function toggleAccountMenu() {
+    let menuElement = document.getElementById("accountMenu");
+    menuElement.style.display = menuElement.style.display === "block" ? "none" : "block";
 }
-function openDeposit(){ window.location.href = "deposit.html"; }
-function openWithdraw(){ window.location.href = "withdraw.html"; }
-function logout(){
+
+function routeTo(targetFile) {
+    window.location.href = targetFile;
+}
+
+function triggerSignout() {
     localStorage.removeItem("currentUser");
     window.location.href = "login.html";
 }
 
-// Fires right away on structural script compilation passes
-refreshDashboardWallet();
+// CRITICAL FIX: Forces page to fetch un-cached balance data whenever it's shown
+window.addEventListener("pageshow", function(event) {
+    forceSyncWalletData();
+});
+
+// Watch window visibility state changes (e.g., app minimizing or back-navigation patterns)
+document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "visible") {
+        forceSyncWalletData();
+    }
+});
 </script>
 </body>
 </html>
