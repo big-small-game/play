@@ -1,195 +1,477 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Big Small Learning Game</title>
-<style>
-body{
-    font-family:Arial,sans-serif;
-    text-align:center;
-    background:#1e1e2f;
-    color:white;
-}
-.top{
-    display:flex;
-    justify-content:space-between;
-    padding:15px;
-}
-.box{
-    background:#333;
-    padding:10px 15px;
-    border-radius:10px;
-}
-.timer{
-    font-size:60px;
-    margin:20px;
-}
-button{
-    padding:12px 25px;
-    margin:10px;
-    cursor:pointer;
-}
-input{
-    padding:10px;
-    width:120px;
-}
-.history{
-    max-width:500px;
-    margin:auto;
-    text-align:left;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Big Small Pro Mobile</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --primary-blue: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-light: #f8fafc;
+            --text-muted: #64748b;
+            --border-glass: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 430px;
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Top Header Area */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 4px;
+        }
+
+        .user-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .wallet-pill {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--border-glass);
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        /* Dice Display Studio Arena */
+        .dice-arena {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            min-height: 160px;
+            justify-content: center;
+            position: relative;
+        }
+
+        .dice-wrapper {
+            display: flex;
+            gap: 20px;
+        }
+
+        .die {
+            width: 60px;
+            height: 60px;
+            background: white;
+            color: #1e293b;
+            border-radius: 12px;
+            font-size: 2.2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15), inset 0 -4px 0 #cbd5e1;
+            transition: transform 0.1s ease;
+        }
+
+        .die.rolling {
+            animation: shakeAnimate 0.1s infinite alternate;
+        }
+
+        @keyframes shakeAnimate {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            100% { transform: translate(-1px, -2px) rotate(-3deg); }
+        }
+
+        .outcome-badge {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Selection Choice Matrix Buttons */
+        .choice-matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .choice-btn {
+            background: #334155;
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            padding: 16px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.15);
+        }
+
+        .choice-btn .subtext {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .choice-btn.selected {
+            background: var(--primary-blue);
+            border-color: #60a5fa;
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+
+        /* Control Input Workspace */
+        .control-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .input-container {
+            display: flex;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            border: 1px solid var(--border-glass);
+            overflow: hidden;
+            height: 44px;
+        }
+
+        .input-container input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0 12px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            outline: none;
+            text-align: center;
+        }
+
+        .step-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: white;
+            width: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .step-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .step-btn:first-of-type { border-right: 1px solid var(--border-glass); }
+        .step-btn:last-of-type { border-left: 1px solid var(--border-glass); }
+
+        .action-btn {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: white;
+            background: var(--primary-blue);
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+        }
+        .action-btn:hover:not(:disabled) { background: var(--primary-hover); }
+        .action-btn:disabled {
+            background: #475569;
+            color: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* Roll History Pill Strip */
+        .history-strip {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 2px 4px 6px 4px;
+        }
+        .history-strip::-webkit-scrollbar { display: none; }
+        
+        .history-pill {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .pill-big { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .pill-small { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
+    </style>
 </head>
 <body>
 
-<div class="top">
-    <div class="box">Points: <span id="points">1000</span></div>
-    <div class="box">Wins: <span id="wins">0</span> | Losses: <span id="losses">0</span></div>
-</div>
+<div class="game-container">
+    <div class="header-bar">
+        <div class="user-tag">👤 <span id="profileName">Guest</span></div>
+        <div class="wallet-pill">🪙 <span id="walletDisplay">Loading...</span></div>
+    </div>
 
-<h1>Big Small Learning Game</h1>
+    <div class="dice-arena">
+        <div class="dice-wrapper">
+            <div id="dice1" class="die">1</div>
+            <div id="dice2" class="die">1</div>
+        </div>
+        <div id="resultText" class="outcome-badge" style="color: var(--text-muted);">Place a bet to roll</div>
+    </div>
 
-<div class="timer" id="timer">20</div>
+    <div class="history-strip" id="historyRibbon"></div>
 
-<input type="number" id="stake" value="10" min="1">
+    <div class="choice-matrix">
+        <button class="choice-btn" id="choiceSmall" onclick="selectPrediction('small')">
+            <span>SMALL</span>
+            <span class="subtext">2x Payout (2 - 6)</span>
+        </button>
+        <button class="choice-btn" id="choiceBig" onclick="selectPrediction('big')">
+            <span>BIG</span>
+            <span class="subtext">2x Payout (8 - 12)</span>
+        </button>
+    </div>
 
-<br>
+    <div class="control-deck">
+        <div>
+            <div class="label">Bet Amount</div>
+            <div class="input-container">
+                <button class="step-btn" onclick="offsetBetScaling(-5)">-</button>
+                <input type="number" id="betInput" value="10" min="1">
+                <button class="step-btn" onclick="offsetBetScaling(5)">+</button>
+            </div>
+        </div>
 
-<button onclick="choose('Big')">BIG</button>
-<button onclick="choose('Small')">SMALL</button>
-
-<p id="choice"></p>
-
-<button onclick="lockChoice()">Lock Choice</button>
-
-<h2 id="result"></h2>
-
-<div class="history">
-    <h3>History</h3>
-    <ul id="history"></ul>
+        <button class="action-btn" id="playBtn" onclick="executeRollSequence()" disabled>Syncing Balance...</button>
+    </div>
 </div>
 
 <script>
-let points = 1000;
-let wins = 0;
-let losses = 0;
+    // CORE SCRIPT DATABASE BRIDGE URL
+    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
-let selected = "";
-let lockedChoice = null;
-let stakeAmount = 0;
+    let balance = 0;
+    let selectedPrediction = null; 
+    let rollingStateActive = false;
 
-function choose(c){
-    if(lockedChoice) return;
-    selected = c;
-    document.getElementById("choice").innerText =
-        "Selected: " + c;
-}
+    // Filter clean structural context identifier handles
+    const rawUser = localStorage.getItem("currentUser") || "Guest";
+    const userHandle = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    document.getElementById("profileName").innerText = userHandle;
 
-function lockChoice(){
-
-    if(selected === ""){
-        alert("Select Big or Small");
-        return;
+    // 1. LIVE REFRESH SYNC BALANCE CALL DIRECT FROM SHEET
+    function pullLiveSheetBalance() {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(userHandle)}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data && data.balance !== undefined) {
+                balance = parseFloat(data.balance) || 0;
+                document.getElementById('walletDisplay').innerText = balance.toFixed(2);
+                
+                if (!rollingStateActive) {
+                    const btn = document.getElementById("playBtn");
+                    btn.disabled = false;
+                    btn.innerText = "Place Bet";
+                }
+            }
+        }).catch(err => {
+            console.error("Database compilation exception:", err);
+            document.getElementById('walletDisplay').innerText = "Offline";
+        });
     }
 
-    stakeAmount =
-        Number(document.getElementById("stake").value);
-
-    if(stakeAmount <= 0){
-        alert("Enter valid points");
-        return;
+    // 2. BACKEND API BACKGROUND DATA WRITER PIPELINE
+    function sendBalanceDeltaToDatabase(deltaValue, overwriteScreenUI = true) {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(userHandle)}&amount=${deltaValue}`)
+        .then(r => r.json())
+        .then(data => {
+            // Only apply response balance back onto screen if explicitly requested (e.g. on Wins)
+            if (overwriteScreenUI && data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
+                document.getElementById('walletDisplay').innerText = balance.toFixed(2);
+            }
+        }).catch(e => console.error("Transactional transport loss:", e));
     }
 
-    lockedChoice = selected;
+    function selectPrediction(choice) {
+        if (rollingStateActive) return;
+        selectedPrediction = choice;
+        
+        document.getElementById("choiceSmall").classList.remove("selected");
+        document.getElementById("choiceBig").classList.remove("selected");
 
-    document.getElementById("result").innerText =
-        "⏳ Choice Locked";
-}
-
-function settleRound(){
-
-    if(lockedChoice === null) return;
-
-    const outcome =
-        Math.random() < 0.5 ? "Big" : "Small";
-
-    let msg = "";
-
-    if(outcome === lockedChoice){
-
-        const reward =
-            Math.round(stakeAmount * 1.9);
-
-        points += reward;
-        wins++;
-
-        msg =
-            "✅ WIN | Result: " +
-            outcome +
-            " | +" +
-            reward +
-            " points";
-
-    }else{
-
-        points -= stakeAmount;
-        losses++;
-
-        msg =
-            "❌ LOSS | Result: " +
-            outcome +
-            " | -" +
-            stakeAmount +
-            " points";
+        if (choice === 'small') document.getElementById("choiceSmall").classList.add("selected");
+        if (choice === 'big') document.getElementById("choiceBig").classList.add("selected");
     }
 
-    document.getElementById("points").innerText =
-        points;
-
-    document.getElementById("wins").innerText =
-        wins;
-
-    document.getElementById("losses").innerText =
-        losses;
-
-    document.getElementById("result").innerText =
-        msg;
-
-    const li =
-        document.createElement("li");
-
-    li.innerText =
-        new Date().toLocaleTimeString() +
-        " - " +
-        msg;
-
-    document.getElementById("history")
-        .prepend(li);
-
-    selected = "";
-    lockedChoice = null;
-    stakeAmount = 0;
-
-    document.getElementById("choice").innerText =
-        "";
-}
-
-let time = 20;
-
-setInterval(() => {
-
-    time--;
-
-    if(time < 0){
-        settleRound();
-        time = 20;
+    function offsetBetScaling(amt) {
+        if (rollingStateActive) return;
+        const input = document.getElementById("betInput");
+        let nextValue = parseInt(input.value) + amt;
+        if (nextValue >= 1 && nextValue <= balance) input.value = nextValue;
     }
 
-    document.getElementById("timer").innerText =
-        time;
+    function executeRollSequence() {
+        if (rollingStateActive) return;
 
-}, 1000);
+        const inputEl = document.getElementById("betInput");
+        const betAmount = parseInt(inputEl.value) || 0;
+
+        if (!selectedPrediction) {
+            alert("Please select your prediction (BIG or SMALL) before rolling!");
+            return;
+        }
+
+        if (betAmount < 1 || betAmount > balance) {
+            alert("Stake bound violation! Adjust values according to wallet parameters.");
+            return;
+        }
+
+        // VISUAL SYNC FIX: Deduct the bet layout amount instantly locally 
+        balance -= betAmount;
+        document.getElementById('walletDisplay').innerText = balance.toFixed(2);
+
+        // Send subtraction query to server quietly in background without modifying local values
+        sendBalanceDeltaToDatabase(-betAmount, false);
+
+        // Lock state machine locks parameters
+        rollingStateActive = true;
+        inputEl.disabled = true;
+        
+        const mainBtn = document.getElementById("playBtn");
+        mainBtn.disabled = true;
+        mainBtn.innerText = "Rolling Dice...";
+
+        const d1Element = document.getElementById("dice1");
+        const d2Element = document.getElementById("dice2");
+        const resText = document.getElementById("resultText");
+
+        d1Element.classList.add("rolling");
+        d2Element.classList.add("rolling");
+        resText.innerText = "Dices are tumbling...";
+        resText.style.color = "var(--text-muted)";
+
+        // Core Physics Timing Delay Loop Simulation Transition
+        setTimeout(() => {
+            d1Element.classList.remove("rolling");
+            d2Element.classList.remove("rolling");
+
+            // Calculate Random Dice Results
+            const roll1 = Math.floor(Math.random() * 6) + 1;
+            const roll2 = Math.floor(Math.random() * 6) + 1;
+            const absoluteSum = roll1 + roll2;
+
+            d1Element.innerText = roll1;
+            d2Element.innerText = roll2;
+
+            let finalOutcomeCategory = "";
+            if (absoluteSum >= 2 && absoluteSum <= 6) finalOutcomeCategory = "small";
+            else if (absoluteSum >= 8 && absoluteSum <= 12) finalOutcomeCategory = "big";
+            else finalOutcomeCategory = "house_tie"; // Sum of 7 represents a structural House Tie rules breaker
+
+            // Render matching states evaluation conditions checks
+            let roundWon = (selectedPrediction === finalOutcomeCategory);
+
+            if (finalOutcomeCategory === "house_tie") {
+                resText.innerText = `Total: 7 (House Tie) - Loser!`;
+                resText.style.color = "var(--accent-red)";
+                pushHistoryRibbonLog(7, "Tie");
+            } else {
+                resText.innerText = `Total: ${absoluteSum} (${finalOutcomeCategory.toUpperCase()})`;
+                resText.style.color = roundWon ? "var(--accent-green)" : "var(--accent-red)";
+                pushHistoryRibbonLog(absoluteSum, finalOutcomeCategory);
+            }
+
+            if (roundWon) {
+                const totalWinPrize = betAmount * 2;
+                balance += totalWinPrize;
+                document.getElementById('walletDisplay').innerText = balance.toFixed(2);
+                
+                // WIN: Sync transaction payload values securely to spreadsheet server and allow visual updates
+                sendBalanceDeltaToDatabase(totalWinPrize, true);
+            } else {
+                // LOSS: DO NOT check server data inline right here. Retain local visual deductions locked.
+            }
+
+            // Cleanup routine triggers
+            setTimeout(() => {
+                rollingStateActive = false;
+                inputEl.disabled = false;
+                mainBtn.disabled = false;
+                mainBtn.innerText = "Place Bet";
+            }, 1200);
+
+        }, 1500);
+    }
+
+    function pushHistoryRibbonLog(sum, side) {
+        const container = document.getElementById("historyRibbon");
+        const pill = document.createElement("div");
+        pill.className = `history-pill ${side === 'big' ? 'pill-big' : 'pill-small'}`;
+        pill.innerText = `${sum} - ${side.toUpperCase()}`;
+
+        container.insertBefore(pill, container.firstChild);
+        if (container.children.length > 7) container.removeChild(container.lastChild);
+    }
+
+    // Pull database metrics once configuration pass completes
+    pullLiveSheetBalance();
 </script>
 
 </body>
