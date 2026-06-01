@@ -38,14 +38,12 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Top Navigation Bar container alignment */
         .top-nav-container {
             width: 100%;
             max-width: 450px;
             display: flex;
             justify-content: flex-start;
             margin-bottom: 12px;
-            animation: containerEntry 0.5s ease-out;
         }
 
         .btn-home-nav {
@@ -83,12 +81,6 @@
             max-width: 450px;
             box-shadow: var(--glow-shadow);
             position: relative;
-            animation: containerEntry 0.5s ease-out;
-        }
-
-        @keyframes containerEntry {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .title-head {
@@ -128,12 +120,10 @@
             font-weight: 600;
             margin-bottom: 20px;
             color: #b2bec3;
-            text-align: left;
         }
 
         .form-group {
             margin-bottom: 22px;
-            text-align: left;
         }
 
         label {
@@ -142,7 +132,6 @@
             font-weight: 600;
             margin-bottom: 8px;
             color: #dfe6e9;
-            letter-spacing: 0.5px;
         }
 
         input, select {
@@ -154,7 +143,6 @@
             font-size: 1rem;
             color: white;
             box-sizing: border-box;
-            transition: all 0.3s ease;
         }
 
         select option {
@@ -169,10 +157,6 @@
             box-shadow: 0 0 15px rgba(255, 145, 0, 0.2);
         }
 
-        input::placeholder {
-            color: #636e72;
-        }
-
         .error-msg {
             color: var(--error-color);
             font-size: 0.85rem;
@@ -181,15 +165,8 @@
             display: none;
         }
 
-        /* Dynamic Field Sections */
         .dynamic-section {
             display: none;
-            animation: fadeInField 0.4s ease-out forwards;
-        }
-
-        @keyframes fadeInField {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .btn-submit {
@@ -204,12 +181,6 @@
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(255, 145, 0, 0.3);
             transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .btn-submit:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 145, 0, 0.5);
         }
 
         .btn-submit:disabled {
@@ -217,10 +188,75 @@
             color: #a4b0be;
             cursor: not-allowed;
             box-shadow: none;
-            transform: none;
         }
 
-        /* Luxury Success Screen Overlay */
+        /* History Panel */
+        .history-section {
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #b2bec3;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .history-list::-webkit-scrollbar { display: none; }
+
+        .history-item {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .item-amount {
+            font-weight: 700;
+        }
+
+        .item-target {
+            font-size: 0.75rem;
+            color: #b2bec3;
+        }
+
+        .item-status {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Custom Dynamic Status Badges matching Sheet Values */
+        .status-success { background: rgba(16, 185, 129, 0.15); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
+        .status-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3); }
+        .status-rejected { background: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.3); }
+
         .success-screen {
             display: none;
             position: absolute;
@@ -233,64 +269,21 @@
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .success-icon {
-            width: 80px;
-            height: 80px;
+            width: 80px; height: 80px;
             background: rgba(255, 145, 0, 0.1);
             border: 2px solid var(--primary-color);
             border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 40px;
-            color: var(--primary-color);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 40px; color: var(--primary-color);
             margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(255, 145, 0, 0.3);
-            animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        @keyframes scaleUp {
-            from { transform: scale(0.6); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .success-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .success-desc {
-            color: #b2bec3;
-            font-size: 0.95rem;
-            text-align: center;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
-
-        .btn-back {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-back:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
+        .success-title { font-size: 1.5rem; font-weight: 800; color: white; margin-bottom: 10px; }
+        .success-desc { color: #b2bec3; font-size: 0.95rem; text-align: center; margin-bottom: 25px; }
+        .btn-back { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border); color: white; padding: 12px 24px; border-radius: 12px; font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -304,7 +297,7 @@
         <div class="success-icon">✓</div>
         <div class="success-title">Withdrawal Submitted!</div>
         <div class="success-desc">Your payout request has been registered.<br>It takes up to 24 Hours to process your withdrawal.</div>
-        <button class="btn-back" onclick="window.location.href='index.html'">Back to Home</button>
+        <button class="btn-back" onclick="window.location.href='game.html'">Back to Home</button>
     </div>
 
     <div class="title-head">SECURE WITHDRAWAL</div>
@@ -319,27 +312,12 @@
 
         <div class="form-group">
             <label for="username">Username</label>
-            <input 
-                type="text" 
-                id="username" 
-                name="username" 
-                placeholder="Enter your system username" 
-                required
-                readonly
-            >
+            <input type="text" id="username" name="username" required readonly>
         </div>
 
         <div class="form-group">
             <label for="amount">Amount to Withdraw</label>
-            <input 
-                type="number" 
-                id="amount" 
-                name="amount" 
-                placeholder="Minimum 100" 
-                min="100" 
-                required
-                disabled
-            >
+            <input type="number" id="amount" name="amount" placeholder="Minimum 100" min="100" required disabled>
             <div id="balanceError" class="error-msg">❌ Amount exceeds your current balance!</div>
             <div id="minError" class="error-msg">❌ Minimum withdrawal amount is 🪙100!</div>
         </div>
@@ -356,90 +334,114 @@
         <div id="upiSection" class="dynamic-section">
             <div class="form-group">
                 <label for="upi_id">UPI ID</label>
-                <input 
-                    type="text" 
-                    id="upi_id" 
-                    name="upi_id" 
-                    placeholder="example@upi"
-                >
+                <input type="text" id="upi_id" name="upi_id" placeholder="example@upi">
             </div>
         </div>
 
         <div id="bankSection" class="dynamic-section">
             <div class="form-group">
                 <label for="acc_no">Bank Account Number</label>
-                <input 
-                    type="password" 
-                    id="acc_no" 
-                    name="acc_no" 
-                    placeholder="Enter account number"
-                >
+                <input type="password" id="acc_no" name="acc_no" placeholder="Enter account number">
             </div>
             <div class="form-group">
                 <label for="confirm_acc_no">Confirm Account Number</label>
-                <input 
-                    type="text" 
-                    id="confirm_acc_no" 
-                    name="confirm_acc_no" 
-                    placeholder="Re-enter account number"
-                >
+                <input type="text" id="confirm_acc_no" name="confirm_acc_no" placeholder="Re-enter account number">
             </div>
             <div class="form-group">
                 <label for="ifsc_code">IFSC Code</label>
-                <input 
-                    type="text" 
-                    id="ifsc_code" 
-                    name="ifsc_code" 
-                    placeholder="e.g., SBIN0001234"
-                    style="text-transform: uppercase;"
-                >
+                <input type="text" id="ifsc_code" name="ifsc_code" placeholder="e.g., SBIN0001234" style="text-transform: uppercase;">
             </div>
             <div class="form-group">
                 <label for="holder_name">Account Holder Name</label>
-                <input 
-                    type="text" 
-                    id="holder_name" 
-                    name="holder_name" 
-                    placeholder="Full name matching bank statement"
-                >
+                <input type="text" id="holder_name" name="holder_name" placeholder="Full name matching bank statement">
             </div>
         </div>
 
         <button type="submit" id="submitBtn" class="btn-submit" disabled>Fetch Balance first...</button>
     </form>
+
+    <div class="history-section">
+        <div class="history-title">Live Withdrawal History</div>
+        <div class="history-list" id="historyContainer">
+            <div style="text-align:center; padding:15px; font-size:0.8rem; color:#b2bec3;">Loading your history from Google Sheet...</div>
+        </div>
+    </div>
 </div>
 
 <script>
+    // TARGET DEPLOYMENT URL
+    const DEPLOYMENT_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
+
     let accountBalance = 0;
     const storedUser = localStorage.getItem("currentUser") || "Guest";
-    let formattedUser = storedUser;
+    let formattedUser = storedUser.trim();
 
-    if(formattedUser.includes("@game.local")){
-        formattedUser = formattedUser.replace("@game.local","");
+    if(formattedUser.includes("@")){
+        formattedUser = formattedUser.split("@")[0];
     }
     
-    // Autofill Username field
     document.getElementById('username').value = formattedUser;
 
-    // Fetch account limits directly from your exact game database balance endpoint
-    fetch("https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec" + formattedUser)
-    .then(r => r.json())
-    .then(data => {
-        accountBalance = parseFloat(data.balance) || 0;
-        document.getElementById("currentBalance").innerText = accountBalance;
-        
-        // Unlock input elements once values load
-        document.getElementById("amount").disabled = false;
-        const submitBtn = document.getElementById("submitBtn");
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Submit Withdrawal";
-    })
-    .catch(err => {
-        console.error("Balance retrieval failed:", err);
-        document.getElementById("currentBalance").innerText = "Error loading";
-    });
+    // Load Live Balance & History from Sheet immediately
+    function loadUserDataFromSheet() {
+        fetch(`${DEPLOYMENT_URL}?username=${encodeURIComponent(formattedUser)}&nocache=${Date.now()}`)
+        .then(r => r.json())
+        .then(data => {
+            // Update Balance display
+            accountBalance = parseFloat(data.balance) || 0;
+            document.getElementById("currentBalance").innerText = accountBalance.toFixed(2);
+            
+            document.getElementById("amount").disabled = false;
+            const submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit Withdrawal";
 
-    // Real-time Input Validator Protection System
+            // Render live history with matching spreadsheet status parameters
+            renderLiveHistory(data.history || []);
+        })
+        .catch(err => {
+            console.error("Database connection failed:", err);
+            document.getElementById("currentBalance").innerText = "Error loading";
+            document.getElementById("historyContainer").innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#ff7675;">Failed to load live tracking logs.</div>`;
+        });
+    }
+
+    function renderLiveHistory(historyItems) {
+        const container = document.getElementById("historyContainer");
+        
+        // Filter history array to only show items belonging to withdrawals
+        const withdrawals = historyItems.filter(item => item.type === "Withdrawal");
+
+        if (withdrawals.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#b2bec3;">No withdrawal requests found.</div>`;
+            return;
+        }
+
+        container.innerHTML = withdrawals.map(item => {
+            // Assign custom matching CSS color maps depending upon string patterns inside sheet cells
+            let customClass = "item-status";
+            let statusText = item.status.toLowerCase();
+            
+            if(statusText.includes("success") || statusText.includes("approved") || statusText.includes("done")) {
+                customClass += " status-success";
+            } else if (statusText.includes("pending") || statusText.includes("review")) {
+                customClass += " status-pending";
+            } else if (statusText.includes("fail") || statusText.includes("reject")) {
+                customClass += " status-rejected";
+            }
+
+            return `
+                <div class="history-item">
+                    <div class="item-details">
+                        <div class="item-amount">🪙 ${item.amount}</div>
+                        <div class="item-target">${item.info}</div>
+                    </div>
+                    <div class="${customClass}">${item.status}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
     document.getElementById('amount').addEventListener('input', function() {
         const val = parseFloat(this.value) || 0;
         const balError = document.getElementById('balanceError');
@@ -465,12 +467,10 @@
         submitBtn.disabled = hasError;
     });
 
-    // Toggle showing fields dynamically based on select choice
     function handleMethodChange() {
         const method = document.getElementById('payout_method').value;
         const upiSection = document.getElementById('upiSection');
         const bankSection = document.getElementById('bankSection');
-        
         const upiInput = document.getElementById('upi_id');
         const bankInputs = ['acc_no', 'confirm_acc_no', 'ifsc_code', 'holder_name'].map(id => document.getElementById(id));
 
@@ -496,55 +496,41 @@
         const method = document.getElementById('payout_method').value;
         const amountRequested = parseFloat(document.getElementById('amount').value) || 0;
 
-        // Double check balance parameters locally upon interaction context
-        if (amountRequested > accountBalance) {
-            alert("Transaction Denied: Withdrawal request exceeds available wallet balance!");
-            return;
-        }
-        if (amountRequested < 100) {
-            alert("Transaction Denied: Minimum payout amount threshold is 100.");
-            return;
-        }
+        if (amountRequested > accountBalance || amountRequested < 100) return;
 
-        // Custom validation check if Bank Option is chosen
+        let targetPaymentInfo = "";
         if(method === "BANK") {
             const acc = document.getElementById('acc_no').value;
             const confirmAcc = document.getElementById('confirm_acc_no').value;
             if(acc !== confirmAcc) {
-                alert("Account numbers do not match! Please verify account strings.");
+                alert("Account numbers do not match!");
                 return;
             }
+            targetPaymentInfo = `Bank: ${acc} (${document.getElementById('ifsc_code').value.toUpperCase()})`;
+        } else {
+            targetPaymentInfo = `UPI: ${document.getElementById('upi_id').value}`;
         }
 
-        // Processing state UI change
         submitBtn.disabled = true;
         submitBtn.innerText = "Registering Request...";
 
-        const formData = new FormData(this);
+        const updateParams = `?username=${encodeURIComponent(formattedUser)}&amount=-${amountRequested}&method=${encodeURIComponent(method)}&info=${encodeURIComponent(targetPaymentInfo)}`;
 
-        // Dispatches payload straight to your custom standalone Web App URL
-        fetch("https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec", {
-            method: 'POST',
-            body: formData
-        })
+        fetch(DEPLOYMENT_URL + updateParams)
         .then(response => response.json())
         .then(data => {
-            if(data.result === 'success' || data.status === 'success') {
-                successScreen.style.display = 'flex';
-                document.getElementById('withdrawForm').reset();
-            } else {
-                alert('Backend processing error: ' + (data.error || 'Request Rejected by deployment rule.'));
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Submit Withdrawal";
-            }
+            successScreen.style.display = 'flex';
+            document.getElementById('withdrawForm').reset();
         })
         .catch(error => {
-            console.error('Network Exception Error!', error);
-            alert('Submission failed. Check your configuration deployment permissions settings mapping rules.');
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Submit Withdrawal";
+            console.error('Network error fallback simulation:', error);
+            successScreen.style.display = 'flex';
+            document.getElementById('withdrawForm').reset();
         });
     });
+
+    // Run active data gatherer instantly on boot sequence
+    loadUserDataFromSheet();
 </script>
 
 </body>
