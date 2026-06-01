@@ -3,19 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mines Sweeper Pro</title>
+    <title>Mines Pro | Stake Edition</title>
     <style>
         :root {
-            --bg-main: #060b19;
-            --bg-card: rgba(15, 23, 42, 0.6);
+            --bg-main: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-card: #0b0f19;
             --primary-blue: #3b82f6;
             --accent-gold: #f59e0b;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
+            --accent-green: #00e676;
+            --accent-red: #ff3333;
             --text-light: #f8fafc;
-            --text-muted: #64748b;
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --glow-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+            --text-muted: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.05);
+            --tile-unopened: #2f455e;
+            --tile-unopened-hover: #3c5674;
         }
 
         * {
@@ -32,133 +34,139 @@
             color: var(--text-light);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            padding: 12px;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .game-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: row;
             overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        /* Left Side: Stake Control Panel */
+        .sidebar-controls {
+            width: 320px;
+            background: var(--bg-sidebar);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border-right: 1px solid var(--border-glass);
+        }
+
+        /* Right Side: Game Grid Arena */
+        .grid-theater {
+            flex: 1;
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
             position: relative;
         }
 
-        .game-container {
-            width: 100%;
-            max-width: 430px;
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass);
-            border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            padding: 16px;
-            box-shadow: var(--glow-shadow);
-            z-index: 10;
-        }
-
-        /* Header Navigation Widget */
+        /* Header Navigation Info */
         .header-widget {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
+            margin-bottom: 16px;
+            max-width: 900px;
+            padding: 0 8px;
         }
 
         .user-tag {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--text-muted);
-            text-transform: uppercase;
         }
 
         .wallet-display {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 6px 14px;
-            border-radius: 30px;
+            background: var(--bg-sidebar);
+            padding: 8px 16px;
+            border-radius: 8px;
             border: 1px solid var(--border-glass);
             font-weight: 800;
             color: var(--accent-gold);
         }
 
-        /* 5x5 Mines Matrix Theatre Board Grid */
-        .mines-board-grid {
+        /* 5x5 Matrix Layout Grid */
+        .mines-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            background: rgba(10, 15, 30, 0.6);
-            border: 1px solid var(--border-glass);
-            padding: 12px;
-            border-radius: 20px;
+            gap: 12px;
             width: 100%;
+            max-width: 460px;
             aspect-ratio: 1 / 1;
         }
 
         .tile-btn {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border: 1px solid var(--border-glass);
-            border-radius: 12px;
+            background: var(--tile-unopened);
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 -3px 0 rgba(0,0,0,0.3), 0 4px 8px rgba(0,0,0,0.2);
-            transition: transform 0.1s ease, background 0.15s ease;
+            box-shadow: 0 4px 0 #1b2a3a;
+            transition: all 0.1s ease;
+        }
+
+        .tile-btn:hover:not(:disabled) {
+            background: var(--tile-unopened-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #1b2a3a;
         }
 
         .tile-btn:active:not(:disabled) {
-            transform: scale(0.92);
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #1b2a3a;
         }
 
-        /* Revealed Tile Visual Overrides states profiles */
-        .tile-diamond {
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(37, 99, 235, 0.25)) !important;
-            border-color: #38bdf8 !important;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.4) !important;
+        /* Revealed Tile Override Profiles */
+        .tile-gem {
+            background: #071824 !important;
+            border: 2px solid var(--accent-green) !important;
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.2) !important;
+            transform: none !important;
         }
 
         .tile-mine {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(153, 27, 27, 0.4)) !important;
-            border-color: #f43f5e !important;
-            animation: shakeTile 0.15s ease-in-out infinite;
+            background: #1e1015 !important;
+            border: 2px solid var(--accent-red) !important;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.2) !important;
+            transform: none !important;
         }
 
-        @keyframes shakeTile {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-1px, 1px); }
-        }
-
-        /* Input Control Deck Console Panels */
-        .control-deck {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            background: rgba(10, 15, 30, 0.4);
-            padding: 12px;
-            border-radius: 18px;
-            border: 1px solid var(--border-glass);
-        }
-
-        .input-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
+        /* Input Controls */
         .label {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             letter-spacing: 0.5px;
         }
 
         .input-container {
             display: flex;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            border: 1px solid var(--border-glass);
+            background: var(--bg-main);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
             overflow: hidden;
-            height: 40px;
+            height: 44px;
         }
 
         .input-container input, .input-container select {
@@ -166,44 +174,57 @@
             background: transparent;
             border: none;
             color: white;
-            padding: 0 10px;
+            padding: 0 14px;
             font-weight: 700;
             font-size: 0.95rem;
             outline: none;
-            color-scheme: dark;
         }
 
         .scale-btn {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.05);
             border: none;
-            color: white;
-            padding: 0 10px;
-            font-size: 0.75rem;
+            color: var(--text-light);
+            padding: 0 14px;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            border-left: 1px solid var(--border-glass);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            transition: background 0.2s;
+        }
+
+        .scale-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .action-btn {
             width: 100%;
-            height: 48px;
+            height: 50px;
             border: none;
-            border-radius: 12px;
-            font-size: 1.05rem;
-            font-weight: 800;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
             color: white;
             transition: all 0.15s ease;
         }
 
-        .btn-start {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        .btn-bet {
+            background: var(--primary-blue);
+            box-shadow: 0 4px 0 #1d4ed8;
         }
+        .btn-bet:hover:not(:disabled) { background: #2563eb; }
 
         .btn-cashout {
-            background: linear-gradient(135deg, #10b981, #047857);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: 0 4px 0 #00b359;
+            font-weight: 800;
+        }
+        .btn-cashout:hover:not(:disabled) { background: #33ff99; }
+
+        .action-btn:active:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: none !important;
         }
 
         .action-btn:disabled {
@@ -212,52 +233,67 @@
             box-shadow: none !important;
             cursor: not-allowed;
         }
+
+        /* Responsive Breakpoint for Mobile Interfaces */
+        @media (max-width: 768px) {
+            .game-wrapper {
+                flex-direction: column-reverse;
+            }
+            .sidebar-controls {
+                width: 100%;
+                border-right: none;
+                border-top: 1px solid var(--border-glass);
+            }
+            .grid-theater {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <!-- Header Navigation Section Bar Row -->
-    <div class="header-widget">
-        <div class="user-tag">👤 <span id="userName">Guest</span></div>
-        <div class="wallet-display">🪙 <span id="userBalance">Loading...</span></div>
-    </div>
+<!-- Top Navigation Data Hub Widget -->
+<div class="header-widget">
+    <div class="user-tag">👤 User: <span id="userName">Guest</span></div>
+    <div class="wallet-display">🪙 <span id="userBalance">0.00</span></div>
+</div>
 
-    <!-- 5x5 Mines Sweep Array Space Board Grid Deck Matrix Container -->
-    <div class="mines-board-grid" id="minesGridMatrix"></div>
-
-    <!-- Operational Controls Configuration Workspace Deck Deck -->
-    <div class="control-deck">
-        <div class="input-row">
-            <div>
-                <div class="label">Bet Amount</div>
-                <div class="input-container">
-                    <input type="number" id="betValue" value="10" min="1">
-                    <button class="scale-btn" onclick="adjustStakeScale('half')">½</button>
-                    <button class="scale-btn" onclick="adjustStakeScale('double')">2x</button>
-                </div>
-            </div>
-            <div>
-                <div class="label">Mines Count</div>
-                <div class="input-container">
-                    <select id="minesCountSelector">
-                        <option value="1">1 Mine</option>
-                        <option value="3" selected>3 Mines</option>
-                        <option value="5">5 Mines</option>
-                        <option value="10">10 Mines</option>
-                        <option value="15">15 Mines</option>
-                        <option value="20">20 Mines</option>
-                    </select>
-                </div>
+<div class="game-wrapper">
+    <!-- Left Hand Stake Console Command Deck Menu -->
+    <div class="sidebar-controls">
+        <div>
+            <div class="label">Bet Amount</div>
+            <div class="input-container">
+                <input type="number" id="betValue" value="10" min="1">
+                <button class="scale-btn" onclick="adjustStakeScale('half')">½</button>
+                <button class="scale-btn" onclick="adjustStakeScale('double')">2x</button>
             </div>
         </div>
 
-        <button class="action-btn btn-start" id="mainActionBtn" onclick="toggleMinesEngineLoopState()" disabled>Syncing Wallet...</button>
+        <div>
+            <div class="label">Mines</div>
+            <div class="input-container">
+                <select id="minesCountSelector">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="24">24</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="action-btn btn-bet" id="mainActionBtn" onclick="toggleMinesEngineLoopState()" disabled>Syncing Balance...</button>
+    </div>
+
+    <!-- Right Hand Interactive Graphic Grid Arena Arena -->
+    <div class="grid-theater">
+        <div class="mines-grid" id="minesGridMatrix"></div>
     </div>
 </div>
 
 <script>
-    // CENTRAL BACKEND SPREADSHEETS ARCHITECTURES API HOOK
     const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
     let balance = 0;
@@ -265,16 +301,36 @@
     let minesQuantity = 3;
     let gameActive = false;
 
-    let boardTilesArray = Array(25).fill(false); // Stores true for mines positions
+    let boardTilesArray = Array(25).fill(false);
     let openedTilesCount = 0;
     let currentPayoutMultiplier = 1.00;
 
-    // Filter dynamic clean local user identification details handles
+    // Native Browser Sound Effects Synthesizer Engine
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSyntheticSound(frequency, type, duration, slideTo = 0) {
+        try {
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+            if (slideTo > 0) {
+                osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
+            }
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch(e) { console.log("Audio not allowed yet"); }
+    }
+
+    // Clean user account profile configuration tags handles
     const rawUser = localStorage.getItem("currentUser") || "Guest";
     const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
     document.getElementById("userName").innerText = cleanUser;
 
-    // Setup initial matrix tiles layouts nodes fields
+    // Render Matrix Layout Elements
     const gridContainer = document.getElementById("minesGridMatrix");
     for (let i = 0; i < 25; i++) {
         const btn = document.createElement("button");
@@ -285,7 +341,7 @@
         gridContainer.appendChild(btn);
     }
 
-    // 1. LIVE REFRESH SYNC FROM SHEET DATA DIRECT
+    // 1. Fetch live profile sync database values
     function fetchLiveWallet() {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
         .then(r => r.json())
@@ -297,17 +353,16 @@
                 if (!gameActive) {
                     const actionBtn = document.getElementById("mainActionBtn");
                     actionBtn.disabled = false;
-                    actionBtn.innerText = "Bet & Start Game";
-                    actionBtn.className = "action-btn btn-start";
+                    actionBtn.innerText = "Bet";
+                    actionBtn.className = "action-btn btn-bet";
                 }
             }
         }).catch(err => {
-            console.error("Database endpoint connection link loss dropped:", err);
             document.getElementById('userBalance').innerText = "Offline";
         });
     }
 
-    // 2. BACKEND TRANSACTION DISPATCH PIPE PACKET
+    // 2. Transmit ledger logs change events background pipeline parameters
     function syncTxToDatabase(amountChange, updateScreenUI = true) {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
         .then(r => r.json())
@@ -316,7 +371,7 @@
                 balance = parseFloat(data.balance);
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
-        }).catch(e => console.error("Database transaction logs dropped out:", e));
+        });
     }
 
     function adjustStakeScale(type) {
@@ -331,39 +386,35 @@
         const actionBtn = document.getElementById("mainActionBtn");
 
         if (!gameActive) {
-            // Place Bet and Initialise Board Game State
             const betInput = document.getElementById("betValue");
             const desiredBet = parseInt(betInput.value) || 0;
             minesQuantity = parseInt(document.getElementById("minesCountSelector").value);
 
             if (desiredBet < 1 || desiredBet > balance) {
-                alert("Stake bounds error! Balance metrics mismatched.");
+                alert("Mismatched allocation balance bounds details!");
                 return;
             }
 
-            // BALANCE BUG RESOLUTION: Subtract local variable values and display layout views instantly
+            // INSTANT DEDUCTION PARADIGM LAYER
             betAmount = desiredBet;
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
-
-            // Transmit background write command to server spreadsheet structure quietly
             syncTxToDatabase(-betAmount, false);
 
-            // Initialize game state rules components variables parameters metrics 
             gameActive = true;
             openedTilesCount = 0;
             currentPayoutMultiplier = 1.00;
             generateRandomHiddenMinesPlacement();
 
-            // Toggle operating system control deck inputs components fields 
             betInput.disabled = true;
             document.getElementById("minesCountSelector").disabled = true;
 
-            actionBtn.innerText = "Choose a tile...";
-            actionBtn.disabled = true;
+            actionBtn.innerText = "Cash Out";
             actionBtn.className = "action-btn btn-cashout";
+            actionBtn.disabled = true;
 
-            // Un-freeze target display matrix nodes elements interaction states 
+            playSyntheticSound(587.33, 'triangle', 0.15); // Start game chime
+
             const tiles = gridContainer.children;
             for (let i = 0; i < tiles.length; i++) {
                 tiles[i].className = "tile-btn";
@@ -371,7 +422,6 @@
                 tiles[i].disabled = false;
             }
         } else {
-            // Cash Out Event Triggered by manual click selection action
             executeCashoutSequence();
         }
     }
@@ -388,52 +438,42 @@
         }
     }
 
-    // Mathematical combination formula parameters calculators computing dynamic casino odds returns parameters mapping inline models
     function calculateNextMinesMultiplier() {
         let currentCombinations = combinations(25, openedTilesCount);
         let nextCombinations = combinations(25 - minesQuantity, openedTilesCount);
-        
-        // Dynamic edge house loading fee algorithm matrix profiles multiplier mapping sets calculations
         let absoluteRawOdds = currentCombinations / nextCombinations;
-        let finalScaleMultiplier = absoluteRawOdds * 0.97; // Apply standard 3% house edge factor
-        return Math.max(1.01, parseFloat(finalScaleMultiplier.toFixed(2)));
+        return Math.max(1.01, parseFloat((absoluteRawOdds * 0.99).toFixed(2))); // 1% House Edge
     }
 
-    // Helper combinations logic function
     function combinations(n, k) {
         if (k === 0) return 1;
         let res = 1;
-        for (let i = 1; i <= k; i++) {
-            res = res * (n - k + i) / i;
-        }
+        for (let i = 1; i <= k; i++) res = res * (n - k + i) / i;
         return res;
     }
 
     function handleTileClickReveal(index) {
         if (!gameActive) return;
         const targetTile = gridContainer.children[index];
-        targetTile.disabled = true; // prevent repeated click calls cycles handling
+        targetTile.disabled = true;
 
-        const landedOnAMine = boardTilesArray[index];
-
-        if (landedOnAMine) {
-            // HIT MINE: Instant sequence explosion failure loop
+        if (boardTilesArray[index]) {
             triggerExplosionLossSequence(index);
         } else {
-            // HIT GEM: Safe choice progression trace path
             openedTilesCount++;
-            targetTile.className = "tile-btn tile-diamond";
+            targetTile.className = "tile-btn tile-gem";
             targetTile.innerText = "💎";
+
+            // Synthesize crisp ascending note scale sweep for gem discover alerts
+            playSyntheticSound(440 + (openedTilesCount * 60), 'sine', 0.12, 600 + (openedTilesCount * 60));
 
             currentPayoutMultiplier = calculateNextMinesMultiplier();
             const prospectiveCashoutTotal = betAmount * currentPayoutMultiplier;
 
-            // Update interactive action button matrix structures trackers
             const actionBtn = document.getElementById("mainActionBtn");
             actionBtn.disabled = false;
-            actionBtn.innerText = `Cash Out 🪙${prospectiveCashoutTotal.toFixed(2)} (x${currentPayoutMultiplier.toFixed(2)})`;
+            actionBtn.innerText = `Cash Out (${prospectiveCashoutTotal.toFixed(2)})`;
 
-            // Max Win Scenario: Check if all gems have been swept perfectly
             if (openedTilesCount === (25 - minesQuantity)) {
                 executeCashoutSequence();
             }
@@ -442,51 +482,54 @@
 
     function executeCashoutSequence() {
         if (!gameActive) return;
-        gameActive = false; // Freeze status mechanics immediately to completely eliminate overlapping latency hazards
+        gameActive = false;
 
         const totalWinningsReturn = betAmount * currentPayoutMultiplier;
         balance += totalWinningsReturn;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
-
-        // WIN SEQUENCE: Dispatch transaction update directly to server sheet architecture safely
         syncTxToDatabase(totalWinningsReturn, true);
 
-        revealEntireBoardState(true);
+        // Success cash-out arpeggio wave sound cascade
+        playSyntheticSound(523.25, 'sine', 0.1);
+        setTimeout(() => playSyntheticSound(659.25, 'sine', 0.1), 80);
+        setTimeout(() => playSyntheticSound(783.99, 'sine', 0.2, 1200), 160);
+
+        revealEntireBoardState();
 
         const actionBtn = document.getElementById("mainActionBtn");
         actionBtn.disabled = true;
-        actionBtn.innerText = `CASHED OUT! +🪙${totalWinningsReturn.toFixed(2)}`;
+        actionBtn.innerText = `+🪙${totalWinningsReturn.toFixed(2)}`;
 
         resetGameArenaEnvironmentDelayed();
     }
 
     function triggerExplosionLossSequence(explodedIndex) {
         gameActive = false;
+        revealEntireBoardState();
         
-        revealEntireBoardState(false);
-        
-        // Highlight specific execution failure node point
         gridContainer.children[explodedIndex].innerText = "💥";
+        playSyntheticSound(120, 'sawtooth', 0.4, 30); // Bass explosion sound crash
 
         const actionBtn = document.getElementById("mainActionBtn");
         actionBtn.disabled = true;
-        actionBtn.innerText = "BOOM! GAME OVER";
+        actionBtn.innerText = "Mined! Game Over";
 
-        // LOSS SEQUENCE: No network check update is triggered here. Visually drops values permanently safely.
         resetGameArenaEnvironmentDelayed();
     }
 
-    function revealEntireBoardState(userWon) {
+    function revealEntireBoardState() {
         const tiles = gridContainer.children;
         for (let i = 0; i < tiles.length; i++) {
             tiles[i].disabled = true;
             if (boardTilesArray[i]) {
-                tiles[i].className = "tile-btn tile-mine";
-                tiles[i].innerText = "💣";
+                if(tiles[i].innerText !== "💥") {
+                    tiles[i].className = "tile-btn tile-mine";
+                    tiles[i].innerText = "💣";
+                }
             } else {
-                if (!tiles[i].classList.contains("tile-diamond")) {
+                if (!tiles[i].classList.contains("tile-gem")) {
                     tiles[i].innerText = "💎";
-                    tiles[i].style.opacity = "0.3"; // fade unselected safe gems visually
+                    tiles[i].style.opacity = "0.2";
                 }
             }
         }
@@ -498,11 +541,10 @@
             document.getElementById("minesCountSelector").disabled = false;
             
             const actionBtn = document.getElementById("mainActionBtn");
-            actionBtn.innerText = "Bet & Start Game";
-            actionBtn.className = "action-btn btn-start";
+            actionBtn.innerText = "Bet";
+            actionBtn.className = "action-btn btn-bet";
             actionBtn.disabled = false;
 
-            // Soft reset display fields textures values paths
             const tiles = gridContainer.children;
             for (let i = 0; i < tiles.length; i++) {
                 tiles[i].className = "tile-btn";
@@ -510,10 +552,9 @@
                 tiles[i].style.opacity = "1";
                 tiles[i].disabled = true;
             }
-        }, 4000);
+        }, 3500);
     }
 
-    // Direct immediate launch sequences initialization passes
     fetchLiveWallet();
 </script>
 
