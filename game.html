@@ -39,7 +39,6 @@ body {
   position: relative;
 }
 
-/* Fancy Animated Background Canvas Canvas */
 #bgCanvas {
   position: fixed;
   top: 0;
@@ -50,7 +49,6 @@ body {
   pointer-events: none;
 }
 
-/* Master Mobile Workspace Wrapper */
 .app-wrapper {
   width: 100%;
   max-width: 440px;
@@ -60,7 +58,25 @@ body {
   z-index: 10;
 }
 
-/* Sticky Navigation Header Bar */
+/* New User Welcome Message Notification Banner */
+.welcome-alert-banner {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
+  border: 1px solid rgba(147, 51, 234, 0.4);
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #e0f2fe;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  display: none; /* Controlled dynamically by JS */
+  animation: pulseGlow 2s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  from { border-color: rgba(147, 51, 234, 0.4); }
+  to { border-color: rgba(59, 130, 246, 0.8); }
+}
+
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -74,12 +90,11 @@ body {
   box-shadow: var(--glow-shadow);
 }
 
-/* Completely Round Account Button */
 .account-trigger {
   width: 44px;
   height: 44px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
-  border: 1px solid rgba(255,255,255,0.2);
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.03));
+  border: 2px solid var(--primary-blue);
   color: white;
   border-radius: 50%;
   font-size: 1.25rem;
@@ -87,12 +102,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .account-trigger:active { 
-  transform: scale(0.9) rotate(-15deg); 
-  background: rgba(255,255,255,0.15); 
+  transform: scale(0.9);
 }
 
 .wallet-badge {
@@ -103,10 +117,8 @@ body {
   font-weight: 800;
   color: var(--accent-gold);
   font-size: 0.95rem;
-  letter-spacing: 0.5px;
 }
 
-/* Floating Modular Drawer Hub Container */
 .account-drawer {
   display: none;
   position: absolute;
@@ -121,12 +133,6 @@ body {
   border-radius: 24px;
   box-shadow: 0 24px 50px rgba(0,0,0,0.8);
   z-index: 9999;
-  animation: slideDownIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideDownIn {
-  from { opacity: 0; transform: translateY(-12px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .drawer-user-info {
@@ -134,23 +140,9 @@ body {
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   padding-bottom: 12px;
   margin-bottom: 16px;
   border-bottom: 1px solid var(--border-glass);
-}
-
-/* Call to Action Transaction Button Container */
-.gateway-box {
-  background: rgba(59, 130, 246, 0.08);
-  border: 1px dashed rgba(59, 130, 246, 0.3);
-  padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 14px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #93c5fd;
-  text-align: center;
 }
 
 .drawer-btn {
@@ -167,14 +159,11 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: opacity 0.1s;
 }
 .btn-dep { background: linear-gradient(135deg, #10b981, #059669); }
 .btn-wd { background: linear-gradient(135deg, #f59e0b, #d97706); }
 .btn-lo { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); color: #f87171; }
-.drawer-btn:active { opacity: 0.85; }
 
-/* Identity Hero Profile Card Banner */
 .hero-card {
   background: var(--bg-card);
   backdrop-filter: blur(10px);
@@ -182,15 +171,12 @@ body {
   border: 1px solid var(--border-glass);
   border-radius: 24px;
   padding: 22px;
-  text-align: left;
   box-shadow: var(--glow-shadow);
 }
 
 .hero-card h1 {
   font-size: 1.5rem;
   font-weight: 900;
-  letter-spacing: 1.5px;
-  margin-bottom: 4px;
   background: linear-gradient(45deg, #60a5fa, #a78bfa, #f472b6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -199,19 +185,16 @@ body {
 .hero-card p {
   font-size: 0.85rem;
   color: var(--text-muted);
-  font-weight: 600;
+  margin-top: 4px;
 }
 
-/* Premium Matrix Game Grid Framework */
 .games-grid-title {
   font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1.2px;
   color: var(--text-muted);
-  text-align: left;
   margin-left: 4px;
-  margin-top: 4px;
 }
 
 .games-matrix-grid {
@@ -232,90 +215,57 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  position: relative;
-  overflow: hidden;
   aspect-ratio: 1 / 1;
   box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 0 8px 16px rgba(0,0,0,0.2);
-  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.15s ease;
 }
+.game-card-btn:active { transform: scale(0.95); }
+.game-card-btn .game-icon { font-size: 2.2rem; }
+.game-card-btn .game-title { font-size: 0.95rem; font-weight: 800; }
+.game-card-btn .sub-desc { font-size: 0.7rem; opacity: 0.55; }
 
-.game-card-btn:active {
-  transform: scale(0.95);
-}
-
-.game-card-btn .game-icon {
-  font-size: 2.2rem;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-}
-
-.game-card-btn .game-title {
-  font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: 0.3px;
-}
-
-.game-card-btn .sub-desc {
-  font-size: 0.7rem;
-  font-weight: 500;
-  opacity: 0.55;
-  line-height: 1.2;
-}
-
-.span-full {
-  grid-column: span 2;
-  aspect-ratio: auto;
-  padding: 16px;
-}
-
-/* App Palette Themes Profiles */
+.span-full { grid-column: span 2; aspect-ratio: auto; padding: 16px; }
 .bg-bigsmall { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); }
 .bg-mines { background: linear-gradient(135deg, #475569 0%, #1e293b 100%); }
 .bg-dragon { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
 .bg-crash { background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); }
 .bg-plinko { background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); }
-
-.bg-soon { 
-  background: rgba(30, 41, 59, 0.4); 
-  color: var(--text-muted); 
-  cursor: not-allowed; 
-  box-shadow: none;
-  opacity: 0.4;
-}
+.bg-soon { background: rgba(30, 41, 59, 0.4); color: var(--text-muted); cursor: not-allowed; opacity: 0.4; box-shadow: none; }
 </style>
 </head>
 <body>
 
-<!-- Interactive Canvas Engine Background Matrix -->
 <canvas id="bgCanvas"></canvas>
 
 <div class="app-wrapper">
-    <!-- Header Navigation Section Bar -->
+    <!-- Highlight Notification Alert Bar Box for New Users -->
+    <div class="welcome-alert-banner" id="welcomeGuide">
+        👋 Welcome! Please click on the **Account icon** at the top left to deposit and withdraw money.
+    </div>
+
+    <!-- Header Navigation Bar -->
     <div class="app-header">
         <button class="account-trigger" onclick="toggleAccountMenu()">👤</button>
         <div class="wallet-badge">🪙 <span id="coins">Syncing...</span></div>
     </div>
 
-    <!-- Dropdown Modal Account Context Drawer Container -->
+    <!-- Dropdown Account Modal Drawer Context Menu -->
     <div class="account-drawer" id="accountMenu">
         <div class="drawer-user-info">ID: <span id="userHandleDisplay" style="color: white;">Loading...</span></div>
-        
-        <!-- Requested Gateway Target Banner Module -->
-        <div class="gateway-box">💡 Click here to deposit and withdraw money</div>
-
         <button class="drawer-btn btn-dep" onclick="routeTo('deposit.html')">➕ Deposit Money</button>
         <button class="drawer-btn btn-wd" onclick="routeTo('withdraw.html')">➖ Withdraw Money</button>
         <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out Account</button>
     </div>
 
-    <!-- Identity Hero Profile Card Banner Header Section -->
+    <!-- Hero Card Profiler -->
     <div class="hero-card">
         <h1>MINI GAMES HUB PRO</h1>
-        <p>Session Active: <span id="sessionEmail" style="color: var(--text-light);">Loading...</span></p>
+        <p>Active Profile: <span id="sessionEmail" style="color: var(--text-light);">Loading...</span></p>
     </div>
 
     <div class="games-grid-title">Arena Game Grid</div>
 
-    <!-- 2-Column Crypto Casino Grid Engine Layout Module Selection -->
+    <!-- Grid Layout -->
     <div class="games-matrix-grid">
         <button class="game-card-btn bg-bigsmall" onclick="routeTo('big-small.html')">
             <span class="game-icon">🎲</span>
@@ -349,13 +299,12 @@ body {
 
         <button class="game-card-btn bg-soon span-full" disabled>
             <span class="game-title">🚀 More Modules Pending</span>
-            <span class="sub-desc">New real-time game matrix engines coming soon</span>
+            <span class="sub-desc">Constructing new engines...</span>
         </button>
     </div>
 </div>
 
 <script>
-// WEB APP DEPLOYMENT DATABASE URL API CONNECTION
 const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
 let rawStorageUser = localStorage.getItem("currentUser") || "Guest";
@@ -368,23 +317,24 @@ if(dynamicUserHandle.includes("@")) {
 document.getElementById("sessionEmail").innerText = dynamicUserHandle;
 document.getElementById("userHandleDisplay").innerText = dynamicUserHandle;
 
-// Core balance syncing function (with Cache-Busting protection)
+// Core balance syncing engine with strict cache-busting architecture
 function forceSyncWalletData() {
-    document.getElementById("coins").innerText = "Syncing...";
     fetch(`${DATABASE_URL}?username=${encodeURIComponent(dynamicUserHandle)}&nocache=${Date.now()}`)
     .then(response => response.json())
     .then(data => {
         if(data && data.balance !== undefined) {
             let extractedBalanceValue = parseFloat(data.balance);
             document.getElementById("coins").innerText = extractedBalanceValue.toFixed(2);
-        } else {
-            document.getElementById("coins").innerText = "Sync Error";
+            
+            // Onboarding display rule handler: show notice banner if account is completely fresh or has no coins
+            if (extractedBalanceValue === 0) {
+                document.getElementById("welcomeGuide").style.display = "block";
+            } else {
+                document.getElementById("welcomeGuide").style.display = "none";
+            }
         }
     })
-    .catch(error => {
-        console.error("Database pipeline syncing network failure:", error);
-        document.getElementById("coins").innerText = "Offline";
-    });
+    .catch(error => console.error("Sync error:", error));
 }
 
 function toggleAccountMenu() {
@@ -401,7 +351,7 @@ function triggerSignout() {
     window.location.href = "login.html";
 }
 
-// CRITICAL MEMORY REFRESH CACHE DESTROY LIFECYCLES
+// PERMANENT FIX FOR BALANCE BUG: Force updates on visibility changes and back actions
 window.addEventListener("pageshow", function(event) {
     forceSyncWalletData();
 });
@@ -412,7 +362,16 @@ document.addEventListener("visibilitychange", function() {
     }
 });
 
-// Fancy Animated Starfield Background Shader Simulation Node Engine Script 
+// BACKGROUND SYNC ENGINE INTERVAL LOOP:
+// Checks for out-of-sync backend sheet alterations every 3 seconds while active
+setInterval(() => {
+    if (document.visibilityState === "visible") {
+        forceSyncWalletData();
+    }
+}, 3000);
+
+
+// Animated Background Matrix Logic
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
@@ -424,7 +383,6 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-// Generate slow glowing nebula dust points configurations 
 for (let i = 0; i < 45; i++) {
     particles.push({
         x: Math.random() * canvas.width,
@@ -437,15 +395,12 @@ for (let i = 0; i < 45; i++) {
 
 function animateBackgroundMesh() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw subtle linear core gradient
     let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
     grad.addColorStop(0, '#060b19');
     grad.addColorStop(1, '#0c152b');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Update and draw particles nodes connections 
     for (let i = 0; i < particles.length; i++) {
         let p = particles[i];
         p.y -= p.speed;
@@ -453,7 +408,6 @@ function animateBackgroundMesh() {
             p.y = canvas.height + 10;
             p.x = Math.random() * canvas.width;
         }
-        
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(96, 165, 250, ${p.alpha})`;
