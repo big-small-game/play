@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Big Small Pro</title>
+    <title>Big Small</title>
     <style>
         :root {
             --bg-main: #060b19;
@@ -32,11 +32,46 @@
             color: var(--text-light);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 12px;
             overflow: hidden;
             position: relative;
+        }
+
+        /* Top Navigation Bar container alignment */
+        .top-nav-container {
+            width: 100%;
+            max-width: 430px;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 12px;
+            z-index: 10;
+        }
+
+        .btn-home-nav {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            color: #dfe6e9;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-home-nav:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary-blue);
+            color: white;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
         }
 
         .game-container {
@@ -254,14 +289,16 @@
 </head>
 <body>
 
+<div class="top-nav-container">
+    <a href="index.html" class="btn-home-nav">← Back to Home</a>
+</div>
+
 <div class="game-container">
-    <!-- Header -->
     <div class="header-widget">
         <div class="user-tag">👤 <span id="userName">Guest</span></div>
         <div class="wallet-display">🪙 <span id="userBalance">Loading...</span></div>
     </div>
 
-    <!-- Dice Theater Arena Layout -->
     <div class="dice-theater">
         <div class="dice-row">
             <div class="die" id="die1">⚀</div>
@@ -271,10 +308,8 @@
         <div class="total-badge" id="totalScoreText">Total: --</div>
     </div>
 
-    <!-- History Ribbon Log Strip -->
     <div class="history-ribbon" id="historyBox"></div>
 
-    <!-- Interactive Choice Layout Blocks -->
     <div class="betting-zones">
         <button class="zone-btn zone-big" id="zoneBig" onclick="selectPredictionZone('BIG')">
             <span class="title">BIG</span>
@@ -286,7 +321,6 @@
         </button>
     </div>
 
-    <!-- Operating System Input Blocks -->
     <div class="control-deck">
         <div>
             <div class="label">Bet Amount</div>
@@ -454,7 +488,7 @@
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
                 
                 // WIN CONDITION: Dispatch transaction update payload packet directly to server sheet architectures pipeline safely
-                syncTxToDatabase(totalWinWinReturnFunds, true);
+                syncTxToDatabase(totalWinReturnFunds, true);
                 document.getElementById("rollActionBtn").innerText = `WINNINGS +🪙${totalWinReturnFunds}`;
             } else {
                 // LOSS CONDITION: DO NOT pull from database endpoint now to avoid breaking UI local memory changes states visualization workflows
