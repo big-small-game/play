@@ -3,28 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mines Pro | Stake Edition</title>
-    <!-- Premium Cyber/Casino Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-    
+    <title>Mines Pro | Standard Edition</title>
     <style>
         :root {
-            --bg-main: #060b19;
-            --bg-sidebar: #0f172a;
-            --bg-card: #020617;
-            --primary-blue: #2563eb;
-            --accent-gold: #fbbf24;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
+            --bg-main: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-card: #0b0f19;
+            --primary-blue: #3b82f6;
+            --accent-gold: #f59e0b;
+            --accent-green: #00e676;
+            --accent-red: #ff3333;
             --text-light: #f8fafc;
-            --text-muted: #64748b;
-            --border-glass: rgba(255, 255, 255, 0.06);
-            --tile-unopened: #1e293b;
-            --tile-unopened-hover: #334155;
-            --font-fancy: 'Orbitron', system-ui, sans-serif;
-            --font-sub: 'Rajdhani', system-ui, sans-serif;
+            --text-muted: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.05);
+            --tile-unopened: #2f455e;
+            --tile-unopened-hover: #3c5674;
         }
 
         * {
@@ -36,7 +29,7 @@
         }
 
         body {
-            font-family: var(--font-sub);
+            font-family: Arial, Helvetica, sans-serif; /* Clean, normal system font */
             background-color: var(--bg-main);
             color: var(--text-light);
             min-height: 100vh;
@@ -45,10 +38,8 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
-            letter-spacing: 0.5px;
         }
 
-        /* Top-Left Back Button Platform */
         .back-nav-container {
             width: 100%;
             max-width: 900px;
@@ -61,51 +52,44 @@
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid var(--border-glass);
             color: var(--text-light);
-            font-family: var(--font-fancy);
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: bold;
             padding: 8px 16px;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
             transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
         }
 
         .btn-back:hover {
             background: var(--primary-blue);
             border-color: transparent;
-            box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
         }
 
         .game-wrapper {
             width: 100%;
             max-width: 900px;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.6);
             border: 1px solid var(--border-glass);
-            border-radius: 20px;
+            border-radius: 16px;
             display: flex;
             flex-direction: row;
             overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
 
-        /* Left Control Dashboard */
         .sidebar-controls {
             width: 320px;
             background: var(--bg-sidebar);
             padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 22px;
+            gap: 20px;
             border-right: 1px solid var(--border-glass);
         }
 
-        /* Right Grid Theater */
         .grid-theater {
             flex: 1;
             background: var(--bg-card);
@@ -113,44 +97,39 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px;
+            padding: 30px;
             position: relative;
         }
 
-        /* Nav Stats Header Widget */
         .header-widget {
             display: flex;
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             max-width: 900px;
-            padding: 0 4px;
+            padding: 0 8px;
         }
 
         .user-tag {
-            font-family: var(--font-fancy);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--text-muted);
         }
 
         .wallet-display {
-            font-family: var(--font-fancy);
             background: var(--bg-sidebar);
-            padding: 8px 18px;
-            border-radius: 10px;
+            padding: 8px 16px;
+            border-radius: 8px;
             border: 1px solid var(--border-glass);
-            font-weight: 800;
+            font-weight: bold;
             color: var(--accent-gold);
-            text-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
         }
 
-        /* 5x5 Matrix Layout Grid */
         .mines-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
+            gap: 10px;
             width: 100%;
             max-width: 440px;
             aspect-ratio: 1 / 1;
@@ -158,67 +137,55 @@
 
         .tile-btn {
             background: var(--tile-unopened);
-            border: 2px solid transparent;
-            border-radius: 10px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 0 #0f172a;
-            transition: transform 0.1s ease, background-color 0.15s ease, border-color 0.15s ease;
-            /* Fixes the static sizing map structure constraints */
+            box-shadow: 0 3px 0 #1b2a3a;
+            transition: all 0.1s ease;
             width: 100%;
             height: 100%;
             padding: 0;
             margin: 0;
-            line-height: 1;
         }
 
         .tile-btn:hover:not(:disabled) {
             background: var(--tile-unopened-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 #0f172a;
+            transform: translateY(-1px);
         }
 
-        .tile-btn:active:not(:disabled) {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #0f172a;
-        }
-
-        /* Static non-shifting outcome profiles */
         .tile-gem {
-            background: #022c22 !important;
-            border-color: var(--accent-green) !important;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.25) !important;
+            background: #071824 !important;
+            border: 2px solid var(--accent-green) !important;
+            box-shadow: 0 0 12px rgba(0, 230, 118, 0.15) !important;
             transform: none !important;
         }
 
         .tile-mine {
-            background: #450a0a !important;
-            border-color: var(--accent-red) !important;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.25) !important;
+            background: #1e1015 !important;
+            border: 2px solid var(--accent-red) !important;
             transform: none !important;
         }
 
-        /* Inputs Console */
         .label {
-            font-family: var(--font-fancy);
             font-size: 0.75rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
         }
 
         .input-container {
             display: flex;
             background: var(--bg-main);
-            border-radius: 8px;
-            border: 1px solid var(--border-glass);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
             overflow: hidden;
-            height: 46px;
+            height: 44px;
         }
 
         .input-container input {
@@ -227,56 +194,49 @@
             border: none;
             color: white;
             padding: 0 14px;
-            font-family: var(--font-fancy);
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.95rem;
             outline: none;
         }
 
         .scale-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.05);
             border: none;
             color: var(--text-light);
-            padding: 0 16px;
-            font-family: var(--font-fancy);
-            font-size: 0.75rem;
+            padding: 0 14px;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            border-left: 1px solid var(--border-glass);
-            transition: background 0.2s;
+            border-left: 1px solid rgba(255,255,255,0.1);
         }
 
-        .scale-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
+        .scale-btn:hover { background: rgba(255, 255, 255, 0.1); }
 
         .action-btn {
             width: 100%;
-            height: 52px;
+            height: 50px;
             border: none;
-            border-radius: 8px;
-            font-family: var(--font-fancy);
-            font-size: 0.95rem;
-            font-weight: 800;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
             color: white;
             transition: all 0.15s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .btn-bet {
             background: var(--primary-blue);
             box-shadow: 0 4px 0 #1d4ed8;
         }
-        .btn-bet:hover:not(:disabled) { background: #3b82f6; }
+        .btn-bet:hover:not(:disabled) { background: #2563eb; }
 
         .btn-cashout {
             background: var(--accent-green);
-            color: #060b19;
-            box-shadow: 0 4px 0 #059669;
+            color: #000;
+            box-shadow: 0 4px 0 #00b359;
+            font-weight: 800;
         }
-        .btn-cashout:hover:not(:disabled) { background: #34d399; }
+        .btn-cashout:hover:not(:disabled) { background: #33ff99; }
 
         .action-btn:active:not(:disabled) {
             transform: translateY(3px);
@@ -284,36 +244,31 @@
         }
 
         .action-btn:disabled {
-            background: #1e293b !important;
-            color: #475569 !important;
+            background: #334155 !important;
+            color: #64748b !important;
             box-shadow: none !important;
             cursor: not-allowed;
         }
 
-        /* Mobile Adjustments */
         @media (max-width: 768px) {
             .game-wrapper { flex-direction: column-reverse; }
             .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); }
-            .grid-theater { padding: 24px; }
-            .back-nav-container { padding-left: 6px; }
+            .grid-theater { padding: 16px; }
         }
     </style>
 </head>
 <body>
 
-<!-- Dynamic Redirection Navigation Bar -->
 <div class="back-nav-container">
-    <a href="game.html" class="btn-back">← BACK TO GAMES</a>
+    <a href="game.html" class="btn-back">← Back to Games</a>
 </div>
 
-<!-- Game Data Metrics Widget -->
 <div class="header-widget">
-    <div class="user-tag">👤 ID: <span id="userName">Guest</span></div>
+    <div class="user-tag">👤 User: <span id="userName">Guest</span></div>
     <div class="wallet-display">🪙 <span id="userBalance">0.00</span></div>
 </div>
 
 <div class="game-wrapper">
-    <!-- Action Operating Panel Control Console -->
     <div class="sidebar-controls">
         <div>
             <div class="label">Bet Amount</div>
@@ -331,10 +286,9 @@
             </div>
         </div>
 
-        <button class="action-btn btn-bet" id="mainActionBtn" onclick="toggleMinesEngineLoopState()" disabled>Syncing Ledger...</button>
+        <button class="action-btn btn-bet" id="mainActionBtn" onclick="toggleMinesEngineLoopState()" disabled>Syncing Balance...</button>
     </div>
 
-    <!-- Active Visual Game Display Theater -->
     <div class="grid-theater">
         <div class="mines-grid" id="minesGridMatrix"></div>
     </div>
@@ -352,7 +306,6 @@
     let openedTilesCount = 0;
     let currentPayoutMultiplier = 1.00;
 
-    // Browser Sound FX Synthesis Hub
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSyntheticSound(frequency, type, duration, slideTo = 0) {
         try {
@@ -360,9 +313,7 @@
             const gainNode = audioCtx.createGain();
             osc.type = type;
             osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-            if (slideTo > 0) {
-                osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
-            }
+            if (slideTo > 0) osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
             gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
             osc.connect(gainNode);
@@ -372,12 +323,10 @@
         } catch(e) {}
     }
 
-    // Process local login handles
     const rawUser = localStorage.getItem("currentUser") || "Guest";
     const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
     document.getElementById("userName").innerText = cleanUser;
 
-    // Render Matrix Structural Grid Nodes
     const gridContainer = document.getElementById("minesGridMatrix");
     for (let i = 0; i < 25; i++) {
         const btn = document.createElement("button");
@@ -394,7 +343,6 @@
         if (val > 24) input.value = 24;
     }
 
-    // 1. Core Profile Balance Fetch Sync Direct Link
     function fetchLiveWallet() {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
         .then(r => r.json())
@@ -402,7 +350,6 @@
             if (data && data.balance !== undefined) {
                 balance = parseFloat(data.balance) || 0;
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
-                
                 if (!gameActive) {
                     const actionBtn = document.getElementById("mainActionBtn");
                     actionBtn.disabled = false;
@@ -410,12 +357,9 @@
                     actionBtn.className = "action-btn btn-bet";
                 }
             }
-        }).catch(() => {
-            document.getElementById('userBalance').innerText = "Offline";
         });
     }
 
-    // 2. Transaction Dispatch Ledger Background Engine Links 
     function syncTxToDatabase(amountChange, updateScreenUI = true) {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
         .then(r => r.json())
@@ -441,17 +385,15 @@
         if (!gameActive) {
             const betInput = document.getElementById("betValue");
             const desiredBet = parseInt(betInput.value) || 0;
-            
             const minesInput = document.getElementById("minesQuantityInput");
             validateMinesBoundsRange(minesInput);
             minesQuantity = parseInt(minesInput.value);
 
             if (desiredBet < 1 || desiredBet > balance) {
-                alert("Stake balance parameter error!");
+                alert("Stake balance allocation error!");
                 return;
             }
 
-            // INSTANT DEDUCTION CONSOLE METRICS PASS
             betAmount = desiredBet;
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
@@ -499,9 +441,10 @@
         let currentCombinations = combinations(25, openedTilesCount);
         let nextCombinations = combinations(25 - minesQuantity, openedTilesCount);
         let absoluteRawOdds = currentCombinations / nextCombinations;
-        return Math.max(1.01, parseFloat((absoluteRawOdds * 0.99).toFixed(2))); // 1% House Edge
+        return Math.max(1.01, parseFloat((absoluteRawOdds * 0.99).toFixed(2)));
     }
 
+    // Dynamic combination utilities
     function combinations(n, k) {
         if (k === 0) return 1;
         let res = 1;
@@ -567,7 +510,7 @@
 
         const actionBtn = document.getElementById("mainActionBtn");
         actionBtn.disabled = true;
-        actionBtn.innerText = "Mined! Game Over";
+        actionBtn.innerText = "Game Over";
 
         resetGameArenaEnvironmentDelayed();
     }
@@ -612,6 +555,5 @@
 
     fetchLiveWallet();
 </script>
-
 </body>
 </html>
