@@ -47,12 +47,6 @@
             max-width: 420px;
             box-shadow: var(--glow-shadow);
             position: relative;
-            animation: containerEntry 0.5s ease-out;
-        }
-
-        @keyframes containerEntry {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .pay-to {
@@ -83,7 +77,6 @@
             font-weight: 600;
             margin-bottom: 20px;
             color: #b2bec3;
-            text-align: left;
         }
 
         .form-group {
@@ -97,7 +90,6 @@
             font-weight: 600;
             margin-bottom: 8px;
             color: #dfe6e9;
-            letter-spacing: 0.5px;
         }
 
         input {
@@ -109,28 +101,12 @@
             font-size: 1rem;
             color: white;
             box-sizing: border-box;
-            transition: all 0.3s ease;
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary-color);
-            background: rgba(0, 0, 0, 0.3);
             box-shadow: 0 0 15px rgba(0, 206, 201, 0.2);
-        }
-
-        input::placeholder {
-            color: #636e72;
-        }
-
-        /* Standardize input styles across devices */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
         }
 
         .btn-submit {
@@ -144,23 +120,9 @@
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0, 206, 201, 0.3);
-            transition: all 0.3s ease;
         }
 
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 206, 201, 0.5);
-        }
-
-        .btn-submit:disabled {
-            background: linear-gradient(45deg, #57606f, #2f3542);
-            color: #a4b0be;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
-        }
-
-        /* Luxury Success Screen Overlay */
+        /* Success Screen Overlay */
         .success-screen {
             display: none;
             position: absolute;
@@ -173,12 +135,6 @@
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .success-icon {
@@ -193,13 +149,6 @@
             font-size: 40px;
             color: var(--primary-color);
             margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(0, 206, 201, 0.3);
-            animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes scaleUp {
-            from { transform: scale(0.6); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
         }
 
         .success-title {
@@ -225,11 +174,6 @@
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-back:hover {
-            background: rgba(255, 255, 255, 0.15);
         }
     </style>
 </head>
@@ -239,7 +183,7 @@
     <div class="success-screen" id="successScreen">
         <div class="success-icon">✓</div>
         <div class="success-title">Deposit Successful!</div>
-        <div class="success-desc">Your transaction request was received.<br>Please wait up to 24 hours for manual approval.</div>
+        <div class="success-desc">Your transaction details were logged.<br>Please wait up to 24 hours for review.</div>
         <button class="btn-back" onclick="window.location.href='index.html'">Back to Home</button>
     </div>
 
@@ -254,38 +198,17 @@
 
         <div class="form-group">
             <label for="username">Username</label>
-            <input 
-                type="text" 
-                id="username" 
-                name="username" 
-                placeholder="Enter your system username" 
-                required
-            >
+            <input type="text" id="username" name="username" placeholder="Username" required>
         </div>
 
         <div class="form-group">
             <label for="amount">Amount</label>
-            <input 
-                type="number" 
-                id="amount" 
-                name="amount" 
-                placeholder="Enter deposit amount" 
-                min="1" 
-                required
-            >
+            <input type="number" id="amount" name="amount" placeholder="Enter deposit amount" min="1" required>
         </div>
 
         <div class="form-group">
             <label for="upi_id">UPI Transaction ID</label>
-            <input 
-                type="text" 
-                id="upi_id" 
-                name="upi_id" 
-                placeholder="Enter 12-digit UPI Ref No." 
-                pattern="[0-9]{12}" 
-                title="UPI Transaction ID must be exactly a 12-digit number"
-                required
-            >
+            <input type="text" id="upi_id" name="upi_id" placeholder="12-digit Ref No." pattern="[0-9]{12}" required>
         </div>
 
         <button type="submit" id="submitBtn" class="btn-submit">Submit Deposit</button>
@@ -293,25 +216,53 @@
 </div>
 
 <script>
-    // Autofill username from LocalStorage if logged in
+    // Automatically retrieve the username logged in from Hub
     const storedUser = localStorage.getItem("currentUser") || "";
     if(storedUser) {
         document.getElementById('username').value = storedUser.replace("@game.local", "");
     }
 
     document.getElementById('depositForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+        e.preventDefault(); // Stop page reload immediately!
 
         const submitBtn = document.getElementById('submitBtn');
         const successScreen = document.getElementById('successScreen');
         const upiInput = document.getElementById('upi_id').value;
 
-        // Validation fallback
         if (upiInput.length !== 12 || isNaN(upiInput)) {
             alert('Please enter a valid 12-digit UPI Transaction ID.');
             return;
         }
 
-        // Processing state animation
         submitBtn.disabled = true;
-        submitBtn.innerText = "Processing
+        submitBtn.innerText = "Processing Transaction...";
+
+        const formData = new FormData(this);
+
+        // NOTICE THE QUOTES AROUND THIS URL. THIS STOPS THE SCRIPT CRASH.
+        fetch("https://script.google.com/macros/s/AKfycbxdewVWmLbZ5Z6iVrnm01ARLX1z51eUVDunoz6tbkEqam2v2XKrD2SWIr-CSuF0HFRg/exec", {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.result === 'success') {
+                successScreen.style.display = 'flex'; // Reveals elegant success page window
+                document.getElementById('depositForm').reset();
+            } else {
+                alert('Backend Error: ' + data.error);
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Submit Deposit";
+            }
+        })
+        .catch(error => {
+            console.error('Error!', error);
+            alert('Submission completely executed but server response timed out. Check your Google Sheet to see if it still added the data.');
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit Deposit";
+        });
+    });
+</script>
+
+</body>
+</html>
