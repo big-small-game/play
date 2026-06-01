@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dragon Tower</title>
+    <title>Dragon Tower Pro</title>
     <style>
         :root {
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
+            --bg-main: #060b19;
+            --bg-card: rgba(15, 23, 42, 0.6);
+            --primary-blue: #3b82f6;
             --accent-gold: #f59e0b;
-            --danger: #ef4444;
-            --success: #10b981;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
             --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-muted: #64748b;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --glow-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -27,542 +27,513 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-light);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
-            overflow-x: hidden;
-        }
-
-        .game-wrapper {
-            width: 100%;
-            max-width: 900px;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: row;
+            padding: 12px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
 
-        /* Control Panel */
-        .control-panel {
-            width: 320px;
-            padding: 24px;
-            background: rgba(15, 23, 42, 0.6);
-            border-right: 1px solid var(--glass-border);
+        .game-container {
+            width: 100%;
+            max-width: 430px;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 14px;
+            padding: 16px;
+            box-shadow: var(--glow-shadow);
+            z-index: 10;
         }
 
-        .balance-box {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
+        /* Header Navigation Widget */
+        .header-widget {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .balance-value {
-            font-weight: 700;
-            color: var(--accent-gold);
-            font-size: 1.1rem;
-        }
-
-        .input-label {
+        .user-tag {
             font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-weight: 700;
             color: var(--text-muted);
-            margin-bottom: 6px;
+            text-transform: uppercase;
         }
 
-        .bet-input-container {
+        .wallet-display {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--border-glass);
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        /* Tower Vertical Board Theater */
+        .tower-theater {
+            background: rgba(10, 15, 30, 0.6);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column-reverse; /* Game climbs from bottom to top */
+            gap: 8px;
+            width: 100%;
+            height: 340px;
+            overflow-y: hidden;
+            position: relative;
+        }
+
+        .tower-row {
+            display: grid;
+            grid-template-columns: 50px 1fr 1fr 1fr;
+            gap: 6px;
+            padding: 4px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            opacity: 0.4;
+        }
+
+        .tower-row.active-row {
+            opacity: 1;
+            background: rgba(59, 130, 246, 0.05);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .tower-row.completed-row {
+            opacity: 0.8;
+        }
+
+        .mult-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .block-btn {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.1s ease, background 0.15s ease;
+        }
+
+        .block-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        /* Block Status Styles */
+        .block-egg {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(4, 120, 87, 0.25)) !important;
+            border-color: #10b981 !important;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .block-skull {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(153, 27, 27, 0.4)) !important;
+            border-color: #ef4444 !important;
+        }
+
+        /* Control Input Deck */
+        .control-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(10, 15, 30, 0.4);
+            padding: 12px;
+            border-radius: 18px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .input-container {
             display: flex;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
-            border: 1px solid var(--glass-border);
+            border: 1px solid var(--border-glass);
             overflow: hidden;
+            height: 42px;
         }
 
-        .bet-input-container input {
+        .input-container input {
             width: 100%;
             background: transparent;
             border: none;
-            padding: 12px;
             color: white;
-            font-weight: 600;
-            outline: none;
+            padding: 0 12px;
+            font-weight: 700;
             font-size: 1rem;
+            outline: none;
         }
 
-        .bet-btn {
-            background: rgba(255, 255, 255, 0.05);
+        .scale-btn {
+            background: rgba(255, 255, 255, 0.04);
             border: none;
             color: white;
-            width: 50px;
+            padding: 0 12px;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
-            border-left: 1px solid var(--glass-border);
-        }
-
-        .bet-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        select {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 600;
-            outline: none;
-            cursor: pointer;
+            border-left: 1px solid var(--border-glass);
         }
 
         .action-btn {
             width: 100%;
-            padding: 16px;
-            border-radius: 12px;
+            height: 48px;
             border: none;
+            border-radius: 12px;
             font-size: 1.05rem;
-            font-weight: 700;
-            color: white;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.2s;
+            color: white;
+            transition: all 0.15s ease;
         }
 
-        .btn-bet { background: var(--primary); box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4); }
-        .btn-bet:hover:not(:disabled) { background: var(--primary-hover); }
-        .btn-cashout { background: var(--success); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); display: none; }
-        .btn-cashout:hover:not(:disabled) { background: #059669; }
-        
+        .btn-start {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-cashout {
+            background: linear-gradient(135deg, #10b981, #047857);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
         .action-btn:disabled {
-            background: #475569 !important;
+            background: #334155 !important;
+            color: #64748b !important;
             box-shadow: none !important;
             cursor: not-allowed;
-            color: #94a3b8;
-        }
-
-        /* Tower Window Graphic */
-        .tower-panel {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 20px;
-            position: relative;
-            background: linear-gradient(to top, rgba(15, 23, 42, 0.3), rgba(0,0,0,0.5));
-        }
-
-        .dragon-header {
-            text-align: center;
-            margin-bottom: 15px;
-            z-index: 2;
-        }
-
-        .dragon-header h3 {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-        }
-
-        .tower-grid {
-            display: flex;
-            flex-direction: column-reverse;
-            gap: 8px;
-            width: 100%;
-            max-width: 360px;
-            z-index: 2;
-        }
-
-        .tower-row {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-            opacity: 0.4;
-            pointer-events: none;
-            transition: all 0.3s ease;
-        }
-
-        .tower-row.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .tower-row.cleared {
-            opacity: 0.85;
-            pointer-events: none;
-        }
-
-        .block {
-            flex: 1;
-            aspect-ratio: 2.8 / 1;
-            background: linear-gradient(135deg, #334155, #1e293b);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: transparent;
-        }
-
-        .tower-row.active .block:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-        }
-
-        /* Block Status Styles */
-        .block.selected-egg {
-            background: linear-gradient(135deg, #059669, #10b981) !important;
-            border-color: #34d399 !important;
-            color: white !important;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-        }
-
-        .block.selected-dragon {
-            background: linear-gradient(135deg, #dc2626, #ef4444) !important;
-            border-color: #f87171 !important;
-            color: white !important;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
-        }
-
-        .block.reveal-egg { background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); }
-        .block.reveal-dragon { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); }
-
-        /* Responsive Mobile Layout Override */
-        @media (max-width: 768px) {
-            body {
-                padding: 5px;
-                align-items: flex-start;
-            }
-            .game-wrapper {
-                flex-direction: column-reverse;
-                border-radius: 16px;
-            }
-            .control-panel {
-                width: 100%;
-                padding: 16px;
-                border-right: none;
-                border-top: 1px solid var(--glass-border);
-            }
-            .tower-panel {
-                padding: 16px 10px;
-                min-height: 420px;
-            }
-            .block {
-                aspect-ratio: 2.5 / 1;
-            }
         }
     </style>
 </head>
 <body>
 
-<div class="game-wrapper">
-    <div class="control-panel">
-        <div class="balance-box">
-            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Wallet Balance</span>
-            <span class="balance-value">🪙<span id="userBalance">Loading...</span></span>
-        </div>
-
-        <div>
-            <div class="input-label">Bet Amount</div>
-            <div class="bet-input-container">
-                <input type="number" id="betAmount" value="10" min="1" step="1" disabled>
-                <button class="bet-btn" onclick="modifyBet('half')">½</button>
-                <button class="bet-btn" onclick="modifyBet('double')">2x</button>
-            </div>
-        </div>
-
-        <div>
-            <div class="input-label">Difficulty</div>
-            <select id="difficulty" onchange="resetTowerLayout()">
-                <option value="easy">Easy (3 Blocks - 2 Eggs)</option>
-                <option value="medium" selected>Medium (4 Blocks - 2 Eggs)</option>
-                <option value="hard">Hard (5 Blocks - 2 Eggs)</option>
-            </select>
-        </div>
-
-        <div style="margin-top: auto; padding-top: 15px;">
-            <div id="profitDisplay" style="display:none; text-align:center; margin-bottom:12px;">
-                <div class="input-label" id="multiplierLabel">Next Multiplier: 1.20x</div>
-                <div style="font-size: 1.3rem; font-weight: 800; color: var(--success);">🪙<span id="profitValue">0.00</span></div>
-            </div>
-            <button id="mainBtn" class="action-btn btn-bet" onclick="handleMainAction()" disabled>Syncing Balance...</button>
-            <button id="cashoutBtn" class="action-btn btn-cashout" onclick="cashoutValue()">Cash Out</button>
-        </div>
+<div class="game-container">
+    <!-- Header -->
+    <div class="header-widget">
+        <div class="user-tag">👤 <span id="userName">Guest</span></div>
+        <div class="wallet-display">🪙 <span id="userBalance">Loading...</span></div>
     </div>
 
-    <div class="tower-panel">
-        <div class="dragon-header">
-            <h3>DRAGON TOWER</h3>
-        </div>
-        <div class="tower-grid" id="towerGrid">
+    <!-- Tower Field Grid (Climbs Bottom-to-Top) -->
+    <div class="tower-theater" id="towerArena"></div>
+
+    <!-- Operating System Control Units -->
+    <div class="control-deck">
+        <div>
+            <div class="label">Bet Amount</div>
+            <div class="input-container">
+                <input type="number" id="betValue" value="10" min="1">
+                <button class="scale-btn" onclick="adjustStakeScale('half')">½</button>
+                <button class="scale-btn" onclick="adjustStakeScale('double')">2x</button>
             </div>
+        </div>
+
+        <button class="action-btn btn-start" id="mainActionBtn" onclick="toggleTowerEngineState()" disabled>Syncing Wallet...</button>
     </div>
 </div>
 
 <script>
-    // System Configurations Mapping Rules
-    const TOTAL_ROWS = 9;
-    const DIFFICULTIES = {
-        easy: { blocks: 3, eggs: 2, multipliers: [1.38, 1.92, 2.67, 3.71, 5.15, 7.16, 9.94, 13.81, 19.18] },
-        medium: { blocks: 4, eggs: 2, multipliers: [1.84, 3.40, 6.25, 11.51, 21.18, 38.98, 71.72, 131.97, 242.82] },
-        hard: { blocks: 5, eggs: 2, multipliers: [2.30, 5.30, 12.19, 28.03, 64.48, 148.31, 341.12, 784.58, 1804.54] }
-    };
-
-    // YOUR EXPLICIT CENTRAL DATABASE APPS SCRIPT URL
+    // CENTRAL BACKEND APPS SCRIPT PATH ENDPOINT
     const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
-    let walletBalance = 0;
-    let currentBet = 0;
-    let currentRow = 0;
+    let balance = 0;
+    let betAmount = 0;
     let gameActive = false;
-    let towerData = [];
+    let currentRowIndex = 0;
+    let currentMultiplier = 1.00;
 
-    // Extract user tracking handles dynamically from LocalStorage identity frame
+    // Game Layout Setup configuration metrics
+    const totalRowsCount = 6;
+    const rowMultipliers = [1.42, 2.05, 2.95, 4.25, 6.15, 8.90];
+    let towersDataMatrix = []; // holds pre-calculated values for each row layout
+
+    // Filter dynamic clean local user identification details handles
     const rawUser = localStorage.getItem("currentUser") || "Guest";
-    const formattedUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    document.getElementById("userName").innerText = cleanUser;
 
-    // 1. LIVE FETCH DIRECT FROM THE CENTRAL DATABASE SCRIPT
-    function fetchLiveBalance() {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(formattedUser)}`)
+    // Generate Visual Matrix Layout Elements
+    const towerArena = document.getElementById("towerArena");
+    for (let r = 0; r < totalRowsCount; r++) {
+        const rowDiv = document.createElement("div");
+        rowDiv.className = "tower-row";
+        rowDiv.id = `row-${r}`;
+
+        const badge = document.createElement("div");
+        badge.className = "mult-badge";
+        badge.innerText = `${rowMultipliers[r]}x`;
+        rowDiv.appendChild(badge);
+
+        for (let b = 0; b < 3; b++) {
+            const btn = document.createElement("button");
+            btn.className = "block-btn";
+            btn.dataset.blockIndex = b;
+            btn.disabled = true;
+            btn.addEventListener("click", () => handleBlockSelection(r, b));
+            rowDiv.appendChild(btn);
+        }
+        towerArena.appendChild(rowDiv);
+    }
+
+    // 1. LIVE REFRESH SYNC FROM SHEET DATA DIRECT
+    function fetchLiveWallet() {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
         .then(r => r.json())
         .then(data => {
             if (data && data.balance !== undefined) {
-                walletBalance = parseFloat(data.balance) || 0;
-                document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
+                balance = parseFloat(data.balance) || 0;
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
                 
-                // Unlock game configurations once balance is synchronized
-                document.getElementById('betAmount').disabled = false;
-                const mainBtn = document.getElementById('mainBtn');
-                mainBtn.disabled = false;
-                mainBtn.innerText = "Place Bet";
-            } else {
-                document.getElementById('userBalance').innerText = "User Error";
+                if (!gameActive) {
+                    const actionBtn = document.getElementById("mainActionBtn");
+                    actionBtn.disabled = false;
+                    actionBtn.innerText = "Bet & Start Climb";
+                    actionBtn.className = "action-btn btn-start";
+                }
             }
-        })
-        .catch(err => {
-            console.error("handshake failed:", err);
-            document.getElementById('userBalance').innerText = "Offline Error";
+        }).catch(err => {
+            console.error("Database sync connection failure:", err);
+            document.getElementById('userBalance').innerText = "Offline";
         });
     }
 
-    // 2. LIVE UPDATE TRANSACTION DIRECT BACK TO THE CENTRAL GOOGLE SHEET
-    function syncBalanceToDatabase(balanceChangeAmount, shouldUpdateUI = true) {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(formattedUser)}&amount=${balanceChangeAmount}`, {
-            method: 'GET'
-        })
+    // 2. BACKEND TRANSACTION DISPATCH PIPE PACKET
+    function syncTxToDatabase(amountChange, updateScreenUI = true) {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
         .then(r => r.json())
         .then(data => {
-            // ONLY update the screen if the server returns data AND we explicitly allow it (like on wins)
-            if(shouldUpdateUI && data && data.balance !== undefined){
-                walletBalance = parseFloat(data.balance);
-                document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
+            if (updateScreenUI && data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
-        })
-        .catch(e => console.error("Database synchronization anomaly:", e));
+        }).catch(e => console.error("Database link drop tracking loss:", e));
     }
 
-    function modifyBet(type) {
-        if(gameActive) return;
-        let input = document.getElementById('betAmount');
-        let current = parseFloat(input.value) || 0;
-        if(type === 'half') input.value = Math.max(1, Math.floor(current / 2));
-        if(type === 'double') input.value = Math.min(walletBalance, current * 2);
+    function adjustStakeScale(type) {
+        if (gameActive) return;
+        const input = document.getElementById("betValue");
+        let current = parseInt(input.value) || 0;
+        if (type === 'half') input.value = Math.max(1, Math.floor(current / 2));
+        if (type === 'double') input.value = Math.min(balance, current * 2);
     }
 
-    function resetTowerLayout() {
-        if(gameActive) return;
-        const grid = document.getElementById('towerGrid');
-        const diff = document.getElementById('difficulty').value;
-        const numBlocks = DIFFICULTIES[diff].blocks;
-        grid.innerHTML = '';
-        towerData = [];
+    function toggleTowerEngineState() {
+        const actionBtn = document.getElementById("mainActionBtn");
 
-        for(let r = 0; r < TOTAL_ROWS; r++) {
-            const rowDiv = document.createElement('div');
-            rowDiv.className = `tower-row row-${r}`;
-            rowDiv.dataset.rowIndex = r;
+        if (!gameActive) {
+            const betInput = document.getElementById("betValue");
+            const desiredBet = parseInt(betInput.value) || 0;
 
-            let indices = Array.from({length: numBlocks}, (_, i) => i);
-            let eggPositions = [];
-            for(let e = 0; e < DIFFICULTIES[diff].eggs; e++) {
-                const randIndex = Math.floor(Math.random() * indices.length);
-                eggPositions.push(indices.splice(randIndex, 1)[0]);
+            if (desiredBet < 1 || desiredBet > balance) {
+                alert("Stake bounds error! Balance metrics mismatched.");
+                return;
             }
-            towerData.push(eggPositions);
 
-            for(let b = 0; b < numBlocks; b++) {
-                const block = document.createElement('div');
-                block.className = 'block';
-                block.dataset.blockIndex = b;
-                block.innerText = eggPositions.includes(b) ? '🥚' : '🐉';
-                block.addEventListener('click', () => handleBlockClick(r, b));
-                rowDiv.appendChild(block);
-            }
-            grid.appendChild(rowDiv);
-        }
-    }
+            // BALANCE BUG RESOLUTION: Subtract local variable values and display layout views instantly
+            betAmount = desiredBet;
+            balance -= betAmount;
+            document.getElementById('userBalance').innerText = balance.toFixed(2);
 
-    function handleMainAction() {
-        if(gameActive) return;
+            // Transmit background write command to server spreadsheet structure quietly
+            syncTxToDatabase(-betAmount, false);
 
-        const betInput = document.getElementById('betAmount');
-        const betValue = parseFloat(betInput.value) || 0;
+            // Initialize Game Mechanics Data structures
+            gameActive = true;
+            currentRowIndex = 0;
+            currentMultiplier = 1.00;
+            buildRandomTowerHiddenMatrix();
 
-        if(betValue < 1 || betValue > walletBalance) {
-            alert("Invalid Bet Amount! Check your central database wallet metrics.");
-            return;
-        }
+            betInput.disabled = true;
+            actionBtn.innerText = "Select Active Row Box";
+            actionBtn.disabled = true;
+            actionBtn.className = "action-btn btn-cashout";
 
-        // Deduct bet amount immediately on the screen visually
-        currentBet = betValue;
-        walletBalance -= betValue;
-        document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
-        
-        // Pass "false" so the slow Google Sheet background process doesn't overwrite our visual subtraction!
-        syncBalanceToDatabase(-betValue, false);
-
-        gameActive = true;
-        currentRow = 0;
-        
-        document.getElementById('difficulty').disabled = true;
-        betInput.disabled = true;
-        
-        document.getElementById('mainBtn').style.display = 'none';
-        document.getElementById('cashoutBtn').style.display = 'block';
-        document.getElementById('profitDisplay').style.display = 'block';
-
-        updateRowFocus();
-        updateProfitEstimations();
-    }
-
-    function updateRowFocus() {
-        for(let r = 0; r < TOTAL_ROWS; r++) {
-            const row = document.querySelector(`.row-${r}`);
-            row.className = `tower-row row-${r}`;
-            if(r === currentRow && gameActive) {
-                row.classList.add('active');
-            } else if(r < currentRow) {
-                row.classList.add('cleared');
-            }
-        }
-    }
-
-    function updateProfitEstimations() {
-        const diff = document.getElementById('difficulty').value;
-        const mults = DIFFICULTIES[diff].multipliers;
-        const currentMult = currentRow > 0 ? mults[currentRow - 1] : 0;
-        const nextMult = mults[currentRow];
-
-        if(currentRow > 0) {
-            document.getElementById('cashoutBtn').disabled = false;
-            document.getElementById('cashoutBtn').innerText = `Cash Out (🪙 ${(currentBet * currentMult).toFixed(2)})`;
+            clearVisualSkinsArena();
+            activateRowHighlights(0);
         } else {
-            document.getElementById('cashoutBtn').disabled = true;
-            document.getElementById('cashoutBtn').innerText = `Select a Block`;
+            executeCashoutSequence();
         }
-        document.getElementById('multiplierLabel').innerText = `Next Multiplier: ${nextMult.toFixed(2)}x`;
-        document.getElementById('profitValue').innerText = (currentBet * nextMult).toFixed(2);
     }
 
-    function handleBlockClick(rowIdx, blockIdx) {
-        if(!gameActive || rowIdx !== currentRow) return;
+    function buildRandomTowerHiddenMatrix() {
+        towersDataMatrix = [];
+        for (let r = 0; r < totalRowsCount; r++) {
+            // 3 blocks per row: 2 contain safe assets (eggs), 1 contains danger (skull)
+            let rowConfiguration = ['egg', 'egg', 'egg'];
+            let killerSkullIndex = Math.floor(Math.random() * 3);
+            rowConfiguration[killerSkullIndex] = 'skull';
+            towersDataMatrix.push(rowConfiguration);
+        }
+    }
 
-        const rowElement = document.querySelector(`.row-${rowIdx}`);
-        const blockElement = rowElement.children[blockIdx];
-        const isEgg = towerData[rowIdx].includes(blockIdx);
-
-        if(isEgg) {
-            blockElement.classList.add('selected-egg');
-            currentRow++;
-
-            if(currentRow === TOTAL_ROWS) {
-                const diff = document.getElementById('difficulty').value;
-                const maxMult = DIFFICULTIES[diff].multipliers[TOTAL_ROWS - 1];
-                endGame(true, currentBet * maxMult);
-            } else {
-                updateRowFocus();
-                updateProfitEstimations();
+    function clearVisualSkinsArena() {
+        for (let r = 0; r < totalRowsCount; r++) {
+            const rowEl = document.getElementById(`row-${r}`);
+            rowEl.className = "tower-row";
+            const buttons = rowEl.getElementsByClassName("block-btn");
+            for (let b = 0; b < buttons.length; b++) {
+                buttons[b].className = "block-btn";
+                buttons[b].innerText = "";
+                buttons[b].disabled = true;
             }
-        } else {
-            blockElement.classList.add('selected-dragon');
-            endGame(false, 0);
         }
     }
 
-    function cashoutValue() {
-        if(!gameActive || currentRow === 0) return;
-        const diff = document.getElementById('difficulty').value;
-        const finalMult = DIFFICULTIES[diff].multipliers[currentRow - 1];
-        endGame(true, currentBet * finalMult);
-    }
-
-    function endGame(won, prize) {
-        gameActive = false;
-        document.getElementById('cashoutBtn').disabled = true;
-        
-        if(won) {
-            walletBalance += prize;
-            document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
-            // WIN: Send total prize to server and allow it to update the UI
-            syncBalanceToDatabase(prize, true);
-            alert(`Victory! You won 🪙 ${prize.toFixed(2)}`);
-        } else {
-            // LOSS: DO NOT call fetchLiveBalance() or update UI from server here.
-            // The bet was already subtracted perfectly at the start. Keep it exactly as is.
-            alert(`Boom! The dragon caught you. Better luck next time.`);
-        }
-
-        // Reveal whole board elements layout
-        for(let r = 0; r < TOTAL_ROWS; r++) {
-            const row = document.querySelector(`.row-${r}`);
-            row.classList.add('cleared');
-            Array.from(row.children).forEach((block, idx) => {
-                const isEgg = towerData[r].includes(idx);
-                if(!block.classList.contains('selected-egg') && !block.classList.contains('selected-dragon')) {
-                    block.classList.add(isEgg ? 'reveal-egg' : 'reveal-dragon');
+    function activateRowHighlights(rowIndex) {
+        for (let r = 0; r < totalRowsCount; r++) {
+            const rowEl = document.getElementById(`row-${r}`);
+            const buttons = rowEl.getElementsByClassName("block-btn");
+            
+            if (r === rowIndex) {
+                rowEl.className = "tower-row active-row";
+                for (let b = 0; b < buttons.length; b++) {
+                    buttons[b].disabled = false;
                 }
-            });
+            } else {
+                if (r < rowIndex) rowEl.className = "tower-row completed-row";
+                for (let b = 0; b < buttons.length; b++) {
+                    buttons[b].disabled = true;
+                }
+            }
         }
-
-        // Cool down interface state transition
-        setTimeout(() => {
-            document.getElementById('difficulty').disabled = false;
-            document.getElementById('betAmount').disabled = false;
-            document.getElementById('mainBtn').style.display = 'block';
-            document.getElementById('cashoutBtn').style.display = 'none';
-            document.getElementById('profitDisplay').style.display = 'none';
-            resetTowerLayout();
-        }, 3500);
     }
 
-    // Trigger Initial Balance Sync only when opening the page
-    fetchLiveBalance();
-    resetTowerLayout();
+    function handleBlockSelection(rowIndex, blockIndex) {
+        if (!gameActive || rowIndex !== currentRowIndex) return;
+
+        const rowEl = document.getElementById(`row-${rowIndex}`);
+        const selectedButton = rowEl.getElementsByClassName("block-btn")[blockIndex];
+        const outcomeResult = towersDataMatrix[rowIndex][blockIndex];
+
+        if (outcomeResult === 'skull') {
+            // STEPPED ON SKULL: Handle failure game cycle end parameters
+            selectedButton.className = "block-btn block-skull";
+            selectedButton.innerText = "💥";
+            triggerTowerLossSequence();
+        } else {
+            // STEPPED ON SAFE EGG: Advance level parameters models mapping paths
+            selectedButton.className = "block-btn block-egg";
+            selectedButton.innerText = "🐉";
+
+            currentMultiplier = rowMultipliers[rowIndex];
+            const activeWinningsEstimate = betAmount * currentMultiplier;
+
+            const actionBtn = document.getElementById("mainActionBtn");
+            actionBtn.disabled = false;
+            actionBtn.innerText = `Cash Out 🪙${activeWinningsEstimate.toFixed(2)} (x${currentMultiplier})`;
+
+            if (currentRowIndex + 1 < totalRowsCount) {
+                currentRowIndex++;
+                activateRowHighlights(currentRowIndex);
+            } else {
+                // Reached top level completely out structure
+                executeCashoutSequence();
+            }
+        }
+    }
+
+    function executeCashoutSequence() {
+        if (!gameActive) return;
+        gameActive = false;
+
+        const totalClimbWinnings = betAmount * currentMultiplier;
+        balance += totalClimbWinnings;
+        document.getElementById('userBalance').innerText = balance.toFixed(2);
+
+        // WIN SEQUENCE: Dispatch transaction update directly to server sheet architecture safely
+        syncTxToDatabase(totalClimbWinnings, true);
+
+        revealEntireTowerTruthMap();
+
+        const actionBtn = document.getElementById("mainActionBtn");
+        actionBtn.disabled = true;
+        actionBtn.innerText = `CLIMB SUCCESS! +🪙${totalClimbWinnings.toFixed(2)}`;
+
+        resetEnvironmentDelayed();
+    }
+
+    function triggerTowerLossSequence() {
+        gameActive = false;
+        revealEntireTowerTruthMap();
+
+        const actionBtn = document.getElementById("mainActionBtn");
+        actionBtn.disabled = true;
+        actionBtn.innerText = "DRAGON CAUGHT YOU! GAME OVER";
+
+        // LOSS SEQUENCE: Local variable balances dropped out permanently. No writing call triggered.
+        resetEnvironmentDelayed();
+    }
+
+    function revealEntireTowerTruthMap() {
+        for (let r = 0; r < totalRowsCount; r++) {
+            const rowEl = document.getElementById(`row-${r}`);
+            const buttons = rowEl.getElementsByClassName("block-btn");
+            for (let b = 0; b < buttons.length; b++) {
+                buttons[b].disabled = true;
+                const truth = towersDataMatrix[r][b];
+                if (truth === 'skull') {
+                    if (buttons[b].innerText !== "💥") {
+                        buttons[b].className = "block-btn block-skull";
+                        buttons[b].innerText = "💀";
+                        buttons[b].style.opacity = "0.4";
+                    }
+                } else {
+                    if (buttons[b].innerText !== "🐉") {
+                        buttons[b].innerText = "🥚";
+                        buttons[b].style.opacity = "0.3";
+                    }
+                }
+            }
+        }
+    }
+
+    function resetEnvironmentDelayed() {
+        setTimeout(() => {
+            document.getElementById("betValue").disabled = false;
+            
+            const actionBtn = document.getElementById("mainActionBtn");
+            actionBtn.innerText = "Bet & Start Climb";
+            actionBtn.className = "action-btn btn-start";
+            actionBtn.disabled = false;
+
+            clearVisualSkinsArena();
+        }, 4000);
+    }
+
+    // Direct immediate launch sequences initialization passes
+    fetchLiveWallet();
 </script>
- 
 
 </body>
 </html>
