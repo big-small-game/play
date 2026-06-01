@@ -214,12 +214,19 @@ h1 {
 }
 .mines:hover { box-shadow: 0 12px 25px rgba(44, 62, 80, 0.6); }
 
-.guess {
-  background: linear-gradient(45deg, #10ac84, #1dd1a1);
+.drgn {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
   color: white;
-  box-shadow: 0 6px 20px rgba(29, 209, 161, 0.3);
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3);
 }
-.guess:hover { box-shadow: 0 12px 25px rgba(29, 209, 161, 0.5); }
+.drgn:hover { box-shadow: 0 12px 25px rgba(108, 92, 231, 0.5); }
+
+.av {
+  background: linear-gradient(135deg, #9c27b0, #e040fb);
+  color: white;
+  box-shadow: 0 6px 20px rgba(156, 39, 176, 0.3);
+}
+.av:hover { box-shadow: 0 12px 25px rgba(156, 39, 176, 0.5); }
 
 .memory {
   background: linear-gradient(45deg, #0abde3, #2e86de);
@@ -227,13 +234,6 @@ h1 {
   box-shadow: 0 6px 20px rgba(10, 189, 227, 0.3);
 }
 .memory:hover { box-shadow: 0 12px 25px rgba(10, 189, 227, 0.5); }
-
-.rps {
-  background: linear-gradient(45deg, #5f27cd, #341f97);
-  color: white;
-  box-shadow: 0 6px 20px rgba(95, 39, 205, 0.3);
-}
-.rps:hover { box-shadow: 0 12px 25px rgba(95, 39, 205, 0.5); }
 
 .reaction {
   background: linear-gradient(45deg, #ee5253, #ff6b6b);
@@ -291,91 +291,75 @@ h1 {
 <button class="account-btn" onclick="toggleMenu()">👤 Account</button>
 
 <div class="account-menu" id="menu">
-<p><b>User:</b> <span id="user"></span></p>
-<button class="deposit-btn" onclick="openDeposit()">
-➕ Deposit
-</button>
-
-<button class="withdraw-btn" onclick="openWithdraw()">
-➖ Withdraw
-</button>
-
-<button class="logout-btn" onclick="logout()">
-🚪 Logout
-</button>
+<p><b>User:</b> <span id="user">Loading...</span></p>
+<button class="deposit-btn" onclick="openDeposit()">➕ Deposit</button>
+<button class="withdraw-btn" onclick="openWithdraw()">➖ Withdraw</button>
+<button class="logout-btn" onclick="logout()">🚪 Logout</button>
 </div>
 
-<div class="coin-box">🪙 Balance: <span id="coins">0</span></div>
+<div class="coin-box">🪙 Balance: <span id="coins">Syncing...</span></div>
 
 <div class="card">
 <h1>🎮 MINI GAMES HUB PRO</h1>
-<p>Logged In: <span id="email"></span></p>
+<p>Logged In: <span id="email">Loading...</span></p>
 </div>
 
 <div class="card">
-<button class="game-btn big-small" onclick="location.href='big-small.html'">
-🎲 Big Small Game
-</button>
-<button class="game-btn mines" onclick="location.href='mines.html'">
-💣 Mines
-</button>
-  
-<button class="game-btn drgn" onclick="location.href='drgn.html'">
-🐉 Dragon Tower
-</button>
-
-<button class="game-btn av" onclick="location.href='av.html'">
-✈️ Crash
-</button>
-
-<button class="game-btn memory" onclick="location.href='plinko.html'">
-⚽ Plinko
-</button>
-
-
-
-<button class="game-btn reaction" onclick="location.href='reaction.html'">
-⚡ Reaction Test
-</button>
-
-<button class="game-btn quiz" onclick="location.href='quiz.html'">
-📚 Quiz Arena
-</button>
-
-<button class="game-btn soon">
-🚀 More Games Coming Soon
-</button>
+<button class="game-btn big-small" onclick="location.href='big-small.html'">🎲 Big Small Game</button>
+<button class="game-btn mines" onclick="location.href='mines.html'">💣 Mines</button>
+<button class="game-btn drgn" onclick="location.href='drgn.html'">🐉 Dragon Tower</button>
+<button class="game-btn av" onclick="location.href='av.html'">✈️ Crash</button>
+<button class="game-btn memory" onclick="location.href='plinko.html'">⚽ Plinko</button>
+<button class="game-btn reaction" onclick="location.href='reaction.html'">⚡ Reaction Test</button>
+<button class="game-btn quiz" onclick="location.href='quiz.html'">📚 Quiz Arena</button>
+<button class="game-btn soon">🚀 More Games Coming Soon</button>
 </div>
 
 <script>
-let user = localStorage.getItem("currentUser") || "Guest";
+// CENTRAL DATABASE SCRIPT REPOSITORY BRIDGE
+const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
-if(user.includes("@game.local")){
-user = user.replace("@game.local","");
+let rawUser = localStorage.getItem("currentUser") || "Guest";
+let processedUser = rawUser.trim();
+
+if(processedUser.includes("@")) {
+    processedUser = processedUser.split("@")[0];
 }
-document.getElementById("email").innerText=user;
-document.getElementById("user").innerText=user;
-fetch("https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec?username="+user)
-.then(r=>r.json())
-.then(data=>{
-document.getElementById("coins").innerText =
-data.balance;
-});
+
+document.getElementById("email").innerText = processedUser;
+document.getElementById("user").innerText = processedUser;
+
+// Fixed balance extraction pipeline logic with automatic error metrics fallbacks
+function refreshDashboardWallet() {
+    fetch(`${DATABASE_URL}?username=${encodeURIComponent(processedUser)}`)
+    .then(r => r.json())
+    .then(data => {
+        if(data && data.balance !== undefined) {
+            let balanceValue = parseFloat(data.balance);
+            document.getElementById("coins").innerText = balanceValue.toFixed(2);
+        } else {
+            document.getElementById("coins").innerText = "Error";
+        }
+    })
+    .catch(err => {
+        console.error("Dashboard database handshake failure:", err);
+        document.getElementById("coins").innerText = "Offline";
+    });
+}
 
 function toggleMenu(){
-let m=document.getElementById("menu");
-m.style.display=m.style.display==="block"?"none":"block";
+    let m = document.getElementById("menu");
+    m.style.display = m.style.display === "block" ? "none" : "block";
 }
-function openDeposit(){
-window.location.href = "deposit.html";
-}
-function openWithdraw(){
-window.location.href = "withdraw.html";
-}
+function openDeposit(){ window.location.href = "deposit.html"; }
+function openWithdraw(){ window.location.href = "withdraw.html"; }
 function logout(){
-localStorage.removeItem("currentUser");
-window.location.href="login.html";
+    localStorage.removeItem("currentUser");
+    window.location.href = "login.html";
 }
+
+// Fires right away on structural script compilation passes
+refreshDashboardWallet();
 </script>
 </body>
 </html>
