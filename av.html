@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aviator Mobile</title>
+    <style>
+        :root {
+            --bg-main: #0b0e14;
+            --bg-card: #141923;
+            --primary-red: #cb011a;
+            --primary-hover: #b00116;
+            --accent-green: #00e676;
+            --accent-blue: #2979ff;
+            --text-light: #ffffff;
+            --text-muted: #616e88;
+            --glass-border: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 480px; /* Locked mobile-first aspect form */
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Top History Log Pill Rows */
+        .history-row {
+            display: flex;
+            gap: 6px;
+            padding: 10px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .history-row::-webkit-scrollbar { display: none; }
+
+        .history-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: #1c2434;
+            color: #94a3b8;
+        }
+        .history-pill.high { color: #a855f7; background: rgba(168, 85, 247, 0.15); }
+        .history-pill.med { color: var(--accent-blue); background: rgba(41, 121, 255, 0.15); }
+
+        /* Graphic Canvas Area Window */
+        .display-board {
+            height: 240px;
+            background: radial-gradient(circle at bottom left, #1a1525 0%, #0b0e14 70%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .grid-line-layer {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            bottom: -50%;
+            left: -50%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(45deg);
+        }
+
+        .grid-line-layer.moving {
+            animation: gridScroll 3s linear infinite;
+        }
+
+        @keyframes gridScroll {
+            0% { transform: perspective(500px) rotateX(45deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(45deg) translateY(40px); }
+        }
+
+        .multiplier-text {
+            font-size: 3rem;
+            font-weight: 900;
+            z-index: 5;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: color 0.2s;
+        }
+        .multiplier-text.crashed { color: var(--primary-red); }
+
+        .plane-node {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 2.2rem;
+            z-index: 4;
+            transform: scaleX(-1);
+            display: none;
+        }
+
+        .plane-status-msg {
+            position: absolute;
+            top: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 4px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        /* Mobile Cockpit Control Station Frame Layout */
+        .cockpit-controls {
+            padding: 16px;
+            background: #10141e;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .stat-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 0 4px;
+        }
+        .wallet-amount { color: #ffd700; font-weight: 700; }
+
+        .bet-interface-box {
+            display: flex;
+            gap: 10px;
+            background: #181f2d;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .adjusters {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-row {
+            display: flex;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .input-row input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+            outline: none;
+            padding: 8px;
+        }
+
+        .step-btn {
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: white;
+            padding: 0 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .quick-selectors {
+            display: flex;
+            gap: 4px;
+        }
+        .q-btn {
+            flex: 1;
+            background: #242c3d;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 6px 0;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .main-action-trigger {
+            width: 120px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .btn-state-bet { background: #12c149; box-shadow: 0 4px 14px rgba(18, 193, 73, 0.3); }
+        .btn-state-cashout { background: #d32f2f; box-shadow: 0 4px 14px rgba(211, 47, 47, 0.4); width: 150px; }
+        .btn-state-waiting { background: #475569; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div class="history-row" id="historyContainer">
+        <div class="history-pill">1.45x</div>
+        <div class="history-pill high">12.40x</div>
+        <div class="history-pill med">2.10x</div>
+        <div class="history-pill">1.15x</div>
+        <div class="history-pill med">4.50x</div>
+    </div>
+
+    <div class="display-board">
+        <div class="grid-line-layer" id="gridLayer"></div>
+        <div class="plane-status-msg" id="statusMessage">WAITING FOR NEXT ROUND</div>
+        <div class="multiplier-text" id="liveMultiplier">1.00x</div>
+        <div class="plane-node" id="planeGraphic">🚀</div>
+    </div>
+
+    <div class="cockpit-controls">
+        <div class="stat-bar">
+            <span>LIVE DATABASE BALANCE</span>
+            <span class="wallet-amount">🪙<span id="balanceText">Loading...</span></span>
+        </div>
+
+        <div class="bet-interface-box">
+            <div class="adjusters">
+                <div class="input-row">
+                    <button class="step-btn" onclick="offsetBet(-5)">-</button>
+                    <input type="number" id="betVal" value="10" min="1" step="1" readonly>
+                    <button class="step-btn" onclick="offsetBet(5)">+</button>
+                </div>
+                <div class="quick-selectors">
+                    <button class="q-btn" onclick="setExactBet(10)">10</button>
+                    <button class="q-btn" onclick="setExactBet(20)">20</button>
+                    <button class="q-btn" onclick="setExactBet(50)">50</button>
+                    <button class="q-btn" onclick="setExactBet(100)">100</button>
+                </div>
+            </div>
+            
+            <button class="main-action-trigger btn-state-bet" id="actionBtn" onclick="handleTerminalClick()" disabled>Syncing...</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // DEPLOYED APP SCRIPT API URL BRIDGE
+    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
+
+    let balance = 0;
+    let betPlaced = false;
+    let inGame = false;
+    let currentBetAmount = 0;
+    
+    let currentMultiplier = 1.00;
+    let crashPoint = 0;
+    let loopInterval = null;
+    let timelineTimeout = null;
+
+    // Parse Identity parameters from browser shared cache context
+    const rawUser = localStorage.getItem("currentUser") || "Guest";
+    const cleanedUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+
+    // 1. LIVE REFRESH DIRECT FROM DATABASE FUNCTION
+    function pullLiveSystemBalance() {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanedUser)}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
+                document.getElementById('balanceText').innerText = balance.toFixed(2);
+                if(!inGame && !betPlaced) {
+                    unlockBetButton();
+                }
+            }
+        }).catch(err => {
+            console.error("handshake error:", err);
+            document.getElementById('balanceText').innerText = "Offline";
+        });
+    }
+
+    // 2. TRANSACTION PIPELINE HANDLER BACK TO CENTRAL GOOGLE SHEETS
+    function sendDeltaToDatabase(deltaValue, forceUpdateUI = true) {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanedUser)}&amount=${deltaValue}`)
+        .then(res => res.json())
+        .then(data => {
+            if(forceUpdateUI && data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
+                document.getElementById('balanceText').innerText = balance.toFixed(2);
+            }
+        }).catch(err => console.error("Sync Failure:", err));
+    }
+
+    function unlockBetButton() {
+        const btn = document.getElementById('actionBtn');
+        btn.className = "main-action-trigger btn-state-bet";
+        btn.innerText = "BET";
+        btn.disabled = false;
+    }
+
+    function offsetBet(amt) {
+        if(betPlaced || inGame) return;
+        let el = document.getElementById('betVal');
+        let val = parseInt(el.value) + amt;
+        if(val >= 1 && val <= balance) el.value = val;
+    }
+
+    function setExactBet(val) {
+        if(betPlaced || inGame) return;
+        if(val <= balance) document.getElementById('betVal').value = val;
+    }
+
+    // Handle button clicks conditionally based on game state
+    function handleTerminalClick() {
+        const btn = document.getElementById('actionBtn');
+        
+        if(!betPlaced && !inGame) {
+            // State A: User locking stake configuration rules
+            const desiredBet = parseInt(document.getElementById('betVal').value) || 0;
+            if(desiredBet < 1 || desiredBet > balance) {
+                alert("Stake bounds violation! Verify your wallet contents.");
+                return;
+            }
+
+            currentBetAmount = desiredBet;
+            balance -= currentBetAmount; // Deduct stake locally instantly
+            document.getElementById('balanceText').innerText = balance.toFixed(2);
+            
+            // Push bet subtraction securely in the background without updating UI instantly
+            sendDeltaToDatabase(-currentBetAmount, false);
+
+            betPlaced = true;
+            btn.className = "main-action-trigger btn-state-waiting";
+            btn.innerText = "WAITING...";
+            
+            // Automatically launch automated flight path sequence 1 second later
+            timelineTimeout = setTimeout(engineLaunchSequence, 1200);
+        } 
+        else if(inGame && betPlaced) {
+            // State B: Successful manual flight extraction operation hit
+            cashoutExecution();
+        }
+    }
+
+    function engineLaunchSequence() {
+        inGame = true;
+        document.getElementById('statusMessage').innerText = "FLYING HIGH";
+        document.getElementById('gridLayer').classList.add('moving');
+        
+        const plane = document.getElementById('planeGraphic');
+        plane.style.display = 'block';
+        plane.style.bottom = '20px';
+        plane.style.left = '20px';
+
+        // Math algorithm calculation framework logic
+        // 10% instant crash rate, else logarithmic curve allocation properties
+        const calcRand = Math.random();
+        if (calcRand < 0.10) {
+            crashPoint = 1.00;
+        } else if (calcRand < 0.85) {
+            crashPoint = parseFloat((1 + Math.random() * 4).toFixed(2)); // Mid-range ceiling caps
+        } else {
+            crashPoint = parseFloat((5 + Math.random() * 25).toFixed(2)); // Ultra multiplier bounds
+        }
+
+        currentMultiplier = 1.00;
+        const liveText = document.getElementById('liveMultiplier');
+        liveText.className = "multiplier-text";
+
+        const btn = document.getElementById('actionBtn');
+        btn.className = "main-action-trigger btn-state-cashout";
+        btn.innerText = `CASH OUT\n${(currentBetAmount * currentMultiplier).toFixed(2)}`;
+
+        // Game tick processing loops
+        loopInterval = setInterval(() => {
+            currentMultiplier += 0.01;
+            
+            // Scale plane vector positions visually on mobile grid spaces dynamically
+            let currentProgression = Math.min(80, (currentMultiplier - 1) * 15);
+            plane.style.bottom = `${20 + (currentProgression * 1.2)}px`;
+            plane.style.left = `${20 + (currentProgression * 2)}px`;
+
+            liveText.innerText = `${currentMultiplier.toFixed(2)}x`;
+
+            if(betPlaced) {
+                btn.innerText = `TAKE\n🪙 ${(currentBetAmount * currentMultiplier).toFixed(2)}`;
+            }
+
+            if(currentMultiplier >= crashPoint) {
+                handleCrashSequences();
+            }
+        }, 45); // Standard smooth loop pacing metrics
+    }
+
+    function cashoutExecution() {
+        betPlaced = false;
+        const winAmount = currentBetAmount * currentMultiplier;
+        balance += winAmount;
+        document.getElementById('balanceText').innerText = balance.toFixed(2);
+        
+        // Sync win profit data straight back to Google Sheets safely
+        sendDeltaToDatabase(winAmount, true);
+
+        const btn = document.getElementById('actionBtn');
+        btn.className = "main-action-trigger btn-state-waiting";
+        btn.innerText = "WALKING AWAY...";
+        btn.disabled = true;
+        
+        alert(`Fabulous run! You extracted 🪙 ${winAmount.toFixed(2)} payout!`);
+    }
+
+    function handleCrashSequences() {
+        clearInterval(loopInterval);
+        inGame = false;
+        betPlaced = false;
+
+        document.getElementById('gridLayer').className = "grid-line-layer";
+        document.getElementById('statusMessage').innerText = "FLEW AWAY!";
+        
+        const liveText = document.getElementById('liveMultiplier');
+        liveText.className = "multiplier-text crashed";
+        liveText.innerText = "Flew Away";
+
+        document.getElementById('planeGraphic').style.display = 'none';
+
+        pushHistoryLog(crashPoint);
+
+        const btn = document.getElementById('actionBtn');
+        btn.className = "main-action-trigger btn-state-waiting";
+        btn.innerText = "RESETTING...";
+        btn.disabled = true;
+
+        // Fetch fresh balance from Google Sheets to clean up tracking values
+        setTimeout(() => {
+            document.getElementById('statusMessage').innerText = "WAITING FOR NEXT ROUND";
+            liveText.className = "multiplier-text";
+            liveText.innerText = "1.00x";
+            pullLiveSystemBalance();
+        }, 3000);
+    }
+
+    function pushHistoryLog(val) {
+        const container = document.getElementById('historyContainer');
+        const pill = document.createElement('div');
+        pill.className = `history-pill ${val >= 5 ? 'high' : (val >= 2 ? 'med' : '')}`;
+        pill.innerText = `${val.toFixed(2)}x`;
+        
+        container.insertBefore(pill, container.firstChild);
+        if(container.children.length > 7) {
+            container.removeChild(container.lastChild);
+        }
+    }
+
+    // Initialize core system state balances parameters on load phase
+    pullLiveSystemBalance();
+</script>
+
+</body>
+</html>
