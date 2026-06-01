@@ -375,7 +375,7 @@
         })
         .then(r => r.json())
         .then(data => {
-            // ONLY update the screen balance if we tell it to (like at cashout/end game)
+            // ONLY update the screen if the server returns data AND we explicitly allow it (like on wins)
             if(shouldUpdateUI && data && data.balance !== undefined){
                 walletBalance = parseFloat(data.balance);
                 document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
@@ -436,12 +436,12 @@
             return;
         }
 
-        // Deduct bet amount immediately on the user's screen visually
+        // Deduct bet amount immediately on the screen visually
         currentBet = betValue;
         walletBalance -= betValue;
         document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
         
-        // CRITICAL FIX: Pass "false" here so the laggy Google Sheet reply doesn't overwrite our visual subtraction!
+        // Pass "false" so the slow Google Sheet background process doesn't overwrite our visual subtraction!
         syncBalanceToDatabase(-betValue, false);
 
         gameActive = true;
@@ -526,16 +526,16 @@
         if(won) {
             walletBalance += prize;
             document.getElementById('userBalance').innerText = walletBalance.toFixed(2);
-            // Game over and won: Send data and update the final clean balance text!
+            // WIN: Send total prize to server and allow it to update the UI
             syncBalanceToDatabase(prize, true);
             alert(`Victory! You won 🪙 ${prize.toFixed(2)}`);
         } else {
+            // LOSS: DO NOT call fetchLiveBalance() or update UI from server here.
+            // The bet was already subtracted perfectly at the start. Keep it exactly as is.
             alert(`Boom! The dragon caught you. Better luck next time.`);
-            // Since bet was deducted at start, just fetch a fresh layout confirmation balance
-            fetchLiveBalance();
         }
 
-        // Reveal whole board elements layout properties transparency
+        // Reveal whole board elements layout
         for(let r = 0; r < TOTAL_ROWS; r++) {
             const row = document.querySelector(`.row-${r}`);
             row.classList.add('cleared');
@@ -558,10 +558,11 @@
         }, 3500);
     }
 
-    // Trigger Initial Handshake Data Synchronizations on document loading phase
+    // Trigger Initial Balance Sync only when opening the page
     fetchLiveBalance();
     resetTowerLayout();
 </script>
+ 
 
 </body>
 </html>
