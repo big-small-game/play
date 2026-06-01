@@ -1,201 +1,548 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mines </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mines Mobile Pro</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --primary-blue: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-light: #f8fafc;
+            --text-muted: #64748b;
+            --border-glass: rgba(255, 255, 255, 0.08);
+        }
 
-<style>
-body{
-    margin:0;
-    background:#141824;
-    color:white;
-    font-family:Arial,sans-serif;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 20px;
-    background:#1f2637;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            overflow: hidden;
+        }
 
-.back-btn{
-    padding:8px 15px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
+        .game-container {
+            width: 100%;
+            max-width: 430px;
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
 
-.balance{
-    font-weight:bold;
-    background:#2d374f;
-    padding:10px 15px;
-    border-radius:8px;
-}
+        /* Header Wallet Section */
+        .header-widget {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 4px;
+        }
 
-.container{
-    max-width:900px;
-    margin:auto;
-    padding:20px;
-}
+        .user-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.controls{
-    display:flex;
-    gap:15px;
-    flex-wrap:wrap;
-    justify-content:center;
-    margin-bottom:20px;
-}
+        .wallet-display {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--border-glass);
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
 
-.control-box{
-    background:#1f2637;
-    padding:15px;
-    border-radius:10px;
-}
+        /* Mines Interactive Grid Matrix */
+        .mines-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: rgba(15, 23, 42, 0.4);
+            padding: 10px;
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+        }
 
-input{
-    width:120px;
-    padding:8px;
-    margin-top:5px;
-}
+        .tile {
+            background: #334155;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1);
+        }
 
-.start-btn{
-    padding:10px 20px;
-    cursor:pointer;
-}
+        .tile:active {
+            transform: scale(0.92);
+        }
 
-#grid{
-    display:grid;
-    grid-template-columns:repeat(5,70px);
-    gap:10px;
-    justify-content:center;
-}
+        .tile.revealed-gem {
+            background: radial-gradient(circle at 35% 35%, #34d399 0%, #059669 100%);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
 
-.cell{
-    width:70px;
-    height:70px;
-    background:#2d374f;
-    border-radius:10px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    font-size:24px;
-}
+        .tile.revealed-bomb {
+            background: radial-gradient(circle at 35% 35%, #f87171 0%, #dc2626 100%);
+            box-shadow: none;
+            cursor: not-allowed;
+            animation: shake 0.15s ease-in-out 2;
+        }
 
-.safe{
-    background:#22c55e;
-}
+        .tile.lost-reveal {
+            background: #1e293b;
+            opacity: 0.4;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
 
-.mine{
-    background:#ef4444;
-}
-</style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        /* Mobile Input Control Panel Deck */
+        .control-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .input-container {
+            display: flex;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            border: 1px solid var(--border-glass);
+            overflow: hidden;
+            height: 42px;
+        }
+
+        .input-container input, .input-container select {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .input-container select {
+            cursor: pointer;
+        }
+
+        .half-double-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: white;
+            padding: 0 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-left: 1px solid var(--border-glass);
+        }
+
+        .action-btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: white;
+        }
+
+        .btn-start {
+            background: var(--primary-blue);
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+        }
+        .btn-start:hover:not(:disabled) { background: var(--primary-hover); }
+
+        .btn-cashout {
+            background: var(--accent-green);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+        }
+
+        .action-btn:disabled {
+            background: #475569;
+            color: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* Live Status Info Badge */
+        .status-badge {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px dashed rgba(59, 130, 246, 0.3);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="topbar">
-    <button class="back-btn" onclick="history.back()">⬅ Back</button>
-
-    <div class="balance">
-        Balance: ₹1000
-    </div>
-</div>
-
-<div class="container">
-
-    <div class="controls">
-
-        <div class="control-box">
-            <label>Bet Amount</label><br>
-            <input type="number" id="betAmount" value="100">
-        </div>
-
-        <div class="control-box">
-            <label>No. of Mines</label><br>
-            <input type="number" id="mineCount" min="1" max="24" value="3">
-        </div>
-
-        <div class="control-box">
-            <br>
-            <button class="start-btn" onclick="startGame()">
-                Start Game
-            </button>
-        </div>
-
+<div class="game-container">
+    <div class="header-widget">
+        <div class="user-tag">👤 <span id="userName">Guest</span></div>
+        <div class="wallet-display">🪙 <span id="userBalance">Loading...</span></div>
     </div>
 
-    <h3 id="status" align="center">
-        Select settings and start game
-    </h3>
+    <div class="status-badge" id="statusBox" style="display: none;">
+        <span style="color: var(--text-muted);">Current Profit:</span>
+        <span id="profitDisplay" style="color: var(--accent-green); font-weight: 700;">🪙 0.00 (1.00x)</span>
+    </div>
 
-    <div id="grid"></div>
+    <div class="mines-grid" id="gridMatrix"></div>
 
+    <div class="control-deck">
+        <div class="flex-row">
+            <div class="input-group">
+                <div class="label">Bet Amount</div>
+                <div class="input-container">
+                    <input type="number" id="betValue" value="10" min="1">
+                    <button class="half-double-btn" onclick="modifyBetScale('half')">½</button>
+                    <button class="half-double-btn" onclick="modifyBetScale('double')">2x</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="label">Mines Count</div>
+                <div class="input-container">
+                    <select id="minesCount" onchange="calculateMultiplierSteps()">
+                        <option value="1">1</option>
+                        <option value="3" selected>3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button class="action-btn btn-start" id="controlActionBtn" onclick="toggleMainOperation()" disabled>Syncing Wallet...</button>
+    </div>
 </div>
 
 <script>
+    // CENTRAL DATABASE HANDSHAKE ENTRY LINK
+    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
-let mines=[];
-let gameOver=false;
+    let balance = 0;
+    let betAmount = 0;
+    let totalMines = 3;
+    let gameActive = false;
+    
+    let boardArray = []; // Stores true/false for bomb placements
+    let clickedCount = 0;
+    let currentMultiplier = 1.00;
 
-function startGame(){
+    // Parse clean local profile directory parameters
+    const rawUser = localStorage.getItem("currentUser") || "Guest";
+    const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    document.getElementById("userName").innerText = cleanUser;
 
-    let mineCount=
-    parseInt(document.getElementById("mineCount").value);
-
-    mines=[];
-    gameOver=false;
-
-    document.getElementById("grid").innerHTML="";
-
-    while(mines.length<mineCount){
-        let r=Math.floor(Math.random()*25);
-        if(!mines.includes(r))
-            mines.push(r);
+    // Mathematical combination function used to calculate exact multipliers dynamically
+    function combinationFormula(n, k) {
+        if (k < 0 || k > n) return 0;
+        if (k === 0 || k === n) return 1;
+        let p = 1;
+        for (let i = 1; i <= k; i++) {
+            p = p * (n - i + 1) / i;
+        }
+        return p;
     }
 
-    for(let i=0;i<25;i++){
-
-        let cell=document.createElement("div");
-        cell.className="cell";
-        cell.dataset.index=i;
-        cell.onclick=revealCell;
-
-        document.getElementById("grid")
-        .appendChild(cell);
+    // Dynamic Multiplier Engine calculated based on standard house edge configuration math
+    function getNextMinesMultiplier() {
+        const totalTiles = 25;
+        const totalGems = totalTiles - totalMines;
+        
+        if (clickedCount === 0) return 1.00;
+        
+        // Calculate probability of hitting safe tiles sequentially
+        const currentSafeCombinations = combinationFormula(totalGems, clickedCount);
+        const totalPossibleCombinations = combinationFormula(totalTiles, clickedCount);
+        
+        if (totalPossibleCombinations === 0 || currentSafeCombinations === 0) return 1.00;
+        
+        const probability = currentSafeCombinations / totalPossibleCombinations;
+        const houseEdgeFactor = 0.97; // 3% House Edge
+        return parseFloat((houseEdgeFactor / probability).toFixed(2));
     }
 
-    document.getElementById("status")
-    .innerText="Game Started";
-}
-
-function revealCell(){
-
-    if(gameOver || this.textContent) return;
-
-    let index=
-    Number(this.dataset.index);
-
-    if(mines.includes(index)){
-
-        this.textContent="💣";
-        this.classList.add("mine");
-
-        gameOver=true;
-
-        document.getElementById("status")
-        .innerText="Mine Hit!";
-
-    }else{
-
-        this.textContent="💎";
-        this.classList.add("safe");
+    // Create 5x5 board structure
+    function buildBoardGrid() {
+        const container = document.getElementById("gridMatrix");
+        container.innerHTML = "";
+        
+        for (let i = 0; i < 25; i++) {
+            const tile = document.createElement("div");
+            tile.className = "tile";
+            tile.dataset.index = i;
+            tile.addEventListener("click", () => handleTileClick(i));
+            container.appendChild(tile);
+        }
     }
-}
 
+    // 1. LIVE REFRESH DIRECT FROM GOOGLE APPS SCRIPT
+    function fetchLiveWallet() {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data && data.balance !== undefined) {
+                balance = parseFloat(data.balance) || 0;
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
+                
+                if (!gameActive) {
+                    const actionBtn = document.getElementById("controlActionBtn");
+                    actionBtn.disabled = false;
+                    actionBtn.innerText = "Bet";
+                    actionBtn.className = "action-btn btn-start";
+                }
+            }
+        }).catch(err => {
+            console.error("Database sync failed:", err);
+            document.getElementById('userBalance').innerText = "Offline";
+        });
+    }
+
+    // 2. TRANSACTION DISPATCH PIPELINE
+    function syncTxToDatabase(amountChange, updateScreenUI = true) {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
+        .then(r => r.json())
+        .then(data => {
+            // Only overwrite the UI view if explicitly specified (like on Cashouts)
+            if (updateScreenUI && data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
+            }
+        }).catch(e => console.error("Database connection lost:", e));
+    }
+
+    function modifyBetScale(type) {
+        if (gameActive) return;
+        const input = document.getElementById("betValue");
+        let current = parseInt(input.value) || 0;
+        if (type === 'half') input.value = Math.max(1, Math.floor(current / 2));
+        if (type === 'double') input.value = Math.min(balance, current * 2);
+    }
+
+    function toggleMainOperation() {
+        const actionBtn = document.getElementById("controlActionBtn");
+        
+        if (!gameActive) {
+            // Start Game Routine
+            const betInput = document.getElementById("betValue");
+            const desiredBet = parseInt(betInput.value) || 0;
+            totalMines = parseInt(document.getElementById("minesCount").value) || 3;
+
+            if (desiredBet < 1 || desiredBet > balance) {
+                alert("Stake error! Please check your balance before placing a bet.");
+                return;
+            }
+
+            // Deduct stake instantly from local UI memory allocation
+            betAmount = desiredBet;
+            balance -= betAmount;
+            document.getElementById('userBalance').innerText = balance.toFixed(2);
+
+            // Pass "false" to run data transaction quietly behind the scenes
+            syncTxToDatabase(-betAmount, false);
+
+            // Setup internal state variables
+            gameActive = true;
+            clickedCount = 0;
+            currentMultiplier = 1.00;
+            generateBombCoordinates();
+            buildBoardGrid();
+
+            // Toggle active input controls locked states
+            betInput.disabled = true;
+            document.getElementById("minesCount").disabled = true;
+            document.getElementById("statusBox").style.display = "flex";
+            updateProfitLabel();
+
+            actionBtn.innerText = "Select a Tile";
+            actionBtn.disabled = true;
+            actionBtn.className = "action-btn btn-cashout";
+        } else {
+            // Cash Out Routine
+            executeCashout();
+        }
+    }
+
+    function generateBombCoordinates() {
+        boardArray = Array(25).fill(false);
+        let minesPlaced = 0;
+        while (minesPlaced < totalMines) {
+            let randIndex = Math.floor(Math.random() * 25);
+            if (!boardArray[randIndex]) {
+                boardArray[randIndex] = true;
+                minesPlaced++;
+            }
+        }
+    }
+
+    function updateProfitLabel() {
+        currentMultiplier = getNextMinesMultiplier();
+        const absoluteProfit = betAmount * currentMultiplier;
+        document.getElementById("profitDisplay").innerText = `🪙 ${absoluteProfit.toFixed(2)} (${currentMultiplier.toFixed(2)}x)`;
+        
+        if (gameActive && clickedCount > 0) {
+            const actionBtn = document.getElementById("controlActionBtn");
+            actionBtn.disabled = false;
+            actionBtn.innerText = `Cash Out 🪙 ${absoluteProfit.toFixed(2)}`;
+        }
+    }
+
+    function handleTileClick(index) {
+        if (!gameActive) return;
+        
+        const container = document.getElementById("gridMatrix");
+        const tileElement = container.children[index];
+        
+        // Block double clicks on already revealed blocks
+        if (tileElement.classList.contains("revealed-gem") || tileElement.classList.contains("revealed-bomb")) return;
+
+        const isBomb = boardArray[index];
+
+        if (isBomb) {
+            // Hit Bomb: Loss State triggered
+            tileElement.classList.add("revealed-bomb");
+            tileElement.innerText = "💣";
+            endGameSequence(false);
+        } else {
+            // Hit Gem: Progress state
+            tileElement.classList.add("revealed-gem");
+            tileElement.innerText = "💎";
+            clickedCount++;
+            
+            const totalGemsOnBoard = 25 - totalMines;
+            if (clickedCount === totalGemsOnBoard) {
+                // Autocashout if all clean gems are chosen successfully
+                executeCashout();
+            } else {
+                updateProfitLabel();
+            }
+        }
+    }
+
+    function executeCashout() {
+        if (!gameActive || clickedCount === 0) return;
+        endGameSequence(true);
+    }
+
+    function endGameSequence(playerWon) {
+        gameActive = false;
+        const actionBtn = document.getElementById("controlActionBtn");
+        actionBtn.disabled = true;
+        actionBtn.innerText = "Resetting Arena...";
+
+        const container = document.getElementById("gridMatrix");
+        
+        // Reveal remaining pieces locations
+        for (let i = 0; i < 25; i++) {
+            const tile = container.children[i];
+            const isBomb = boardArray[i];
+            
+            if (!tile.classList.contains("revealed-gem") && !tile.classList.contains("revealed-bomb")) {
+                tile.classList.add("lost-reveal");
+                tile.innerText = isBomb ? "💣" : "💎";
+            }
+        }
+
+        if (playerWon) {
+            const absoluteWinnings = betAmount * currentMultiplier;
+            balance += absoluteWinnings;
+            document.getElementById('userBalance').innerText = balance.toFixed(2);
+            
+            // WIN: Sync transaction to database and allow it to overwrite screen elements safely
+            syncTxToDatabase(absoluteWinnings, true);
+            alert(`Victory! Cashout processed safely: 🪙 ${absoluteWinnings.toFixed(2)}`);
+        } else {
+            // LOSS: DO NOT call fetch live routines right here. Keep your lower visual balance locked.
+            alert("Boom! You uncovered a bomb. Better luck next round.");
+        }
+
+        // Cool-down transition period handling
+        setTimeout(() => {
+            document.getElementById("betValue").disabled = false;
+            document.getElementById("minesCount").disabled = false;
+            document.getElementById("statusBox").style.display = "none";
+            
+            actionBtn.className = "action-btn btn-start";
+            actionBtn.innerText = "Bet";
+            actionBtn.disabled = false;
+            
+            buildBoardGrid();
+        }, 3000);
+    }
+
+    // Initialize Page elements instantly on execution compiles
+    buildBoardGrid();
+    fetchLiveWallet();
 </script>
 
 </body>
