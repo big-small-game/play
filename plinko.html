@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Plinko Mobile</title>
+    <title>Plinko Premium Pro</title>
     <style>
         :root {
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
+            --bg-main: #060b19;
+            --bg-card: rgba(15, 23, 42, 0.6);
             --primary-blue: #3b82f6;
-            --primary-hover: #2563eb;
             --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
             --text-light: #f8fafc;
             --text-muted: #64748b;
             --border-glass: rgba(255, 255, 255, 0.08);
+            --glow-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -32,436 +35,413 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 8px;
+            padding: 12px;
             overflow: hidden;
+            position: relative;
         }
 
-        .game-wrapper {
+        .game-container {
             width: 100%;
-            max-width: 480px;
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            max-width: 430px;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-glass);
-            border-radius: 20px;
+            border-radius: 24px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            gap: 14px;
+            padding: 16px;
+            box-shadow: var(--glow-shadow);
+            z-index: 10;
         }
 
-        /* Balance & Stats Header */
-        .header-bar {
+        /* Header Navigation Widget */
+        .header-widget {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
-            background: rgba(15, 23, 42, 0.5);
-            border-bottom: 1px solid var(--border-glass);
         }
 
-        .wallet-pill {
-            background: rgba(0, 0, 0, 0.3);
+        .user-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .wallet-display {
+            background: rgba(0, 0, 0, 0.4);
             padding: 6px 14px;
             border-radius: 30px;
             border: 1px solid var(--border-glass);
-            font-weight: 700;
+            font-weight: 800;
             color: var(--accent-gold);
-            font-size: 0.95rem;
         }
 
-        /* Canvas Pyramid Container */
-        .board-viewport {
+        /* Physics Pyramid Theatre Stage Canvas */
+        .pyramid-theater {
+            background: rgba(10, 15, 30, 0.6);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            width: 100%;
+            aspect-ratio: 4 / 4.3;
             position: relative;
-            width: 100%;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px 0;
+            overflow: hidden;
         }
 
-        canvas {
+        #plinkoCanvas {
+            width: 100%;
+            height: 100%;
             display: block;
-            width: 100%;
-            max-width: 100%;
-            height: auto;
         }
 
-        /* Mobile Cockpit Terminal Controls */
+        /* Operating Control Deck Panel Console */
         .control-deck {
-            padding: 16px;
-            background: rgba(15, 23, 42, 0.7);
-            border-top: 1px solid var(--border-glass);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            background: rgba(10, 15, 30, 0.4);
+            padding: 12px;
+            border-radius: 18px;
+            border: 1px solid var(--border-glass);
         }
 
-        .input-label {
-            font-size: 0.75rem;
+        .label {
+            font-size: 0.7rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
             color: var(--text-muted);
+            text-transform: uppercase;
             margin-bottom: 4px;
         }
 
-        .bet-input-row {
+        .input-container {
             display: flex;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             border: 1px solid var(--border-glass);
             overflow: hidden;
+            height: 44px;
         }
 
-        .bet-input-row input {
+        .input-container input {
             width: 100%;
             background: transparent;
             border: none;
-            padding: 12px;
             color: white;
+            padding: 0 12px;
             font-weight: 700;
-            font-size: 1.1rem;
-            text-align: center;
+            font-size: 1rem;
             outline: none;
         }
 
-        .step-btn {
-            background: rgba(255, 255, 255, 0.05);
+        .scale-btn {
+            background: rgba(255, 255, 255, 0.04);
             border: none;
             color: white;
-            width: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
+            padding: 0 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            border-left: 1px solid var(--border-glass);
         }
-        .step-btn:hover { background: rgba(255, 255, 255, 0.1); }
 
-        .btn-drop {
+        .drop-btn {
             width: 100%;
-            padding: 16px;
+            height: 52px;
             border: none;
             border-radius: 12px;
-            background: var(--primary-blue);
-            color: white;
             font-size: 1.1rem;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
-            transition: all 0.15s ease;
+            color: white;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            transition: all 0.1s ease;
         }
-        .btn-drop:hover:not(:disabled) { background: var(--primary-hover); }
-        .btn-drop:disabled {
-            background: #475569;
-            box-shadow: none;
+
+        .drop-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .drop-btn:disabled {
+            background: #334155 !important;
+            color: #64748b !important;
+            box-shadow: none !important;
             cursor: not-allowed;
-            color: #94a3b8;
-        }
-
-        /* Recent Multipliers Log Ribbon */
-        .history-ribbon {
-            display: flex;
-            gap: 6px;
-            padding: 4px 16px 12px 16px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        .history-ribbon::-webkit-scrollbar { display: none; }
-
-        .hist-pill {
-            padding: 3px 9px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            background: #334155;
-            color: #f8fafc;
         }
     </style>
 </head>
 <body>
 
-<div class="game-wrapper">
-    <div class="header-bar">
-        <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Plinko System</span>
-        <div class="wallet-pill">🪙 <span id="balanceDisplay">Loading...</span></div>
+<div class="game-container">
+    <!-- Header -->
+    <div class="header-widget">
+        <div class="user-tag">👤 <span id="userName">Guest</span></div>
+        <div class="wallet-display">🪙 <span id="userBalance">Loading...</span></div>
     </div>
 
-    <div class="board-viewport">
+    <!-- Live Physics Arena Frame Stage -->
+    <div class="pyramid-theater">
         <canvas id="plinkoCanvas"></canvas>
     </div>
 
-    <div class="history-ribbon" id="historyLog"></div>
-
+    <!-- Operating System Control Deck Configurations -->
     <div class="control-deck">
         <div>
-            <div class="input-label">Bet Size</div>
-            <div class="bet-input-row">
-                <button class="step-btn" onclick="adjustBet(-5)">-</button>
-                <input type="number" id="betAmount" value="10" min="1" step="1" readonly>
-                <button class="step-btn" onclick="adjustBet(5)">+</button>
+            <div class="label">Bet Amount</div>
+            <div class="input-container">
+                <input type="number" id="betValue" value="10" min="1">
+                <button class="scale-btn" onclick="adjustStakeScale('half')">½</button>
+                <button class="scale-btn" onclick="adjustStakeScale('double')">2x</button>
             </div>
         </div>
 
-        <button class="btn-drop" id="dropBtn" onclick="executeBallDrop()" disabled>Syncing Balance...</button>
+        <button class="drop-btn" id="mainDropBtn" onclick="executeBallDropCycle()" disabled>Syncing Wallet...</button>
     </div>
 </div>
 
 <script>
-    // CORE DATABASE CONNECTION URL
+    // CENTRAL BACKEND APPS SCRIPT PATH ENDPOINT
     const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
-    // Setup Canvas Resolution Matrix Properties
-    const canvas = document.getElementById('plinkoCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = 400;
-    canvas.height = 430;
+    let balance = 0;
+    let initialSyncComplete = false;
 
-    // Plinko Grid Parameters Setup
-    const ROWS = 12; 
-    const pins = [];
-    const balls = [];
-    const buckets = [];
+    // Physics Engine Environment Variables Parameters
+    const canvas = document.getElementById("plinkoCanvas");
+    const ctx = canvas.getContext("2d");
     
-    // Payout Multiplier Array Map Configuration Rules (13 values for 12 rows)
-    const MULTIPLIERS = [10, 4, 1.5, 1.1, 0.6, 0.3, 0.2, 0.3, 0.6, 1.1, 1.5, 4, 10];
-    const BUCKET_COLORS = ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#10b981', '#06b6d4', '#10b981', '#84cc16', '#eab308', '#f59e0b', '#f97316', '#ef4444'];
+    let w = 0, h = 0;
+    const rows = 8; // standard 8 rows peg configuration pyramid
+    let pegs = [];
+    let buckets = [];
+    let balls = [];
 
-    let walletBalance = 0;
-    let activeBallCount = 0;
+    // Bucket Multipliers Distributions Config Array
+    const bucketMultipliers = [5.5, 2.0, 1.3, 0.7, 0.4, 0.7, 1.3, 2.0, 5.5];
+    const bucketColors = ["#ef4444", "#f97316", "#f59e0b", "#3b82f6", "#10b981", "#3b82f6", "#f59e0b", "#f97316", "#ef4444"];
 
-    // Parse profile handles cleanly from central storage space parameters
+    // Filter dynamic clean local user identification details handles
     const rawUser = localStorage.getItem("currentUser") || "Guest";
-    const userHandle = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    document.getElementById("userName").innerText = cleanUser;
 
-    // Generate fixed coordinate vectors for pyramid system array pins
-    function buildPyramidMatrix() {
-        const startY = 40;
-        const spacingY = 26;
-        
-        for (let r = 0; r < ROWS; r++) {
-            const rowPins = r + 3; 
-            const startX = canvas.width / 2 - ((rowPins - 1) * 18) / 2;
-            const y = startY + (r * spacingY);
-            
-            for (let p = 0; p < rowPins; p++) {
-                const x = startX + (p * 18);
-                pins.push({ x: x, y: y, radius: 2.5 });
+    function resizeEngineStageLayout() {
+        w = canvas.offsetWidth;
+        h = canvas.offsetHeight;
+        canvas.width = w * window.devicePixelRatio;
+        canvas.height = h * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        generatePegMatrixPyramidCoords();
+    }
+
+    function generatePegMatrixPyramidCoords() {
+        pegs = [];
+        const startY = 45;
+        const spacingY = (h - 90) / (rows + 1);
+
+        for (let r = 0; r < rows; r++) {
+            const rowPegCount = r + 3; // start row with 3 pegs, expanding downwards
+            const rowWidth = (rowPegCount - 1) * (w * 0.085);
+            const startX = (w - rowWidth) / 2;
+
+            for (let p = 0; p < rowPegCount; p++) {
+                pegs.push({
+                    x: startX + p * (w * 0.085),
+                    y: startY + r * spacingY
+                });
             }
         }
 
-        // Populate bottom score buckets references coordinates parameters
-        const totalBuckets = ROWS + 1;
-        const bucketW = 24;
-        const startBX = canvas.width / 2 - (totalBuckets * bucketW) / 2;
-        const bucketY = canvas.height - 25;
+        // Generate Bottom Target Payout Landing Buckets Boxes Area Configurations
+        buckets = [];
+        const lastRowPegCount = rows + 2;
+        const lastRowWidth = (lastRowPegCount - 1) * (w * 0.085);
+        const startBucketX = (w - lastRowWidth) / 2;
+        const bucketWidth = w * 0.085;
+        const bucketY = h - 35;
 
-        for (let b = 0; b < totalBuckets; b++) {
+        for (let b = 0; b < bucketMultipliers.length; b++) {
             buckets.push({
-                x: startBX + (b * bucketW),
+                x: startBucketX + b * bucketWidth,
                 y: bucketY,
-                w: bucketW - 2,
-                h: 18,
-                mult: MULTIPLIERS[b],
-                color: BUCKET_COLORS[b]
+                w: bucketWidth - 4,
+                h: 24,
+                mult: bucketMultipliers[b],
+                color: bucketColors[b]
             });
         }
     }
 
-    // 1. DATABASE FETCH SYNC VALUE COMMAND
-    function fetchRemoteBalance() {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(userHandle)}`)
+    // 1. LIVE REFRESH SYNC FROM SHEET DATA DIRECT
+    function fetchLiveWallet() {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
         .then(r => r.json())
         .then(data => {
             if (data && data.balance !== undefined) {
-                walletBalance = parseFloat(data.balance) || 0;
-                document.getElementById('balanceDisplay').innerText = walletBalance.toFixed(2);
+                balance = parseFloat(data.balance) || 0;
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
                 
-                const btn = document.getElementById('dropBtn');
-                if (activeBallCount === 0) {
-                    btn.disabled = false;
-                    btn.innerText = "Drop Ball";
+                if (!initialSyncComplete) {
+                    initialSyncComplete = true;
+                    document.getElementById("mainDropBtn").disabled = false;
+                    document.getElementById("mainDropBtn").innerText = "Drop Ball";
                 }
             }
         }).catch(err => {
-            console.error("handshake matrix error:", err);
-            document.getElementById('balanceDisplay').innerText = "Offline";
+            console.error("Database tracking pipe link loss:", err);
+            document.getElementById('userBalance').innerText = "Offline";
         });
     }
 
-    // 2. TRANSACTION PIPELINE CONNECTOR TO CENTRAL SHEETS LOGIC MANAGER
-    function pushTxToDatabase(deltaVal, updateInterface = true) {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(userHandle)}&amount=${deltaVal}`)
+    // 2. BACKEND TRANSACTION DISPATCH PIPE PACKET
+    function syncTxToDatabase(amountChange, updateScreenUI = true) {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
         .then(r => r.json())
         .then(data => {
-            if (updateInterface && data && data.balance !== undefined) {
-                walletBalance = parseFloat(data.balance);
-                document.getElementById('balanceDisplay').innerText = walletBalance.toFixed(2);
+            if (updateScreenUI && data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
-        }).catch(e => console.error("Database connection failure:", e));
+        }).catch(e => console.error("Database network link synchronization hazard:", e));
     }
 
-    function adjustBet(amt) {
-        let el = document.getElementById('betAmount');
-        let nextVal = parseInt(el.value) + amt;
-        if (nextVal >= 1 && nextVal <= walletBalance) el.value = nextVal;
+    function adjustStakeScale(type) {
+        const input = document.getElementById("betValue");
+        let current = parseInt(input.value) || 0;
+        if (type === 'half') input.value = Math.max(1, Math.floor(current / 2));
+        if (type === 'double') input.value = Math.min(balance, current * 2);
     }
 
-    function executeBallDrop() {
-        const betInput = document.getElementById('betAmount');
-        const betAmount = parseInt(betInput.value) || 0;
+    function executeBallDropCycle() {
+        const betInput = document.getElementById("betValue");
+        const desiredBet = parseInt(betInput.value) || 0;
 
-        if (betAmount < 1 || betAmount > walletBalance) {
-            alert("Insufficient balance metrics! Please crosscheck assets.");
+        if (desiredBet < 1 || desiredBet > balance) {
+            alert("Stake bounds error! Balance metrics mismatched.");
             return;
         }
 
-        // Immediately take bet amount out of local screen container view layout space assets
-        walletBalance -= betAmount;
-        document.getElementById('balanceDisplay').innerText = walletBalance.toFixed(2);
+        // BALANCE BUG RESOLUTION: Subtract local variable values and display layout views instantly
+        balance -= desiredBet;
+        document.getElementById('userBalance').innerText = balance.toFixed(2);
 
-        // Send subtraction to server without updating the UI instantly
-        pushTxToDatabase(-betAmount, false);
+        // Transmit background write command to server spreadsheet structure quietly
+        syncTxToDatabase(-desiredBet, false);
 
-        activeBallCount++;
-        
-        // Push payload specifications variables onto runtime execution thread engine tracking properties
+        // Instantiate new physics node particle into live memory space loop array
+        // Slight randomization on entry node to allow varying bounce path trees
+        const entryPointX = (w / 2) + (Math.random() * 8 - 4);
         balls.push({
-            x: canvas.width / 2 + (Math.random() * 4 - 2), // Small randomization variance at apex drop point
+            x: entryPointX,
             y: 15,
             vx: 0,
-            vy: 1.5,
-            radius: 4,
-            bet: betAmount
+            vy: 0,
+            radius: 5.5,
+            bet: desiredBet,
+            gravity: 0.16,
+            bounce: -0.45,
+            friction: 0.98
         });
     }
 
-    // Main Physics Engine & Animation Loop
-    function updatePhysicsLoop() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function tickPhysicsLoopEngine() {
+        ctx.clearRect(0, 0, w, h);
 
-        // Draw static field pins arrays structures loops
-        ctx.fillStyle = '#94a3b8';
-        pins.forEach(pin => {
+        // Draw Matrix Pins Structure
+        ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+        for (let i = 0; i < pegs.length; i++) {
             ctx.beginPath();
-            ctx.arc(pin.x, pin.y, pin.radius, 0, Math.PI * 2);
+            ctx.arc(pegs[i].x, pegs[i].y, 3, 0, Math.PI * 2);
             ctx.fill();
-        });
+        }
 
-        // Draw Bottom Mult boxes text metrics mappings layout spaces frames
-        buckets.forEach(b => {
-            ctx.fillStyle = b.color;
+        // Draw Bottom Mult Boxes
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "bold 9px sans-serif";
+        for (let b = 0; b < buckets.length; b++) {
+            ctx.fillStyle = buckets[b].color;
+            // Draw smooth rounded rectangular base boxes profiles
             ctx.beginPath();
-            if (ctx.roundRect) {
-                ctx.roundRect(b.x, b.y, b.w, b.h, 4);
-                ctx.fill();
-            } else {
-                ctx.fillRect(b.x, b.y, b.w, b.h);
-            }
-            
-            ctx.fillStyle = '#0f172a';
-            ctx.font = 'bold 9px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText(b.mult + 'x', b.x + b.w/2, b.y + 12);
-        });
+            ctx.roundRect(buckets[b].x - buckets[b].w/2, buckets[b].y, buckets[b].w, buckets[b].h, 4);
+            ctx.fill();
 
-        // Loop execution vector paths updates for active ball properties tracking frames
-        for (let i = balls.length - 1; i >= 0; i--) {
-            const ball = balls[i];
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText(`${buckets[b].mult}x`, buckets[b].x, buckets[b].y + buckets[b].h/2);
+        }
 
-            // Apply gravity metrics acceleration formulas parameters constants
-            ball.vy += 0.16; 
+        // Cycle Trace Particle Coordinates Loops Engine
+        for (let k = balls.length - 1; k >= 0; k--) {
+            let ball = balls[k];
+
+            ball.vy += ball.gravity;
+            ball.vx *= ball.friction;
             ball.x += ball.vx;
             ball.y += ball.vy;
 
-            // Introduce dampening collision border bounce attributes
-            if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
-                ball.vx *= -0.5;
-                ball.x = ball.x - ball.radius < 0 ? ball.radius : canvas.width - ball.radius;
+            // Handle Wall Collisions bounds checks
+            if (ball.x - ball.radius < 5) { ball.x = 5 + ball.radius; ball.vx *= -0.5; }
+            if (ball.x + ball.radius > w - 5) { ball.x = w - 5 - ball.radius; ball.vx *= -0.5; }
+
+            // Handle Peg Collision Arrays Vectors Distances
+            for (let p = 0; p < pegs.length; p++) {
+                let dx = ball.x - pegs[p].x;
+                let dy = ball.y - pegs[p].y;
+                let distance = Math.hypot(dx, dy);
+
+                if (distance < ball.radius + 3) {
+                    // Resolve overlap boundaries forces vector 
+                    let angle = Math.atan2(dy, dx);
+                    ball.x = pegs[p].x + (ball.radius + 3.1) * Math.cos(angle);
+                    ball.y = pegs[p].y + (ball.radius + 3.1) * Math.sin(angle);
+
+                    // Map vector bounce changes allocations
+                    let speed = Math.hypot(ball.vx, ball.vy);
+                    ball.vx = Math.cos(angle) * speed * Math.abs(ball.bounce) + (Math.random() * 0.4 - 0.2);
+                    ball.vy = Math.sin(angle) * speed * Math.abs(ball.bounce);
+                }
             }
 
-            // Pin Collision Detection Mechanics
-            pins.forEach(pin => {
-                const dx = ball.x - pin.x;
-                const dy = ball.y - pin.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+            // Check Bucket Settlement Bounds Outcomes
+            if (ball.y >= h - 40) {
+                let resolvedIndex = Math.floor((ball.x - buckets[0].x + buckets[0].w/2) / (w * 0.085));
+                resolvedIndex = Math.max(0, Math.min(resolvedIndex, buckets.length - 1));
 
-                if (distance < ball.radius + pin.radius) {
-                    // Normalize collision physics vector paths directions coordinates
-                    const nx = dx / distance;
-                    const ny = dy / distance;
+                // Process specific bucket calculation payout outcome 
+                const finalMatchedMultiplier = buckets[resolvedIndex].mult;
+                const winningsPayoutAmount = ball.bet * finalMatchedMultiplier;
 
-                    // Deflect ball with bounce velocity dampening allocation
-                    const bounce = 0.55;
-                    const dotProduct = ball.vx * nx + ball.vy * ny;
-                    
-                    ball.vx = (ball.vx - 2 * dotProduct * nx) * bounce;
-                    ball.vy = (ball.vy - 2 * dotProduct * ny) * bounce;
+                balance += winningsPayoutAmount;
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
 
-                    // Displace position coordinates to break intersecting geometries binds overlapping loops
-                    ball.x = pin.x + (ball.radius + pin.radius) * nx;
-                    ball.y = pin.y + (ball.radius + pin.radius) * ny;
-                    
-                    // Inject minor horizontal noise variation drift parameters to assist distribution paths layout arrays
-                    ball.vx += (Math.random() - 0.5) * 0.2;
-                }
-            });
+                // Dispatch transaction update packet directly to server sheet architecture safely
+                syncTxToDatabase(winningsPayoutAmount, true);
 
-            // Target landing zone evaluation conditions parameters validation triggers
-            if (ball.y >= canvas.height - 35) {
-                // Pinpoint targeted bucket indexing values
-                let landedBucket = buckets.find(b => ball.x >= b.x && ball.x <= b.x + b.w);
-                
-                // Fallback catch to nearest index properties boundary alignments handles
-                if (!landedBucket) {
-                    landedBucket = ball.x < canvas.width / 2 ? buckets[0] : buckets[buckets.length - 1];
-                }
-
-                const winPayoutValue = ball.bet * landedBucket.mult;
-                
-                // Process added winnings locally onto the UI screen tracking assets immediately
-                walletBalance += winPayoutValue;
-                document.getElementById('balanceDisplay').innerText = walletBalance.toFixed(2);
-                
-                // Push database request transaction updates parameters frames synchronously
-                pushTxToDatabase(winPayoutValue, true);
-
-                logHistoryRibbon(landedBucket.mult);
-                
-                // Clean references out of live tracking arrays frames
-                balls.splice(i, 1);
-                activeBallCount--;
+                // Delete processing node particle object from active arrays stack loops memory allocation
+                balls.splice(k, 1);
                 continue;
             }
 
-            // Draw active bouncing ball
-            ctx.fillStyle = '#ef4444';
+            // Draw Physics Active Glowing Ball Particle Handle
+            ctx.fillStyle = "#ef4444";
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "#ef4444";
             ctx.beginPath();
             ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
             ctx.fill();
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1;
-            ctx.stroke();
+            ctx.shadowBlur = 0; // reset shaders overrides
         }
 
-        requestAnimationFrame(updatePhysicsLoop);
+        requestAnimationFrame(tickPhysicsLoopEngine);
     }
 
-    function logHistoryRibbon(mult) {
-        const container = document.getElementById('historyLog');
-        const pill = document.createElement('span');
-        pill.className = 'hist-pill';
-        pill.innerText = mult + 'x';
-        
-        container.insertBefore(pill, container.firstChild);
-        if (container.children.length > 8) container.removeChild(container.lastChild);
-    }
-
-    // Trigger initialization on startup configuration sequence passes
-    buildPyramidMatrix();
-    fetchRemoteBalance();
-    updatePhysicsLoop();
+    // Direct immediate launch sequences initialization passes
+    window.addEventListener('resize', resizeEngineStageLayout);
+    resizeEngineStageLayout();
+    tickPhysicsLoopEngine();
+    fetchLiveWallet();
 </script>
 
 </body>
