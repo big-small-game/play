@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Deposit Funds - Big Small Pro</title>
+    <title>Deposit Money💳</title>
     <style>
         :root {
             --bg-main: #060b19;
@@ -36,11 +36,10 @@
             justify-content: center;
             align-items: center;
             padding: 12px;
-            overflow: hidden;
             position: relative;
         }
 
-        /* Top Navigation Bar configured to route back to game.html */
+        /* Top Navigation Bar */
         .top-nav-container {
             width: 100%;
             max-width: 430px;
@@ -84,44 +83,52 @@
             border-radius: 24px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
             padding: 24px;
             box-shadow: var(--glow-shadow);
             z-index: 10;
         }
 
-        .header-widget {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-glass);
-            padding-bottom: 14px;
+        /* Payment Instruction Headers */
+        .payment-banner {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 14px;
+            border-radius: 14px;
+            text-align: center;
         }
 
-        .title-text {
-            font-size: 1.2rem;
+        .upi-target {
+            font-size: 1.1rem;
             font-weight: 800;
             color: white;
         }
 
-        .wallet-display {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 6px 14px;
-            border-radius: 30px;
-            border: 1px solid var(--border-glass);
-            font-weight: 800;
+        .upi-address {
             color: var(--accent-gold);
-            font-size: 0.9rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .time-alert {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fbbf24;
+            text-align: center;
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -131,17 +138,11 @@
         .input-container {
             display: flex;
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid var(--border-glass);
             overflow: hidden;
-            height: 48px;
+            height: 44px;
             align-items: center;
-        }
-
-        .input-container span {
-            padding-left: 14px;
-            font-weight: bold;
-            color: var(--accent-gold);
         }
 
         .input-container input {
@@ -150,12 +151,16 @@
             border: none;
             color: white;
             padding: 0 12px;
-            font-weight: 700;
-            font-size: 1.1rem;
+            font-weight: 600;
+            font-size: 0.95rem;
             outline: none;
         }
 
-        /* Status Banner Box */
+        .input-container input::placeholder {
+            color: #475569;
+        }
+
+        /* Status UI Message Element */
         .status-message {
             padding: 12px;
             border-radius: 10px;
@@ -169,10 +174,10 @@
 
         .submit-btn {
             width: 100%;
-            height: 52px;
+            height: 48px;
             border: none;
             border-radius: 12px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 800;
             cursor: pointer;
             color: white;
@@ -187,105 +192,229 @@
             box-shadow: none !important;
             cursor: not-allowed;
         }
+
+        /* History Module */
+        .history-section {
+            border-top: 1px solid var(--border-glass);
+            padding-top: 16px;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .history-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+        .history-list::-webkit-scrollbar { display: none; }
+
+        .history-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-glass);
+            padding: 10px 14px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .item-amount {
+            font-weight: 700;
+            color: white;
+        }
+
+        .item-txid {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .item-status {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-gold);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
     </style>
 </head>
 <body>
 
 <div class="top-nav-container">
-    <a href="game.html" class="btn-game-nav">← Back to Game</a>
+    <a href="game.html" class="btn-game-nav">← Back to Home</a>
 </div>
 
 <div class="deposit-container">
-    <div class="header-widget">
-        <div class="title-text">Instant Deposit</div>
-        <div class="wallet-display">🪙 <span id="currentBalance">0.00</span></div>
+    <div class="payment-banner">
+        <div class="upi-target">Please Pay to: <span class="upi-address">xx@upi</span></div>
+    </div>
+
+    <div class="time-alert">
+        ⚠️ It takes upto 24 Hours to Update Your Balance.
     </div>
 
     <div id="statusBox" class="status-message"></div>
 
     <div class="input-group">
-        <div class="label">Amount to add</div>
+        <div class="label">Username</div>
         <div class="input-container">
-            <span>🪙</span>
-            <input type="number" id="depositValue" value="50" min="1" placeholder="Enter amount">
+            <input type="text" id="usernameField" placeholder="Enter your username" readonly>
         </div>
     </div>
 
-    <button class="submit-btn" id="submitDepositBtn" onclick="processManualDeposit()">Confirm Deposit</button>
+    <div class="input-group">
+        <div class="label">Amount</div>
+        <div class="input-container">
+            <input type="number" id="amountField" min="1" placeholder="Enter amount paid">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <div class="label">UPI Transaction ID</div>
+        <div class="input-container">
+            <input type="text" id="txidField" placeholder="Enter 12-digit Ref No.">
+        </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="sendDepositReport()">Submit Request</button>
+
+    <div class="history-section">
+        <div class="history-title">Your Deposit History</div>
+        <div class="history-list" id="historyContainer">
+            </div>
+    </div>
 </div>
 
 <script>
-    // MATCHING CENTRAL APPLICATION PATH ENDPOINT
-    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
+    // Configured with the Web App Deployment execution endpoint URL
+    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbxdewVWmLbZ5Z6iVrnm01ARLX1z51eUVDunoz6tbkEqam2v2XKrD2SWIr-CSuF0HFRg/exec";
 
-    let balance = 0;
-
-    // Pull identification parameters matching system environments
+    // Auto-detect and populate workspace identities
     const rawUser = localStorage.getItem("currentUser") || "Guest";
     const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    document.getElementById("usernameField").value = cleanUser;
 
-    // Pull live wallet data instantly upon page entry
-    function fetchCurrentWallet() {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
-        .then(r => r.json())
-        .then(data => {
-            if (data && data.balance !== undefined) {
-                balance = parseFloat(data.balance) || 0;
-                document.getElementById('currentBalance').innerText = balance.toFixed(2);
-            }
-        }).catch(err => console.error("Balance tracking fault:", err));
-    }
+    // Run history renderer initialization immediately
+    renderLocalHistory();
 
-    // RESOLUTION: Dynamic query parameters matching Web Endpoint transaction models
-    function processManualDeposit() {
-        const depositInput = document.getElementById("depositValue");
-        const depositAmount = parseFloat(depositInput.value) || 0;
-        const submitBtn = document.getElementById("submitDepositBtn");
-        const statusBox = document.getElementById("statusBox");
+    function sendDepositReport() {
+        const amountInput = document.getElementById("amountField");
+        const txidInput = document.getElementById("txidField");
+        const submitBtn = document.getElementById("submitBtn");
+        
+        const amount = parseFloat(amountInput.value) || 0;
+        const txid = txidInput.value.trim();
 
-        if (depositAmount <= 0) {
-            showStatus("Please enter a valid deposit amount greater than 0.", "error");
+        // Standard validation sweeps
+        if (amount <= 0) {
+            displayStatus("Please enter a valid balance metric greater than 0.", "error");
+            return;
+        }
+        if (txid.length < 6) {
+            displayStatus("Please enter a valid tracking UPI Transaction Ref ID.", "error");
             return;
         }
 
-        // Lock interface buttons to avoid duplicate requests processing simultaneously
+        // Lock form state interfaces during pending execution operations
         submitBtn.disabled = true;
-        submitBtn.innerText = "Processing Tx...";
-        statusBox.style.display = "none";
+        submitBtn.innerText = "Transmitting to Sheet...";
+        hideStatus();
 
-        // Dispatch POSITIVE currency value variations targeting pipeline handles
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${depositAmount}`)
+        // Construct parameters targeting spreadsheet log entries mapping pipelines
+        const targetUrl = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amount}&txid=${encodeURIComponent(txid)}&nocache=${Date.now()}`;
+
+        fetch(targetUrl)
         .then(response => response.json())
         .then(data => {
-            if (data && data.balance !== undefined) {
-                balance = parseFloat(data.balance);
-                document.getElementById('currentBalance').innerText = balance.toFixed(2);
-                
-                showStatus(`Success! Added 🪙${depositAmount.toFixed(2)} to your balance.`, "success");
-                depositInput.value = ""; // clear inputs
-            } else {
-                showStatus("Error: Server responded but wallet could not update.", "error");
-            }
+            // Display exact success verification text requested
+            displayStatus("Yayy! Deposit Successfull", "success");
+            
+            // Save request block parameters into application instance local structural histories
+            saveRequestToLocalLog(amount, txid);
+            
+            // Wipe variable fields layout values clean
+            amountInput.value = "";
+            txidInput.value = "";
         })
         .catch(err => {
-            console.error("Database connection failure:", err);
-            showStatus("Database sync timed out. Try again shortly.", "error");
+            console.error("Transmission Exception:", err);
+            displayStatus("Network response timeout. Request captured locally.", "error");
+            // Fail-safe tracking log write if internet buffers drops momentarily
+            saveRequestToLocalLog(amount, txid);
         })
         .finally(() => {
             submitBtn.disabled = false;
-            submitBtn.innerText = "Confirm Deposit";
+            submitBtn.innerText = "Submit Request";
         });
     }
 
-    function showStatus(msg, type) {
-        const statusBox = document.getElementById("statusBox");
-        statusBox.innerText = msg;
-        statusBox.className = `status-message status-${type}`;
-        statusBox.style.display = "block";
+    function saveRequestToLocalLog(amt, transactionId) {
+        const logStorageKey = `deposit_history_${cleanUser}`;
+        let records = JSON.parse(localStorage.getItem(logStorageKey)) || [];
+        
+        const newEntry = {
+            amount: amt.toFixed(2),
+            txid: transactionId,
+            status: "Pending",
+            date: new Date().toLocaleDateString()
+        };
+        
+        records.unshift(newEntry);
+        localStorage.setItem(logStorageKey, JSON.stringify(records));
+        renderLocalHistory();
     }
 
-    // Launch validation sweeps directly on activation passes
-    fetchCurrentWallet();
+    function renderLocalHistory() {
+        const logStorageKey = `deposit_history_${cleanUser}`;
+        const container = document.getElementById("historyContainer");
+        let records = JSON.parse(localStorage.getItem(logStorageKey)) || [];
+
+        if (records.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding:15px; font-size:0.75rem; color:var(--text-muted);">No recent deposit records found.</div>`;
+            return;
+        }
+
+        container.innerHTML = records.map(item => `
+            <div class="history-item">
+                <div class="item-details">
+                    <div class="item-amount">🪙 ${item.amount}</div>
+                    <div class="item-txid">ID: ${item.txid}</div>
+                </div>
+                <div class="item-status">${item.status}</div>
+            </div>
+        `).join('');
+    }
+
+    function displayStatus(msg, type) {
+        const box = document.getElementById("statusBox");
+        box.innerText = msg;
+        box.className = `status-message status-${type}`;
+        box.style.display = "block";
+    }
+
+    function hideStatus() {
+        document.getElementById("statusBox").style.display = "none";
+    }
 </script>
 
 </body>
