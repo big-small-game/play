@@ -281,22 +281,22 @@
 <body>
 
 <div class="top-nav-container">
-    <a href="game.html" class="btn-home-nav">← Back to Hub</a>
+    <a href="game.html" class="btn-home-nav">← Home Page</a>
 </div>
 
 <div class="withdraw-container">
     <div class="success-screen" id="successScreen">
         <div class="success-icon">✓</div>
-        <div class="success-title">Withdrawal Filed!</div>
-        <div class="success-desc">Payout request filed to the active audit log queue.<br>Verification routines resolve within 24 business hours.</div>
-        <button class="btn-back" onclick="window.location.href='game.html'">Back to Hub</button>
+        <div class="success-title">Withdrawal Request Sent!</div>
+        <div class="success-desc">Payout request sent successfully.<br>Verification will be resolved within 24 business hours.</div>
+        <button class="btn-back" onclick="window.location.href='game.html'">Back to Games</button>
     </div>
 
     <div class="title-head">SECURE WITHDRAWAL</div>
-    <div class="balance-display">Live Wallet: 🪙<span id="currentBalance">Syncing...</span></div>
+    <div class="balance-display">Current Balance: 🪙<span id="currentBalance">Syncing...</span></div>
     
     <div class="notice-box">
-        ⚠️ Floor payout parameter: 🪙100.<br>Audit queues process transactions manually within 24 hours.
+        ⚠️ Minimum Withdraw: 🪙100.<br>Withdrawal confirms within 24 hours.
     </div>
 
     <form id="withdrawForm">
@@ -308,29 +308,29 @@
         <div class="form-group">
             <label for="amount">Payout Total</label>
             <input type="number" id="amount" name="amount" placeholder="Minimum 100" min="100" required disabled>
-            <div id="balanceError" class="error-msg">❌ Amount exceeds available sheet balance!</div>
-            <div id="minError" class="error-msg">❌ Minimum transactional floor limit is 🪙100!</div>
+            <div id="balanceError" class="error-msg">❌ Amount exceeds available balance!</div>
+            <div id="minError" class="error-msg">❌ Minimum withdrawal limit is 🪙100!</div>
         </div>
 
         <div class="form-group">
-            <label for="payout_method">Settlement Node</label>
+            <label for="payout_method">Withdraw Method</label>
             <select id="payout_method" name="payout_method" onchange="handleMethodChange()" required>
-                <option value="" disabled selected>Select execution gateway...</option>
-                <option value="UPI">UPI Routing Address</option>
-                <option value="BANK">IMPS Bank Wire</option>
+                <option value="" disabled selected>Select withdraw method...</option>
+                <option value="UPI">UPI </option>
+                <option value="BANK">Bank Transfer</option>
             </select>
         </div>
 
         <div id="upiSection" class="dynamic-section">
             <div class="form-group">
-                <label for="upi_id">VPA Address (UPI ID)</label>
+                <label for="upi_id">UPI ID</label>
                 <input type="text" id="upi_id" name="upi_id" placeholder="name@bankname">
             </div>
         </div>
 
         <div id="bankSection" class="dynamic-section">
             <div class="form-group">
-                <label for="acc_no">Core Routing Account No.</label>
+                <label for="acc_no">Account No.</label>
                 <input type="password" id="acc_no" name="acc_no" placeholder="Enter bank account string">
             </div>
             <div class="form-group">
@@ -338,11 +338,11 @@
                 <input type="text" id="confirm_acc_no" name="confirm_acc_no" placeholder="Re-enter account string">
             </div>
             <div class="form-group">
-                <label for="ifsc_code">IFSC Clearance String</label>
+                <label for="ifsc_code">IFSC Code</label>
                 <input type="text" id="ifsc_code" name="ifsc_code" placeholder="e.g., HDFC0000123" style="text-transform: uppercase;">
             </div>
             <div class="form-group">
-                <label for="holder_name">Beneficiary Entity Name</label>
+                <label for="holder_name">Account Holder Name</label>
                 <input type="text" id="holder_name" name="holder_name" placeholder="Full name matching account passbook">
             </div>
         </div>
@@ -351,7 +351,7 @@
     </form>
 
     <div class="history-section">
-        <div class="history-title">Real-Time Payout Logs</div>
+        <div class="history-title">Withdrawl History</div>
         <div class="history-list" id="historyContainer">
             <div style="text-align:center; padding:15px; font-size:0.8rem; color:#64748b;">Loading logs from database...</div>
         </div>
@@ -360,7 +360,7 @@
 
 <script>
     // SHARED CENTRAL DATABASE TARGET URL Framework
-    const SYNC_TARGET_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
+    const SYNC_TARGET_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
 
     let accountBalance = 0;
     const storedUser = localStorage.getItem("currentUser") || "Guest";
