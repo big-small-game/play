@@ -27,7 +27,7 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif; /* Clean, normal system font */
+            font-family: Arial, Helvetica, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-light);
             min-height: 100vh;
@@ -341,7 +341,7 @@
 </div>
 
 <script>
-    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
+    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
 
     let balance = 0;
     let betAmount = 0;
@@ -373,8 +373,7 @@
         } catch(e) {}
     }
 
-    const rawUser = localStorage.getItem("currentUser") || "Guest";
-    const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    const cleanUser = (localStorage.getItem("currentUser") || "Guest").trim();
     document.getElementById("userName").innerText = cleanUser;
 
     function resizeSimulationCanvas() {
@@ -406,12 +405,17 @@
         });
     }
 
-    function syncTxToDatabase(amountChange, updateScreenUI = true) {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
+    function syncTxToDatabase(amountChange, outcome = "none", updateScreenUI = true) {
+        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&modify_balance=${amountChange}`;
+        if(outcome !== "none") {
+            url += `&game_result=${outcome}`;
+        }
+        
+        fetch(url)
         .then(r => r.json())
         .then(data => {
-            if (updateScreenUI && data && data.balance !== undefined) {
-                balance = parseFloat(data.balance);
+            if (updateScreenUI && data && data.newBalance !== undefined) {
+                balance = parseFloat(data.newBalance);
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
         });
@@ -438,7 +442,7 @@
             betAmount = desiredBet;
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
-            syncTxToDatabase(-betAmount, false);
+            syncTxToDatabase(-betAmount, "none", false);
 
             const rand = Math.random();
             if (rand < 0.08) {
@@ -559,7 +563,7 @@
         const totalFlightPayout = betAmount * currentMultiplier;
         balance += totalFlightPayout;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
-        syncTxToDatabase(totalFlightPayout, true);
+        syncTxToDatabase(totalFlightPayout, "win", true);
 
         playSyntheticSound(600, 'sine', 0.15);
         setTimeout(() => playSyntheticSound(800, 'sine', 0.2), 100);
@@ -581,6 +585,10 @@
         const actionBtn = document.getElementById("mainActionBtn");
         actionBtn.disabled = true;
         actionBtn.innerText = "Flew Away!";
+
+        if(!hasCashedOut) {
+            syncTxToDatabase(0, "loss", false);
+        }
 
         resetFlightArenaDelayed();
     }
