@@ -341,7 +341,7 @@
 </div>
 
 <script>
-    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
+    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
 
     let balance = 0;
     let betAmount = 0;
@@ -405,17 +405,18 @@
         });
     }
 
-    function syncTxToDatabase(amountChange, outcome = "none", updateScreenUI = true) {
-        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&modify_balance=${amountChange}`;
-        if(outcome !== "none") {
-            url += `&game_result=${outcome}`;
-        }
+    // FIXED: Maps parameters directly onto 'bet_amount' processed by your Apps Script gameplay engine block
+    function syncTxToDatabase(amountChange, updateScreenUI = true) {
+        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
         
         fetch(url)
         .then(r => r.json())
         .then(data => {
             if (updateScreenUI && data && data.newBalance !== undefined) {
                 balance = parseFloat(data.newBalance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
+            } else if (updateScreenUI && data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
         });
@@ -442,7 +443,9 @@
             betAmount = desiredBet;
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
-            syncTxToDatabase(-betAmount, "none", false);
+            
+            // FIXED: Instantly sends deduction parameter updates down to the spreadsheet
+            syncTxToDatabase(-betAmount, false);
 
             const rand = Math.random();
             if (rand < 0.08) {
@@ -563,7 +566,9 @@
         const totalFlightPayout = betAmount * currentMultiplier;
         balance += totalFlightPayout;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
-        syncTxToDatabase(totalFlightPayout, "win", true);
+        
+        // FIXED: Dispatches full multiplier earnings as a clean positive adjustment via bet_amount
+        syncTxToDatabase(totalFlightPayout, true);
 
         playSyntheticSound(600, 'sine', 0.15);
         setTimeout(() => playSyntheticSound(800, 'sine', 0.2), 100);
@@ -586,10 +591,7 @@
         actionBtn.disabled = true;
         actionBtn.innerText = "Flew Away!";
 
-        if(!hasCashedOut) {
-            syncTxToDatabase(0, "loss", false);
-        }
-
+        // FIXED: Balance was dropped at engine turn-on, so no further database updates are required here upon losing
         resetFlightArenaDelayed();
     }
 
