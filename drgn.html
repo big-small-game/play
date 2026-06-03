@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dragon Tower</title>
+    <title>Dragon Tower Pro | Stake Edition</title>
     <style>
         :root {
             --bg-main: #0f172a;
@@ -287,7 +287,7 @@
 <body>
 
 <div class="header-widget">
-    <button class="back-btn" onclick="window.location.href='index.html'">⬅ Back to Games</button>
+    <button class="back-btn" onclick="window.location.href='index.html'">⬅ Back to Menu</button>
     <div class="user-tag">👤 User: <span id="userName">Guest</span></div>
     <div class="wallet-display">🪙 <span id="userBalance">0.00</span></div>
 </div>
@@ -416,12 +416,9 @@
         }).catch(err => console.error("Wallet download failed:", err));
     }
 
-    function syncTxToDatabase(amountChange, outcome = "none", updateScreenUI = true) {
-        // FIXED: Added absolute cross-origin permissions and follow directions to force Google Script engines to accept the execution thread
-        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&modify_balance=${amountChange}&action=update`;
-        if (outcome !== "none") {
-            url += `&game_result=${outcome}`;
-        }
+    // FIXED: Formats query to match the parameter 'bet_amount' processed by your Apps Script
+    function syncTxToDatabase(amountChange, updateScreenUI = true) {
+        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
 
         fetch(url, {
             method: "GET",
@@ -464,8 +461,8 @@
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
             
-            // FIXED: Instantly synchronization with update UI true to force state lock inside script ledger
-            syncTxToDatabase(-betAmount, "loss", true);
+            // FIXED: Sends negative deduction via bet_amount parameter immediately
+            syncTxToDatabase(-betAmount, true);
 
             gameActive = true;
             currentRowIndex = 0;
@@ -559,7 +556,8 @@
         balance += totalClimbWinnings;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
         
-        syncTxToDatabase(totalClimbWinnings, "win", true);
+        // FIXED: Sends total winnings back as a positive addition via the bet_amount parameters
+        syncTxToDatabase(totalClimbWinnings, true);
 
         playSyntheticSound(659.25, 'sine', 0.1);
         setTimeout(() => playSyntheticSound(783.99, 'sine', 0.1), 80);
@@ -579,9 +577,7 @@
         revealEntireTowerArenaTruthMap();
         playSyntheticSound(110, 'sawtooth', 0.45, 40);
 
-        // FIXED: Sync with 0 modification using true UI flag to ensure clean ledger verification upon loss sequence termination
-        syncTxToDatabase(0, "loss", true);
-
+        // FIXED: Deduction happened instantly at start, nothing more to send or track on the sheet upon hit skull
         const actionBtn = document.getElementById("mainActionBtn");
         actionBtn.disabled = true;
         actionBtn.innerText = "Game Over";
