@@ -88,6 +88,7 @@ body {
   border-radius: 50px;
   border: 1px solid var(--border-glass);
   box-shadow: var(--glow-shadow);
+  position: relative;
 }
 
 .account-trigger {
@@ -127,7 +128,7 @@ body {
 .account-drawer {
   display: none;
   position: absolute;
-  top: 76px;
+  top: 60px; /* Adjusted to fit layout neatly under header on mobile screens */
   left: 0;
   right: 0;
   background: rgba(10, 15, 30, 0.96);
@@ -212,7 +213,7 @@ body {
 .game-card-btn {
   border: 1px solid var(--border-glass);
   border-radius: 20px;
-  padding: 22px 14px;
+  padding: 20px 10px;
   color: white;
   cursor: pointer;
   display: flex;
@@ -227,7 +228,7 @@ body {
 .game-card-btn:active { transform: scale(0.95); }
 .game-card-btn .game-icon { font-size: 2.2rem; }
 .game-card-btn .game-title { font-size: 0.95rem; font-weight: 800; }
-.game-card-btn .sub-desc { font-size: 0.7rem; opacity: 0.55; }
+.game-card-btn .sub-desc { font-size: 0.7rem; opacity: 0.55; text-align: center; }
 
 .span-full { grid-column: span 2; aspect-ratio: auto; padding: 16px; }
 .bg-bigsmall { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); }
@@ -242,17 +243,22 @@ body {
 
 <canvas id="bgCanvas"></canvas>
 
+<div class="app-wrapper">
+
+    <div class="welcome-alert-banner" id="welcomeGuide">
+        Welcome to the Game Hub! Deposit/Withdraw Money using the **Account** or **Balance** Button.
+    </div>
 
     <div class="app-header">
         <button class="account-trigger" onclick="toggleAccountMenu()">👤</button>
         <button class="wallet-badge" onclick="toggleAccountMenu()">🪙 <span id="coins">Syncing...</span></button>
-    </div>
-
-    <div class="account-drawer" id="accountMenu">
-        <div class="drawer-user-info">ID: <span id="userHandleDisplay" style="color: white;">Loading...</span></div>
-        <button class="drawer-btn btn-dep" onclick="routeTo('deposit.html')">➕ Deposit Money</button>
-        <button class="drawer-btn btn-wd" onclick="routeTo('withdraw.html')">➖ Withdraw Money</button>
-        <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out Account</button>
+        
+        <div class="account-drawer" id="accountMenu">
+            <div class="drawer-user-info">ID: <span id="userHandleDisplay" style="color: white;">Loading...</span></div>
+            <button class="drawer-btn btn-dep" onclick="routeTo('deposit.html')">➕ Deposit Money</button>
+            <button class="drawer-btn btn-wd" onclick="routeTo('withdraw.html')">➖ Withdraw Money</button>
+            <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out Account</button>
+        </div>
     </div>
 
     <div class="hero-card">
@@ -298,9 +304,7 @@ body {
             <span class="sub-desc">Constructing new engines...</span>
         </button>
     </div>
-</div>
-
-<script>
+</div> <script>
 const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
 
 let rawStorageUser = localStorage.getItem("currentUser") || "Guest";
@@ -347,7 +351,7 @@ function triggerSignout() {
     window.location.href = "login.html";
 }
 
-// PERMANENT FIX FOR BALANCE BUG: Force updates on visibility changes and back actions
+// Force updates on visibility changes and back actions
 window.addEventListener("pageshow", function(event) {
     forceSyncWalletData();
 });
@@ -358,14 +362,12 @@ document.addEventListener("visibilitychange", function() {
     }
 });
 
-// BACKGROUND SYNC ENGINE INTERVAL LOOP:
 // Checks for out-of-sync backend sheet alterations every 3 seconds while active
 setInterval(() => {
     if (document.visibilityState === "visible") {
         forceSyncWalletData();
     }
 }, 3000);
-
 
 // Animated Background Matrix Logic
 const canvas = document.getElementById('bgCanvas');
