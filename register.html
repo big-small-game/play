@@ -177,17 +177,20 @@ username
 
 /* Save User To Balance Sheet */
 
+/* Save User To Balance Sheet */
 fetch(
-"https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec",
+"https://script.google.com/macros/s/AKfycbxWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec",
 {
-method:"POST",
-mode:"no-cors",
-body:JSON.stringify({
-username:username,
-balance:0,
-wins:0,
-losses:0
-})
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify({
+    username: username,
+    balance: 0,
+    wins: 0,
+    losses: 0
+  })
 }
 );
 
