@@ -52,7 +52,6 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
 
-        /* Left Side: Stake Sidebar Dashboard Controls */
         .sidebar-controls {
             width: 320px;
             background: var(--bg-sidebar);
@@ -63,7 +62,6 @@
             border-right: 1px solid var(--border-glass);
         }
 
-        /* Right Side: Vertical Tower Theater Board Arena */
         .grid-theater {
             flex: 1;
             background: var(--bg-card);
@@ -75,7 +73,6 @@
             position: relative;
         }
 
-        /* Header Navigation Info */
         .header-widget {
             display: flex;
             justify-content: space-between;
@@ -101,10 +98,9 @@
             color: var(--accent-gold);
         }
 
-        /* Tower Vertical Architecture Matrix Area */
         .tower-arena {
             display: flex;
-            flex-direction: column-reverse; /* Climbs bottom to top */
+            flex-direction: column-reverse;
             gap: 8px;
             width: 100%;
             max-width: 440px;
@@ -125,7 +121,6 @@
             opacity: 0.25;
         }
 
-        /* Dynamic difficulty column layouts */
         .layout-easy { grid-template-columns: 55px 1fr 1fr 1fr; }
         .layout-medium { grid-template-columns: 55px 1fr 1fr; }
         .layout-hard { grid-template-columns: 55px 1fr 1fr 1fr; }
@@ -171,7 +166,6 @@
             transform: translateY(-1px);
         }
 
-        /* Revealed States */
         .block-egg {
             background: #071824 !important;
             border: 2px solid var(--accent-green) !important;
@@ -185,7 +179,6 @@
             transform: none !important;
         }
 
-        /* Controls Panel Inputs */
         .label {
             font-size: 0.75rem;
             font-weight: 700;
@@ -266,7 +259,6 @@
             cursor: not-allowed;
         }
 
-        /* Mobile Breakpoint Optimization */
         @media (max-width: 768px) {
             .game-wrapper { flex-direction: column-reverse; }
             .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); }
@@ -282,7 +274,6 @@
 </div>
 
 <div class="game-wrapper">
-    <!-- Left Hand Control Deck Panel Dashboard -->
     <div class="sidebar-controls">
         <div>
             <div class="label">Bet Amount</div>
@@ -297,9 +288,9 @@
             <div class="label">Difficulty</div>
             <div class="input-container">
                 <select id="difficultySelector" onchange="buildTowerArenaFramework()">
-                    <option value="easy" selected>Easy </option>
-                    <option value="medium">Medium </option>
-                    <option value="hard">Hard </option>
+                    <option value="easy" selected>Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
                 </select>
             </div>
         </div>
@@ -307,14 +298,13 @@
         <button class="action-btn btn-bet" id="mainActionBtn" onclick="toggleTowerEngineLoopState()" disabled>Syncing Balance...</button>
     </div>
 
-    <!-- Right Hand Interactive Graphic Arena Frame Arena -->
     <div class="grid-theater">
         <div class="tower-arena" id="towerArenaContainer"></div>
     </div>
 </div>
 
 <script>
-    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbx-M5MGczqP_X9SHWvUGmO0HlEVhIyFRakyjtHrKGi9rW_m-83TcwP6rn2mDrzDnCOv/exec";
+    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
 
     let balance = 0;
     let betAmount = 0;
@@ -327,14 +317,12 @@
     let activeRowMultipliers = [];
     let towersDataMatrix = [];
 
-    // Difficulty Settings Map
     const difficultyConfigs = {
         easy: { blocks: 3, risks: 1, mults: [1.42, 2.05, 2.95, 4.25, 6.15, 8.90] },
         medium: { blocks: 2, risks: 1, mults: [1.94, 3.76, 7.30, 14.16, 27.48, 53.30] },
         hard: { blocks: 3, risks: 2, mults: [2.88, 8.30, 23.90, 68.85, 198.30, 571.20] }
     };
 
-    // Native Web Audio FX Processor Engine
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSyntheticSound(frequency, type, duration, slideTo = 0) {
         try {
@@ -352,12 +340,10 @@
         } catch(e) {}
     }
 
-    // Clean user string references handles 
     const rawUser = localStorage.getItem("currentUser") || "Guest";
     const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
     document.getElementById("userName").innerText = cleanUser;
 
-    // Dynamically Build Rows and Layout framework elements according to chosen difficulty metrics
     function buildTowerArenaFramework() {
         if (gameActive) return;
         selectedDifficulty = document.getElementById("difficultySelector").value;
@@ -365,7 +351,7 @@
         activeRowMultipliers = config.mults;
 
         const arena = document.getElementById("towerArenaContainer");
-        arena.innerHTML = ""; // Clear existing grid nodes
+        arena.innerHTML = "";
 
         for (let r = 0; r < totalRowsCount; r++) {
             const rowDiv = document.createElement("div");
@@ -389,7 +375,6 @@
         }
     }
 
-    // 1. Fetch live balance properties profile data paths
     function fetchLiveWallet() {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
         .then(r => r.json())
@@ -408,13 +393,17 @@
         });
     }
 
-    // 2. Transmit transaction modifications pipeline updates background layer
-    function syncTxToDatabase(amountChange, updateScreenUI = true) {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
+    function syncTxToDatabase(amountChange, outcome = "none", updateScreenUI = true) {
+        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&modify_balance=${amountChange}`;
+        if (outcome !== "none") {
+            url += `&game_result=${outcome}`;
+        }
+
+        fetch(url)
         .then(r => r.json())
         .then(data => {
-            if (updateScreenUI && data && data.balance !== undefined) {
-                balance = parseFloat(data.balance);
+            if (updateScreenUI && data && data.newBalance !== undefined) {
+                balance = parseFloat(data.newBalance);
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
         });
@@ -440,11 +429,12 @@
                 return;
             }
 
-            // INSTANT LOCAL BALANCE DEDUCTION FOR LAG PREVENTION
             betAmount = desiredBet;
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
-            syncTxToDatabase(-betAmount, false);
+            
+            // FIXED: Sent as "loss" with update UI active to force Google Sheets to immediately commit the deduction
+            syncTxToDatabase(-betAmount, "loss", true);
 
             gameActive = true;
             currentRowIndex = 0;
@@ -525,7 +515,7 @@
                 currentRowIndex++;
                 activateRowHighlightTier(currentRowIndex);
             } else {
-                executeCashoutSequence(); // Max climb hit automatically cash out
+                executeCashoutSequence();
             }
         }
     }
@@ -537,9 +527,9 @@
         const totalClimbWinnings = betAmount * currentMultiplier;
         balance += totalClimbWinnings;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
-        syncTxToDatabase(totalClimbWinnings, true);
+        
+        syncTxToDatabase(totalClimbWinnings, "win", true);
 
-        // Win arpeggio melody sweep paths
         playSyntheticSound(659.25, 'sine', 0.1);
         setTimeout(() => playSyntheticSound(783.99, 'sine', 0.1), 80);
         setTimeout(() => playSyntheticSound(987.77, 'sine', 0.2, 1400), 160);
@@ -556,7 +546,9 @@
     function triggerTowerLossSequence() {
         gameActive = false;
         revealEntireTowerArenaTruthMap();
-        playSyntheticSound(110, 'sawtooth', 0.45, 40); // Heavy crash loss frequency audio wave
+        playSyntheticSound(110, 'sawtooth', 0.45, 40);
+
+        syncTxToDatabase(0, "loss", false);
 
         const actionBtn = document.getElementById("mainActionBtn");
         actionBtn.disabled = true;
@@ -602,10 +594,8 @@
         }, 3500);
     }
 
-    // Primary Execution Passes Links Lifecycle Hooks
     buildTowerArenaFramework();
     fetchLiveWallet();
 </script>
-
 </body>
 </html>
