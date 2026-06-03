@@ -472,7 +472,7 @@
         }
     }
 
-    document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+  document.getElementById('withdrawForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
         const submitBtn = document.getElementById('submitBtn');
@@ -486,11 +486,14 @@
         if(method === "BANK") {
             const acc = document.getElementById('acc_no').value;
             const confirmAcc = document.getElementById('confirm_acc_no').value;
+            const holderName = document.getElementById('holder_name').value.trim(); // <-- Grab holder name
+            
             if(acc !== confirmAcc) {
                 alert("Account numbers do not match!");
                 return;
             }
-            targetPaymentInfo = `Bank: ${acc} (${document.getElementById('ifsc_code').value.toUpperCase()})`;
+            // Include Account Holder Name inside the data sent to the sheet info column
+            targetPaymentInfo = `Bank: ${acc} (${document.getElementById('ifsc_code').value.toUpperCase()}) | Holder: ${holderName}`;
         } else {
             targetPaymentInfo = `UPI: ${document.getElementById('upi_id').value}`;
         }
@@ -498,42 +501,36 @@
         submitBtn.disabled = true;
         submitBtn.innerText = "Sending your request...";
 
-const networkPayload =
-`?username=${encodeURIComponent(formattedUser)}&amount=-${amountRequested}&method=${encodeURIComponent(method)}&info=${encodeURIComponent(targetPaymentInfo)}`;
+        // Note: Keep amount as positive when sending parameter down to align with Apps Script Math.abs validation
+        const networkPayload = `?username=${encodeURIComponent(formattedUser)}&amount=${amountRequested}&method=${encodeURIComponent(method)}&info=${encodeURIComponent(targetPaymentInfo)}`;
 
-console.log(SYNC_TARGET_URL + networkPayload);
+        console.log(SYNC_TARGET_URL + networkPayload);
 
-fetch(SYNC_TARGET_URL + networkPayload)
-.then(response => response.json())
-.then(data => {
+        fetch(SYNC_TARGET_URL + networkPayload)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Server Response:", data);
 
-    console.log("Server Response:", data);
+            if(data.success === false || data.error){
+                alert("Withdrawal failed: " + (data.error || "Unknown error"));
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Request Withdrawal";
+                return;
+            }
 
-    if(data.success === false || data.error){
-        alert("Withdrawal failed: " + (data.error || "Unknown error"));
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Execute Withdrawal Request";
-        return;
-    }
+            successScreen.style.display = 'flex';
+            document.getElementById('withdrawForm').reset();
 
-    successScreen.style.display = 'flex';
-    document.getElementById('withdrawForm').reset();
-
-    setTimeout(() => {
-        fetchLiveDatabaseData();
-    }, 1000);
-
-})
-.catch(error => {
-
-    console.error("Withdrawal Error:", error);
-
-    alert("Could not reach server.");
-
-    submitBtn.disabled = false;
-    submitBtn.innerText = "Request Withdrawal";
-
-});
+            setTimeout(() => {
+                fetchLiveDatabaseData();
+            }, 1000);
+        })
+        .catch(error => {
+            console.error("Withdrawal Error:", error);
+            alert("Could not reach server.");
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Request Withdrawal";
+        });
     });
 
     fetchLiveDatabaseData();
