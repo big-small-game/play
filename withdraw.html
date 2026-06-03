@@ -281,7 +281,7 @@
 <body>
 
 <div class="top-nav-container">
-    <a href="game.html" class="btn-home-nav">← Home Page</a>
+    <a href="game.html" class="btn-home-nav">← Back to Games</a>
 </div>
 
 <div class="withdraw-container">
@@ -289,7 +289,7 @@
         <div class="success-icon">✓</div>
         <div class="success-title">Withdrawal Request Sent!</div>
         <div class="success-desc">Payout request sent successfully.<br>Verification will be resolved within 24 business hours.</div>
-        <button class="btn-back" onclick="window.location.href='game.html'">Back to Games</button>
+        <button class="btn-back" onclick="window.location.href='game.html'">Click here</button>
     </div>
 
     <div class="title-head">SECURE WITHDRAWAL</div>
@@ -324,18 +324,18 @@
         <div id="upiSection" class="dynamic-section">
             <div class="form-group">
                 <label for="upi_id">UPI ID</label>
-                <input type="text" id="upi_id" name="upi_id" placeholder="name@bankname">
+                <input type="text" id="upi_id" name="upi_id" placeholder="e.g., name@upi">
             </div>
         </div>
 
         <div id="bankSection" class="dynamic-section">
             <div class="form-group">
                 <label for="acc_no">Account No.</label>
-                <input type="password" id="acc_no" name="acc_no" placeholder="Enter bank account string">
+                <input type="password" id="acc_no" name="acc_no" placeholder="Enter bank account number">
             </div>
             <div class="form-group">
                 <label for="confirm_acc_no">Verify Account No.</label>
-                <input type="text" id="confirm_acc_no" name="confirm_acc_no" placeholder="Re-enter account string">
+                <input type="text" id="confirm_acc_no" name="confirm_acc_no" placeholder="Re-enter account number">
             </div>
             <div class="form-group">
                 <label for="ifsc_code">IFSC Code</label>
@@ -353,7 +353,7 @@
     <div class="history-section">
         <div class="history-title">Withdrawl History</div>
         <div class="history-list" id="historyContainer">
-            <div style="text-align:center; padding:15px; font-size:0.8rem; color:#64748b;">Loading logs from database...</div>
+            <div style="text-align:center; padding:15px; font-size:0.8rem; color:#64748b;">Loading...</div>
         </div>
     </div>
 </div>
@@ -382,7 +382,7 @@
             document.getElementById("amount").disabled = false;
             const submitBtn = document.getElementById("submitBtn");
             submitBtn.disabled = false;
-            submitBtn.innerText = "Execute Withdrawal Request";
+            submitBtn.innerText = "Request Withdrawal";
 
             renderLogs(data.history || []);
         })
@@ -398,7 +398,7 @@
         const withdrawals = historyItems.filter(item => item.type === "Withdrawal");
 
         if (withdrawals.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#64748b;">No recent withdrawal logs found.</div>`;
+            container.innerHTML = `<div style="text-align:center; padding:15px; font-size:0.8rem; color:#64748b;">No recent withdrawal found.</div>`;
             return;
         }
 
@@ -496,7 +496,7 @@
         }
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Broadcasting Packet...";
+        submitBtn.innerText = "Sending your request...";
 
 const networkPayload =
 `?username=${encodeURIComponent(formattedUser)}&amount=-${amountRequested}&method=${encodeURIComponent(method)}&info=${encodeURIComponent(targetPaymentInfo)}`;
@@ -531,7 +531,7 @@ fetch(SYNC_TARGET_URL + networkPayload)
     alert("Could not reach server.");
 
     submitBtn.disabled = false;
-    submitBtn.innerText = "Execute Withdrawal Request";
+    submitBtn.innerText = "Request Withdrawal";
 
 });
     });
