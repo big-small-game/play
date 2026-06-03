@@ -29,7 +29,7 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: Arial, Helvetica, sans-serif; /* Clean, normal system font */
             background-color: var(--bg-main);
             color: var(--text-light);
             min-height: 100vh;
@@ -409,10 +409,11 @@
 
             actionBtn.innerText = "Cash Out";
             actionBtn.className = "action-btn btn-cashout";
-            actionBtn.disabled = true;
+            actionBtn.disabled = true; // Correctly starts disabled until 1st diamond selection occurs
 
             playSyntheticSound(587.33, 'triangle', 0.15);
 
+            // Re-enabling interactive grid loop
             const tiles = gridContainer.children;
             for (let i = 0; i < tiles.length; i++) {
                 tiles[i].className = "tile-btn";
@@ -470,7 +471,7 @@
             const prospectiveCashoutTotal = betAmount * currentPayoutMultiplier;
 
             const actionBtn = document.getElementById("mainActionBtn");
-            actionBtn.disabled = false;
+            actionBtn.disabled = false; // Enables the cash out button upon finding a diamond
             actionBtn.innerText = `Cash Out (${prospectiveCashoutTotal.toFixed(2)})`;
 
             if (openedTilesCount === (25 - minesQuantity)) {
