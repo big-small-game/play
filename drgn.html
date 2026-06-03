@@ -40,6 +40,35 @@
             padding: 16px;
         }
 
+        .back-nav-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 12px;
+        }
+
+        /* Unified Back Button styling matching your standard template layout */
+        .btn-back {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-glass);
+            color: var(--text-light);
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background: var(--primary-blue);
+            border-color: transparent;
+        }
+
         .game-wrapper {
             width: 100%;
             max-width: 900px;
@@ -81,24 +110,6 @@
             margin-bottom: 16px;
             max-width: 900px;
             padding: 0 8px;
-        }
-
-        .back-btn {
-            background: var(--bg-sidebar);
-            color: var(--text-muted);
-            border: 1px solid var(--border-glass);
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-light);
-            border-color: rgba(255, 255, 255, 0.15);
         }
 
         .user-tag {
@@ -393,7 +404,8 @@
                 btn.addEventListener("click", () => handleBlockSelection(r, b));
                 rowDiv.appendChild(btn);
             }
-            arena.appendChild(rowDiv);
+            rowDiv.appendChild(arena.firstChild ? arena.firstChild : rowDiv); 
+            arena.insertBefore(rowDiv, arena.firstChild);
         }
     }
 
@@ -419,7 +431,6 @@
         }).catch(err => console.error("Wallet download failed:", err));
     }
 
-    // FIXED: Formats query to match the parameter 'bet_amount' processed by your Apps Script
     function syncTxToDatabase(amountChange, updateScreenUI = true) {
         let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
 
@@ -464,7 +475,6 @@
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
             
-            // FIXED: Sends negative deduction via bet_amount parameter immediately
             syncTxToDatabase(-betAmount, true);
 
             gameActive = true;
@@ -514,6 +524,7 @@
                 for (let b = 0; b < buttons.length; b++) buttons[b].disabled = false;
             } else {
                 if (r < rowIndex) rowEl.className = `tower-row layout-${selectedDifficulty} completed-row`;
+                else rowEl.className = `tower-row layout-${selectedDifficulty}`;
                 for (let b = 0; b < buttons.length; b++) buttons[b].disabled = true;
             }
         }
@@ -559,7 +570,6 @@
         balance += totalClimbWinnings;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
         
-        // FIXED: Sends total winnings back as a positive addition via the bet_amount parameters
         syncTxToDatabase(totalClimbWinnings, true);
 
         playSyntheticSound(659.25, 'sine', 0.1);
@@ -580,7 +590,6 @@
         revealEntireTowerArenaTruthMap();
         playSyntheticSound(110, 'sawtooth', 0.45, 40);
 
-        // FIXED: Deduction happened instantly at start, nothing more to send or track on the sheet upon hit skull
         const actionBtn = document.getElementById("mainActionBtn");
         actionBtn.disabled = true;
         actionBtn.innerText = "Game Over";
