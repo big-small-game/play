@@ -272,7 +272,7 @@
         <div class="success-icon">✓</div>
         <div class="success-title">Deposit Submitted!</div>
         <div class="success-desc">Your request has been submitted.<br>Your coins will be released immediately upon balance confirmation.</div>
-        <button class="btn-back" onclick="window.location.href='game.html'">Back to Hub</button>
+        <button class="btn-back" onclick="window.location.href='game.html'">Click here</button>
     </div>
 
     <div class="title-head">DEPOSIT COINS</div>
@@ -388,7 +388,7 @@
         if (amountRequested <= 0 || transactionId === "") return;
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Sendng Deposit Request...";
+        submitBtn.innerText = "Sending Deposit Request...";
 
         const networkPayload = `?username=${encodeURIComponent(formattedUser)}&amount=${amountRequested}&txid=${encodeURIComponent(transactionId)}`;
 
