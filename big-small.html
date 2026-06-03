@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Big Small</title>
+    <title>Big Small Pro</title>
     <style>
         :root {
-            --bg-main: #0f172a;
-            --bg-sidebar: #1e293b;
+            --bg-main: #090d16;
+            --bg-sidebar: #131c2e;
             --bg-card: #0b0f19;
             --primary-blue: #3b82f6;
             --accent-gold: #f59e0b;
-            --accent-green: #00e676;
-            --accent-red: #ff3333;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
             --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-glass: rgba(255, 255, 255, 0.05);
+            --text-muted: #64748b;
+            --border-glass: rgba(255, 255, 255, 0.06);
+            --sidebar-width: 360px;
         }
 
         * {
@@ -24,10 +25,10 @@
             padding: 0;
             user-select: none;
             -webkit-user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-light);
             min-height: 100vh;
@@ -35,68 +36,61 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 24px 16px;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glow Backdrop Elements */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            top: -10%;
+            left: -10%;
+            z-index: -1;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.05) 0%, transparent 70%);
+            bottom: -10%;
+            right: -10%;
+            z-index: -1;
         }
 
         .back-nav-container {
             width: 100%;
-            max-width: 940px;
+            max-width: 1040px;
             display: flex;
             justify-content: flex-start;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .btn-back {
-            background: rgba(30, 41, 59, 0.5);
+            background: rgba(30, 41, 59, 0.4);
             border: 1px solid var(--border-glass);
-            color: var(--text-light);
+            color: #94a3b8;
             font-size: 0.85rem;
-            font-weight: bold;
-            padding: 8px 16px;
-            border-radius: 6px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            transition: all 0.2s ease;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
         }
 
         .btn-back:hover {
-            background: var(--accent-red);
-            border-color: transparent;
-        }
-
-        .game-wrapper {
-            width: 100%;
-            max-width: 940px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: row;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-        }
-
-        .sidebar-controls {
-            width: 340px;
-            background: var(--bg-sidebar);
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            border-right: 1px solid var(--border-glass);
-        }
-
-        .grid-theater {
-            flex: 1;
-            background: var(--bg-card);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            position: relative;
-            min-height: 400px;
-            gap: 20px;
+            color: var(--text-light);
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
         }
 
         .header-widget {
@@ -105,102 +99,101 @@
             align-items: center;
             width: 100%;
             margin-bottom: 16px;
-            max-width: 940px;
-            padding: 0 8px;
+            max-width: 1040px;
+            background: rgba(19, 28, 46, 0.4);
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            backdrop-filter: blur(10px);
         }
 
         .user-tag {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .user-tag span {
+            color: var(--text-light);
             font-weight: 700;
-            color: var(--text-muted);
         }
 
         .wallet-display {
-            background: var(--bg-sidebar);
+            background: rgba(11, 15, 25, 0.6);
             padding: 8px 16px;
             border-radius: 8px;
-            border: 1px solid var(--border-glass);
-            font-weight: bold;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            font-weight: 800;
+            font-size: 1.05rem;
             color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        .dice-arena {
+        .game-wrapper {
             width: 100%;
-            flex: 1;
-            background: #040814;
-            border: 1px solid rgba(255,255,255,0.03);
-            border-radius: 12px;
+            max-width: 1040px;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+        }
+
+        .sidebar-controls {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            padding: 32px 24px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            gap: 28px;
+            border-right: 1px solid var(--border-glass);
+        }
+
+        .grid-theater {
+            flex: 1;
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            padding: 32px;
             position: relative;
-            overflow: hidden;
-            min-height: 180px;
-        }
-
-        .dice-container {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-
-        .die {
-            width: 60px;
-            height: 60px;
-            background-color: white;
-            color: #0f172a;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: bold;
-            box-shadow: 0 6px 0 #cbd5e1, 0 10px 20px rgba(0,0,0,0.5);
-            transition: transform 0.1s ease;
-        }
-
-        .die.rolling {
-            animation: shake 0.15s infinite alternate;
-        }
-
-        @keyframes shake {
-            0% { transform: translate(2px, 1px) rotate(0deg); }
-            100% { transform: translate(-1px, -2px) rotate(-5deg); }
-        }
-
-        .live-result-overlay {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: white;
-            text-align: center;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-        }
-
-        .house-tie-text {
-            color: var(--accent-red);
-            font-size: 1rem;
-            font-weight: bold;
-            margin-top: 4px;
+            min-height: 480px;
+            gap: 24px;
         }
 
         .label {
             font-size: 0.75rem;
             font-weight: 700;
-            color: var(--text-muted);
+            color: #94a3b8;
             text-transform: uppercase;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
         }
 
         .input-container {
             display: flex;
-            background: var(--bg-main);
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: #090d16;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
             overflow: hidden;
-            height: 44px;
+            height: 48px;
             align-items: center;
+            transition: border-color 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .input-container:focus-within {
+            border-color: rgba(59, 130, 246, 0.5);
         }
 
         .input-container input {
@@ -208,126 +201,396 @@
             background: transparent;
             border: none;
             color: white;
-            padding: 0 14px;
+            padding: 0 16px;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             outline: none;
         }
 
-        .scale-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: none;
-            color: var(--text-light);
-            padding: 0 14px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            border-left: 1px solid rgba(255,255,255,0.1);
-            height: 100%;
+        /* Remove default spin buttons */
+        .input-container input::-webkit-outer-spin-button,
+        .input-container input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .input-container input[type=number] {
+            -moz-appearance: textfield;
         }
 
-        .scale-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .scale-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: none;
+            color: #94a3b8;
+            width: 54px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-left: 1px solid rgba(255,255,255,0.08);
+            height: 100%;
+            transition: all 0.15s ease;
+        }
+
+        .scale-btn:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+            color: var(--text-light);
+        }
 
         .betting-zones {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 14px;
         }
 
         .zone-btn {
-            background: rgba(0,0,0,0.25);
-            border: 2px dashed rgba(255,255,255,0.15);
-            border-radius: 10px;
-            padding: 16px;
+            background: rgba(9, 13, 22, 0.5);
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 22px 14px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .zone-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
 
         .zone-btn:hover:not(.disabled) {
             border-color: var(--primary-blue);
-            background: rgba(59, 130, 246, 0.05);
+            transform: translateY(-2px);
+            background: rgba(59, 130, 246, 0.03);
         }
+        .zone-btn:hover:not(.disabled)::before { opacity: 1; }
 
-        .zone-btn.selected {
+        .zone-btn#zoneSmall.selected {
+            border-style: solid;
+            border-color: var(--primary-blue);
+            background: rgba(59, 130, 246, 0.12);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.25), inset 0 0 12px rgba(59, 130, 246, 0.1);
+        }
+        .zone-btn#zoneBig.selected {
             border-style: solid;
             border-color: var(--accent-gold);
-            background: rgba(245, 158, 11, 0.15);
+            background: rgba(245, 158, 11, 0.12);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.25), inset 0 0 12px rgba(245, 158, 11, 0.1);
         }
 
         .zone-title {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 2px;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #cbd5e1;
+            letter-spacing: 0.5px;
+            transition: color 0.2s ease;
         }
+        .zone-btn.selected .zone-title { color: white; }
 
         .zone-sub {
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: #64748b;
+            margin-top: 4px;
+            font-weight: 600;
         }
+        .zone-btn.selected .zone-sub { color: rgba(255,255,255,0.6); }
 
         .action-btn {
             width: 100%;
-            height: 54px;
+            height: 56px;
             border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 700;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 800;
             cursor: pointer;
             color: #020617;
-            transition: all 0.15s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
-            background: var(--accent-green);
-            box-shadow: 0 4px 0 #047857;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            position: relative;
         }
 
-        .action-btn:hover:not(:disabled) { background: #34d399; }
+        .action-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
 
         .action-btn:active:not(:disabled) {
-            transform: translateY(3px);
-            box-shadow: none !important;
+            transform: translateY(2px);
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
         }
 
         .action-btn:disabled {
-            background: #334155 !important;
-            color: #64748b !important;
+            background: #1e293b !important;
+            color: #475569 !important;
             box-shadow: none !important;
             cursor: not-allowed;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .dice-arena {
+            width: 100%;
+            flex: 1;
+            background: radial-gradient(circle at center, #0c1527 0%, #040813 100%);
+            border: 1px solid rgba(255,255,255,0.02);
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 240px;
+            box-shadow: inset 0 4px 30px rgba(0,0,0,0.6);
+        }
+
+        /* Container 3D Dice styling Grid setup */
+        .dice-container {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 25px;
+            perspective: 600px; /* Essential for 3D realism perspective */
+            padding: 20px;
+        }
+
+        /* Advanced Realistic 3D Cube Structure Styles */
+        .dice-cube {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease-out;
+        }
+
+        .face {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            border: 1px solid #94a3b8;
+            display: grid;
+            grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+            padding: 7px;
+            box-sizing: border-box;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.15), 0 0 10px rgba(0,0,0,0.2);
+            backface-visibility: hidden;
+        }
+
+        /* 3D Sides Transformations mapping */
+        .face-1 { transform: rotateY(0deg) translateZ(30px); }
+        .face-2 { transform: rotateY(90deg) translateZ(30px); }
+        .face-3 { transform: rotateX(90deg) translateZ(30px); }
+        .face-4 { transform: rotateX(-90deg) translateZ(30px); }
+        .face-5 { transform: rotateY(-90deg) translateZ(30px); }
+        .face-6 { transform: rotateY(180deg) translateZ(30px); }
+
+        /* Pip Dots configuration layout rules inside 3x3 grids */
+        .pip {
+            background-color: #0f172a;
+            border-radius: 50%;
+            width: 9px;
+            height: 9px;
+            margin: auto;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.6);
+        }
+        /* Red center point dot for face 1 and 4 for extra luxury classic look */
+        .face-1 .pip { background-color: #dc2626; width: 12px; height: 12px;}
+        .face-4 .pip { background-color: #1e3a8a; }
+
+        /* Specific Pip distributions maps per side */
+        .face-1 .pip:nth-child(1) { grid-area: 2 / 2; }
+
+        .face-2 .pip:nth-child(1) { grid-area: 1 / 1; }
+        .face-2 .pip:nth-child(2) { grid-area: 3 / 3; }
+
+        .face-3 .pip:nth-child(1) { grid-area: 1 / 1; }
+        .face-3 .pip:nth-child(2) { grid-area: 2 / 2; }
+        .face-3 .pip:nth-child(3) { grid-area: 3 / 3; }
+
+        .face-4 .pip:nth-child(1) { grid-area: 1 / 1; }
+        .face-4 .pip:nth-child(2) { grid-area: 1 / 3; }
+        .face-4 .pip:nth-child(3) { grid-area: 3 / 1; }
+        .face-4 .pip:nth-child(4) { grid-area: 3 / 3; }
+
+        .face-5 .pip:nth-child(1) { grid-area: 1 / 1; }
+        .face-5 .pip:nth-child(2) { grid-area: 1 / 3; }
+        .face-5 .pip:nth-child(3) { grid-area: 2 / 2; }
+        .face-5 .pip:nth-child(4) { grid-area: 3 / 1; }
+        .face-5 .pip:nth-child(5) { grid-area: 3 / 3; }
+
+        .face-6 .pip:nth-child(1) { grid-area: 1 / 1; }
+        .face-6 .pip:nth-child(2) { grid-area: 1 / 3; }
+        .face-6 .pip:nth-child(3) { grid-area: 2 / 1; }
+        .face-6 .pip:nth-child(4) { grid-area: 2 / 3; }
+        .face-6 .pip:nth-child(5) { grid-area: 3 / 1; }
+        .face-6 .pip:nth-child(6) { grid-area: 3 / 3; }
+
+        /* Live rolling spin configuration animation classes loops */
+        .dice-cube.rolling-fast {
+            animation: spin3D 0.2s infinite linear;
+        }
+
+        @keyframes spin3D {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        .live-result-overlay {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            text-align: center;
+            letter-spacing: 0.5px;
+            min-height: 40px;
+            line-height: 1.2;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+
+        .house-tie-text {
+            color: var(--accent-red);
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: block;
+            margin-top: 6px;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1.02); }
         }
 
         .history-panel {
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-            padding: 12px;
+            background: rgba(9, 13, 22, 0.4);
+            border-radius: 14px;
+            padding: 16px;
             border: 1px solid var(--border-glass);
         }
 
         .history-list {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             overflow-x: auto;
-            padding-top: 4px;
+            padding: 4px 2px;
+            scroll-behavior: smooth;
+        }
+
+        .history-list::-webkit-scrollbar {
+            height: 4px;
+        }
+        .history-list::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
         }
 
         .history-pill {
-            background: var(--bg-sidebar);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            background: #131c30;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
             font-weight: 700;
-            border: 1px solid var(--border-glass);
+            border: 1px solid rgba(255,255,255,0.04);
             white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            animation: slideIn 0.3s ease-out;
         }
 
-        .history-pill.pill-big { color: var(--primary-blue); }
-        .history-pill.pill-small { color: var(--accent-gold); }
-        .history-pill.pill-tie { color: var(--accent-red); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
 
-        @media (max-width: 768px) {
+        .history-pill.pill-big { color: #60a5fa; border-color: rgba(59, 130, 246, 0.2); background: rgba(59, 130, 246, 0.05); }
+        .history-pill.pill-small { color: #fbbf24; border-color: rgba(245, 158, 11, 0.2); background: rgba(245, 158, 11, 0.05); }
+        .history-pill.pill-tie { color: #f87171; border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.05); }
+
+        .disabled {
+            opacity: 0.4;
+            cursor: not-allowed !important;
+            pointer-events: none;
+        }
+
+        /* Premium Modal Dialog Popups UI Elements */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(4, 7, 13, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #131c30;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 28px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.8);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: white;
+        }
+
+        .modal-desc {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s ease;
+        }
+        .modal-btn:hover { background: #2563eb; }
+
+        @media (max-width: 820px) {
             .game-wrapper { flex-direction: column-reverse; }
-            .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); }
-            .grid-theater { padding: 12px; min-height: 300px; }
+            .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); padding: 24px; }
+            .grid-theater { padding: 20px; min-height: 380px; }
+            .dice-container { gap: 24px; }
         }
     </style>
 </head>
@@ -373,17 +636,46 @@
     <div class="grid-theater">
         <div class="dice-arena">
             <div class="dice-container">
-                <div class="die" id="die1">?</div>
-                <div class="die" id="die2">?</div>
-                <div class="die" id="die3">?</div>
+                <div class="dice-cube" id="cube1">
+                    <div class="face face-1"><div class="pip"></div></div>
+                    <div class="face face-2"><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-3"><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-4"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-5"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-6"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                </div>
+                <div class="dice-cube" id="cube2">
+                    <div class="face face-1"><div class="pip"></div></div>
+                    <div class="face face-2"><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-3"><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-4"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-5"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-6"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                </div>
+                <div class="dice-cube" id="cube3">
+                    <div class="face face-1"><div class="pip"></div></div>
+                    <div class="face face-2"><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-3"><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-4"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-5"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                    <div class="face face-6"><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div><div class="pip"></div></div>
+                </div>
             </div>
-            <div class="live-result-overlay" id="resultDisplay">-</div>
+            <div class="live-result-overlay" id="resultDisplay">Ready</div>
         </div>
 
         <div class="history-panel">
             <div class="label">Recent Outcomes</div>
             <div class="history-list" id="historyLog"></div>
         </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="customAlertModal">
+    <div class="modal-card">
+        <div class="modal-title" id="modalAlertTitle">Attention</div>
+        <div class="modal-desc" id="modalAlertText">Alert message goes here.</div>
+        <button class="modal-btn" onclick="closeCustomAlert()">Acknowledge</button>
     </div>
 </div>
 
@@ -395,6 +687,16 @@
     let selectedPrediction = null;
     let gameActive = false;
 
+    // Fixed 3D Rotation coordinates mapping table for structural sides indexes (1 to 6)
+    const cubeRotationMap = {
+        1: "rotateX(0deg) rotateY(0deg)",
+        2: "rotateX(0deg) rotateY(-90deg)",
+        3: "rotateX(-90deg) rotateY(0deg)",
+        4: "rotateX(90deg) rotateY(0deg)",
+        5: "rotateX(0deg) rotateY(90deg)",
+        6: "rotateX(180deg) rotateY(0deg)"
+    };
+
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSyntheticSound(frequency, type, duration) {
         try {
@@ -402,13 +704,24 @@
             const gainNode = audioCtx.createGain();
             osc.type = type;
             osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
             osc.connect(gainNode);
             gainNode.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + duration);
         } catch(e) {}
+    }
+
+    // Modal Helper logic actions
+    function triggerCustomAlert(title, text) {
+        document.getElementById("modalAlertTitle").innerText = title;
+        document.getElementById("modalAlertText").innerText = text;
+        document.getElementById("customAlertModal").classList.add("active");
+    }
+
+    function closeCustomAlert() {
+        document.getElementById("customAlertModal").classList.remove("active");
     }
 
     const cleanUser = (localStorage.getItem("currentUser") || "Guest").trim();
@@ -472,12 +785,12 @@
         const desiredBet = parseInt(betInput.value) || 0;
 
         if (!selectedPrediction) {
-            alert("Please select BIG or SMALL!");
+            triggerCustomAlert("Prediction Missing", "Please pick a side: BIG or SMALL to place your stakes.");
             return;
         }
 
         if (desiredBet < 1 || desiredBet > balance) {
-            alert("Stake error!");
+            triggerCustomAlert("Invalid Balance", "Stake value must be at least 1 and cannot exceed your current total wallet balance.");
             return;
         }
 
@@ -495,28 +808,29 @@
         // Sync original stake subtraction to server
         syncTxToDatabase(-betAmount, "none", false);
 
-        // Visual rolling animations
-        const d1 = document.getElementById("die1");
-        const d2 = document.getElementById("die2");
-        const d3 = document.getElementById("die3");
+        // Visual rolling initialization via adding faster continuous looping rotation animation
+        const c1 = document.getElementById("cube1");
+        const c2 = document.getElementById("cube2");
+        const c3 = document.getElementById("cube3");
         
-        d1.classList.add("rolling");
-        d2.classList.add("rolling");
-        d3.classList.add("rolling");
+        c1.classList.add("rolling-fast");
+        c2.classList.add("rolling-fast");
+        c3.classList.add("rolling-fast");
+        document.getElementById("resultDisplay").innerText = "Rolling...";
 
-        let rollCounter = 0;
-        const rollInterval = setInterval(() => {
-            d1.innerText = Math.floor(Math.random() * 6) + 1;
-            d2.innerText = Math.floor(Math.random() * 6) + 1;
-            d3.innerText = Math.floor(Math.random() * 6) + 1;
-            playSyntheticSound(200 + Math.random() * 300, 'triangle', 0.05);
-            rollCounter++;
-            
-            if (rollCounter >= 10) {
-                clearInterval(rollInterval);
-                resolveDiceEngineOutcome();
+        let soundTicks = 0;
+        const soundInterval = setInterval(() => {
+            if(soundTicks >= 12) {
+                clearInterval(soundInterval);
+            } else {
+                playSyntheticSound(200 + Math.random() * 350, 'triangle', 0.06);
+                soundTicks++;
             }
-        }, 120);
+        }, 100);
+
+        setTimeout(() => {
+            resolveDiceEngineOutcome();
+        }, 1400);
     }
 
     function resolveDiceEngineOutcome() {
@@ -524,20 +838,22 @@
         const r2 = Math.floor(Math.random() * 6) + 1;
         const r3 = Math.floor(Math.random() * 6) + 1;
 
-        const d1 = document.getElementById("die1");
-        const d2 = document.getElementById("die2");
-        const d3 = document.getElementById("die3");
+        const c1 = document.getElementById("cube1");
+        const c2 = document.getElementById("cube2");
+        const c3 = document.getElementById("cube3");
 
-        d1.classList.remove("rolling");
-        d2.classList.remove("rolling");
-        d3.classList.remove("rolling");
+        // Stop continuous spinning animations
+        c1.classList.remove("rolling-fast");
+        c2.classList.remove("rolling-fast");
+        c3.classList.remove("rolling-fast");
 
-        d1.innerText = r1;
-        d2.innerText = r2;
-        d3.innerText = r3;
+        // Apply distinct 3D vector coordinates to face correct landing outcomes directly
+        c1.style.transform = cubeRotationMap[r1];
+        c2.style.transform = cubeRotationMap[r2];
+        c3.style.transform = cubeRotationMap[r3];
 
         const totalSum = r1 + r2 + r3;
-        let category = "TIE"; // Base definition for house edge sums (3 and 18)
+        let category = "TIE";
 
         if (totalSum >= 4 && totalSum <= 10) {
             category = "SMALL";
@@ -549,23 +865,23 @@
         let outcomeString = `${totalSum} (${category})`;
         
         if (category === "TIE") {
-            outcomeString = `${totalSum}<br><span class="house-tie-text">HOUSE TRIPLE TIE</span>`;
+            outcomeString = `${totalSum}<br><span class="house-tie-text">🔥 HOUSE TRIPLE TIE 🔥</span>`;
         }
         display.innerHTML = outcomeString;
 
-        // Determine dynamic payoffs
+        // Determinedynamic payoffs
         let isWin = (selectedPrediction === category);
         let finalChangeAmount = 0;
         let gameResultStatus = "loss";
 
         if (isWin) {
-            finalChangeAmount = betAmount * 2; // Win returns stake + matched winnings
+            finalChangeAmount = betAmount * 2;
             balance += finalChangeAmount;
             gameResultStatus = "win";
-            playSyntheticSound(550, 'sine', 0.15);
-            setTimeout(() => playSyntheticSound(750, 'sine', 0.2), 100);
+            playSyntheticSound(520, 'sine', 0.12);
+            setTimeout(() => playSyntheticSound(780, 'sine', 0.18), 80);
         } else {
-            playSyntheticSound(150, 'sawtooth', 0.4);
+            playSyntheticSound(140, 'sawtooth', 0.35);
         }
 
         document.getElementById('userBalance').innerText = balance.toFixed(2);
@@ -582,7 +898,7 @@
             document.getElementById("zoneSmall").classList.remove("disabled");
             document.getElementById("zoneBig").classList.remove("disabled");
             document.getElementById("mainActionBtn").innerText = "Roll Dice";
-        }, 2000);
+        }, 1800);
     }
 
     function appendHistoryLog(sum, category) {
