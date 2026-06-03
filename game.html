@@ -124,9 +124,19 @@ body {
 .wallet-badge:active {
   transform: scale(0.95);
 }
-.app-header{
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 10px 14px;
+  border-radius: 50px;
+  border: 1px solid var(--border-glass);
+  box-shadow: var(--glow-shadow);
   position: relative;
-  z-index: 10000;
+  z-index: 1000;
 }
 .hero-card{
   position: relative;
@@ -136,17 +146,22 @@ body {
 .account-drawer {
   display: none;
   position: fixed;
-  top: 80px; /* Adjusted to fit layout neatly under header on mobile screens */
+
+  top: 95px;
   left: 16px;
   right: 16px;
-  background: rgba(10, 15, 30, 0.96);
+
+  background: rgba(10, 15, 30, 0.98);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 20px;
+
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 24px;
+  padding: 20px;
+
   box-shadow: 0 24px 50px rgba(0,0,0,0.8);
-  z-index: 99999;
+
+  z-index: 2147483647;
 }
 
 .drawer-user-info {
@@ -179,12 +194,17 @@ body {
 .btn-lo { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); color: #f87171; }
 
 .hero-card {
+  position: relative;
+  z-index: 1;
+
   background: var(--bg-card);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+
   border: 1px solid var(--border-glass);
   border-radius: 24px;
   padding: 22px;
+
   box-shadow: var(--glow-shadow);
 }
 
@@ -200,6 +220,11 @@ body {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: 4px;
+}
+
+.app-wrapper {
+  position: relative;
+  z-index: 1;
 }
 
 .games-grid-title {
