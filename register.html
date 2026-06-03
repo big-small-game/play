@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-
 <html>
 <head>
 <title>Register</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-
 body{
 margin:0;
 font-family:Arial,sans-serif;
@@ -61,162 +59,103 @@ opacity:.9;
 margin-top:15px;
 font-weight:bold;
 }
-
 </style>
-
 </head>
 
 <body>
 
 <div class="box">
+    <h1>Create Account</h1>
 
-<h1>Create Account</h1>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <input type="password" id="confirm" placeholder="Confirm Password">
 
-<input
-type="text"
-id="username"
-placeholder="Username">
+    <button onclick="register()">Register</button>
 
-<input
-type="password"
-id="password"
-placeholder="Password">
-
-<input
-type="password"
-id="confirm"
-placeholder="Confirm Password">
-
-<button onclick="register()">
-Register
-</button>
-
-<div id="msg"></div>
-
+    <div id="msg"></div>
 </div>
 
 <script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-
-import {
-getAuth,
-createUserWithEmailAndPassword
-}
-from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyA_hkolHDRyi4r0rTSC8fRt-tEhXMS-4pM",
-authDomain: "big-small-15ac1.firebaseapp.com",
-projectId: "big-small-15ac1",
-storageBucket: "big-small-15ac1.firebasestorage.app",
-messagingSenderId: "445997925162",
-appId: "1:445997925162:web:3eda0cfdf8c808b4d6d453"
+    apiKey: "AIzaSyA_hkolHDRyi4r0rTSC8fRt-tEhXMS-4pM",
+    authDomain: "big-small-15ac1.firebaseapp.com",
+    projectId: "big-small-15ac1",
+    storageBucket: "big-small-15ac1.firebasestorage.app",
+    messagingSenderId: "445997925162",
+    appId: "1:445997925162:web:3eda0cfdf8c808b4d6d453"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 window.register = function(){
+    let username = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value;
+    let confirm = document.getElementById("confirm").value;
 
-let username =
-document.getElementById("username")
-.value.trim();
+    if(username === ""){
+        document.getElementById("msg").innerHTML = "Enter Username";
+        document.getElementById("msg").style.color = "#ef4444";
+        return;
+    }
 
-let password =
-document.getElementById("password")
-.value;
+    if(password.length < 6){
+        document.getElementById("msg").innerHTML = "Password must be at least 6 characters";
+        document.getElementById("msg").style.color = "#ef4444";
+        return;
+    }
 
-let confirm =
-document.getElementById("confirm")
-.value;
+    if(password !== confirm){
+        document.getElementById("msg").innerHTML = "Passwords do not match";
+        document.getElementById("msg").style.color = "#ef4444";
+        return;
+    }
 
-if(username === ""){
+    document.getElementById("msg").innerHTML = "Creating account...";
+    document.getElementById("msg").style.color = "#2563eb";
 
-document.getElementById("msg").innerHTML =
-"Enter Username";
+    let fakeEmail = username + "@game.local";
 
-return;
+    createUserWithEmailAndPassword(auth, fakeEmail, password)
+    .then(() => {
+        // 1. Keep track of current user locally
+        localStorage.setItem("currentUser", username);
 
+        // 2. TARGET UNIFIED APP SCRIPT URL (Using parameter routing)
+        const databaseUrl = "https://script.google.com/macros/s/AKfycbxWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
+
+        fetch(`${databaseUrl}?register_user=${encodeURIComponent(username)}`, {
+            method: "POST",
+            mode: "no-cors"
+        })
+        .then(() => {
+            document.getElementById("msg").innerHTML = "Registration Successful!";
+            document.getElementById("msg").style.color = "#10b981";
+            
+            setTimeout(()=>{
+                window.location.href = "login.html";
+            }, 1500);
+        })
+        .catch((error) => {
+            console.error("Database Error: ", error);
+            document.getElementById("msg").innerHTML = "Registration completed with sync warning.";
+            document.getElementById("msg").style.color = "#f59e0b";
+            
+            setTimeout(()=>{
+                window.location.href = "login.html";
+            }, 2000);
+        });
+    })
+    .catch((error)=>{
+        document.getElementById("msg").innerHTML = error.message;
+        document.getElementById("msg").style.color = "#ef4444";
+        console.error(error);
+    });
 }
-
-if(password.length < 6){
-
-document.getElementById("msg").innerHTML =
-"Password must be at least 6 characters";
-
-return;
-
-}
-
-if(password !== confirm){
-
-document.getElementById("msg").innerHTML =
-"Passwords do not match";
-
-return;
-
-}
-
-let fakeEmail =
-username + "@game.local";
-
-createUserWithEmailAndPassword(
-auth,
-fakeEmail,
-password
-)
-
-.then(() => {
-
-localStorage.setItem(
-"currentUser",
-username
-);
-
-/* Save User To Balance Sheet */
-
-/* Save User To Balance Sheet */
-fetch(
-"https://script.google.com/macros/s/AKfycbxWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec",
-{
-  method: "POST",
-  headers: {
-    "Content-Type": "text/plain;charset=utf-8"
-  },
-  body: JSON.stringify({
-    username: username,
-    balance: 0,
-    wins: 0,
-    losses: 0
-  })
-}
-);
-
-document.getElementById("msg").innerHTML =
-"Registration Successful";
-
-setTimeout(()=>{
-
-window.location.href =
-"login.html";
-
-},1500);
-
-})
-
-.catch((error)=>{
-
-document.getElementById("msg").innerHTML =
-error.message;
-
-console.error(error);
-
-});
-
-}
-
 </script>
 
 </body>
