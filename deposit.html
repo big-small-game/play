@@ -388,7 +388,7 @@
         if (amountRequested <= 0 || transactionId === "") return;
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Broadcasting Packet...";
+        submitBtn.innerText = "Sendng Deposit Request...";
 
         const networkPayload = `?username=${encodeURIComponent(formattedUser)}&amount=${amountRequested}&txid=${encodeURIComponent(transactionId)}`;
 
