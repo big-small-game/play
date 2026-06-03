@@ -83,6 +83,24 @@
             padding: 0 8px;
         }
 
+        .back-btn {
+            background: var(--bg-sidebar);
+            color: var(--text-muted);
+            border: 1px solid var(--border-glass);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
         .user-tag {
             font-size: 0.85rem;
             font-weight: 700;
@@ -259,24 +277,6 @@
             cursor: not-allowed;
         }
 
-        .back-btn {
-    background: var(--bg-sidebar);
-    color: var(--text-muted);
-    border: 1px solid var(--border-glass);
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.back-btn:hover {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-light);
-    border-color: rgba(255, 255, 255, 0.15);
-}
-
         @media (max-width: 768px) {
             .game-wrapper { flex-direction: column-reverse; }
             .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); }
@@ -287,7 +287,7 @@
 <body>
 
 <div class="header-widget">
-    <button class="back-btn" onclick="window.location.href='game.html'">⬅ Back to Games</button>
+    <button class="back-btn" onclick="window.location.href='index.html'">⬅ Back to Games</button>
     <div class="user-tag">👤 User: <span id="userName">Guest</span></div>
     <div class="wallet-display">🪙 <span id="userBalance">0.00</span></div>
 </div>
@@ -395,7 +395,11 @@
     }
 
     function fetchLiveWallet() {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`, {
+            method: "GET",
+            mode: "cors",
+            redirect: "follow"
+        })
         .then(r => r.json())
         .then(data => {
             if (data && data.balance !== undefined) {
@@ -409,23 +413,31 @@
                     actionBtn.className = "action-btn btn-bet";
                 }
             }
-        });
+        }).catch(err => console.error("Wallet download failed:", err));
     }
 
     function syncTxToDatabase(amountChange, outcome = "none", updateScreenUI = true) {
-        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&modify_balance=${amountChange}`;
+        // FIXED: Added absolute cross-origin permissions and follow directions to force Google Script engines to accept the execution thread
+        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&modify_balance=${amountChange}&action=update`;
         if (outcome !== "none") {
             url += `&game_result=${outcome}`;
         }
 
-        fetch(url)
+        fetch(url, {
+            method: "GET",
+            mode: "cors",
+            redirect: "follow"
+        })
         .then(r => r.json())
         .then(data => {
             if (updateScreenUI && data && data.newBalance !== undefined) {
                 balance = parseFloat(data.newBalance);
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
+            } else if (updateScreenUI && data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
-        });
+        }).catch(err => console.error("Database update transaction rejected:", err));
     }
 
     function adjustStakeScale(type) {
@@ -437,61 +449,43 @@
     }
 
     function toggleTowerEngineLoopState() {
-    const actionBtn = document.getElementById("mainActionBtn");
+        const actionBtn = document.getElementById("mainActionBtn");
 
-    if (!gameActive) {
-        const betInput = document.getElementById("betValue");
-        const desiredBet = parseInt(betInput.value) || 0;
+        if (!gameActive) {
+            const betInput = document.getElementById("betValue");
+            const desiredBet = parseInt(betInput.value) || 0;
 
-        if (desiredBet < 1 || desiredBet > balance) {
-            alert("Stake bounds matching allocation error!");
-            return;
+            if (desiredBet < 1 || desiredBet > balance) {
+                alert("Stake bounds matching allocation error!");
+                return;
+            }
+
+            betAmount = desiredBet;
+            balance -= betAmount;
+            document.getElementById('userBalance').innerText = balance.toFixed(2);
+            
+            // FIXED: Instantly synchronization with update UI true to force state lock inside script ledger
+            syncTxToDatabase(-betAmount, "loss", true);
+
+            gameActive = true;
+            currentRowIndex = 0;
+            currentMultiplier = 1.00;
+            generateTowerMatrixTruthMap();
+
+            betInput.disabled = true;
+            document.getElementById("difficultySelector").disabled = true;
+
+            actionBtn.innerText = "Cash Out";
+            actionBtn.className = "action-btn btn-cashout";
+            actionBtn.disabled = true;
+
+            playSyntheticSound(523.25, 'triangle', 0.15);
+            activateRowHighlightTier(0);
+        } else {
+            executeCashoutSequence();
         }
-
-        // 1. Deduct locally
-        betAmount = desiredBet;
-        balance -= betAmount;
-        document.getElementById('userBalance').innerText = balance.toFixed(2);
-        
-        // 2. FIXED: Send the deduction to the database immediately with no game outcome ("none")
-        // AND set updateScreenUI to true so the browser locks in the sheet's absolute mathematical state.
-        syncTxToDatabase(-betAmount, "none", true);
-
-        gameActive = true;
-        currentRowIndex = 0;
-        currentMultiplier = 1.00;
-        generateTowerMatrixTruthMap();
-
-        betInput.disabled = true;
-        document.getElementById("difficultySelector").disabled = true;
-
-        actionBtn.innerText = "Cash Out";
-        actionBtn.className = "action-btn btn-cashout";
-        actionBtn.disabled = true;
-
-        playSyntheticSound(523.25, 'triangle', 0.15);
-        activateRowHighlightTier(0);
-    } else {
-        executeCashoutSequence();
     }
-}
 
-function triggerTowerLossSequence() {
-    gameActive = false;
-    revealEntireTowerArenaTruthMap();
-    playSyntheticSound(110, 'sawtooth', 0.45, 40);
-
-    // FIXED: The money was already permanently deducted at the start of the round. 
-    // Sending a second sync with 0 and "loss" was overwriting the sheet data. 
-    // We change updateScreenUI to true to verify everything matches up, but send 0 change.
-    syncTxToDatabase(0, "loss", true);
-
-    const actionBtn = document.getElementById("mainActionBtn");
-    actionBtn.disabled = true;
-    actionBtn.innerText = "Game Over";
-
-    resetGameArenaEnvironmentDelayed();
-}
     function generateTowerMatrixTruthMap() {
         towersDataMatrix = [];
         const config = difficultyConfigs[selectedDifficulty];
@@ -580,7 +574,21 @@ function triggerTowerLossSequence() {
         resetGameArenaEnvironmentDelayed();
     }
 
-   
+    function triggerTowerLossSequence() {
+        gameActive = false;
+        revealEntireTowerArenaTruthMap();
+        playSyntheticSound(110, 'sawtooth', 0.45, 40);
+
+        // FIXED: Sync with 0 modification using true UI flag to ensure clean ledger verification upon loss sequence termination
+        syncTxToDatabase(0, "loss", true);
+
+        const actionBtn = document.getElementById("mainActionBtn");
+        actionBtn.disabled = true;
+        actionBtn.innerText = "Game Over";
+
+        resetGameArenaEnvironmentDelayed();
+    }
+
     function revealEntireTowerArenaTruthMap() {
         for (let r = 0; r < totalRowsCount; r++) {
             const rowEl = document.getElementById(`row-${r}`);
