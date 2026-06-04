@@ -27,7 +27,7 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif; /* Clean, normal system font */
+            font-family: Arial, Helvetica, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-light);
             min-height: 100vh;
@@ -292,7 +292,6 @@
     const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
     document.getElementById("userName").innerText = cleanUser;
 
-    // Plinko Architecture Metrics Configuration (8 Rows Fixed Setup)
     const rows = 8;
     let pegs = [];
     let balls = [];
@@ -334,7 +333,11 @@
     }
 
     function fetchLiveWallet() {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`, {
+            method: "GET",
+            mode: "cors",
+            redirect: "follow"
+        })
         .then(r => r.json())
         .then(data => {
             if (data && data.balance !== undefined) {
@@ -343,18 +346,27 @@
                 document.getElementById("mainActionBtn").disabled = false;
                 document.getElementById("mainActionBtn").innerText = "Drop Ball";
             }
-        });
+        }).catch(err => console.error("Wallet hook exception:", err));
     }
 
     function syncTxToDatabase(amountChange) {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
+        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
+
+        fetch(url, {
+            method: "GET",
+            mode: "cors",
+            redirect: "follow"
+        })
         .then(r => r.json())
         .then(data => {
-            if (data && data.balance !== undefined) {
+            if (data && data.newBalance !== undefined) {
+                balance = parseFloat(data.newBalance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
+            } else if (data && data.balance !== undefined) {
                 balance = parseFloat(data.balance);
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
-        });
+        }).catch(err => console.error("Database update sequence rejected:", err));
     }
 
     function adjustStakeScale(type) {
@@ -373,12 +385,11 @@
             return;
         }
 
-        // Deduct upfront seamlessly
         balance -= desiredBet;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
+        
         syncTxToDatabase(-desiredBet);
 
-        // Ball starts right at the top peak apex center point
         balls.push({
             x: canvas.width / 2 + (Math.random() * 4 - 2),
             y: 15,
@@ -408,10 +419,9 @@
             const mVal = multipliers[b] || 1;
             const bucketX = startX + b * spacingX;
 
-            // Pick color styling shifts dependent on outer severity scaling limits
-            let color = "#ef4444"; // Edges (Red)
-            if (b >= 2 && b <= 6) color = "#fbbf24"; // Mid (Yellow)
-            if (b >= 3 && b <= 5) color = "#2563eb"; // Safe Center (Blue)
+            let color = "#ef4444"; 
+            if (b >= 2 && b <= 6) color = "#fbbf24"; 
+            if (b >= 3 && b <= 5) color = "#2563eb"; 
 
             ctx.fillStyle = color;
             ctx.beginPath();
@@ -426,7 +436,6 @@
     function handlePhysicsEngineLoop() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw Peg Layout Structural Layers
         ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
         pegs.forEach(peg => {
             ctx.beginPath();
@@ -446,49 +455,41 @@
             ball.x += ball.vx;
             ball.y += ball.vy;
 
-            // Check Collision factors across every individual peg map node location
             pegs.forEach(peg => {
                 let dx = ball.x - peg.x;
                 let dy = ball.y - peg.y;
                 let dist = Math.sqrt(dx * dx + dy * dy);
 
                 if (dist < ball.radius + 3.5) {
-                    // Back up vector parameters safely outside overlap range bounds
                     let nx = dx / dist;
                     let ny = dy / dist;
                     ball.x = peg.x + nx * (ball.radius + 3.5);
                     ball.y = peg.y + ny * (ball.radius + 3.5);
 
-                    // Parabolic deflection matrix calculation splits logic
                     let dot = ball.vx * nx + ball.vy * ny;
                     ball.vx = (ball.vx - 2 * dot * nx) * bounceDamping;
                     ball.vy = (ball.vy - 2 * dot * ny) * bounceDamping;
 
-                    // Inject minor horizontal chaos drift variables
                     ball.vx += (Math.random() - 0.5) * 0.4;
                     
                     playSyntheticSound(783.99, 'triangle', 0.04);
                 }
             });
 
-            // Keep inside outer walls framework limits bounds accurately
             if (ball.x < ball.radius) { ball.x = ball.radius; ball.vx *= -0.5; }
             if (ball.x > canvas.width - ball.radius) { ball.x = canvas.width - ball.radius; ball.vx *= -0.5; }
 
-            // Render actively processing balls
             ctx.fillStyle = "#ff3366";
             ctx.beginPath();
             ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
             ctx.fill();
 
-            // Handle Landing Bucket Sequence Trigger zones
             if (ball.y >= canvas.height - 55) {
                 const spacingX = canvas.width / (rows + 2);
                 const totalBuckets = rows + 1;
                 const rowWidth = (totalBuckets - 1) * spacingX;
                 const startX = (canvas.width - rowWidth) / 2;
 
-                // Find index based on precise location layout grid offsets coordinates map mappings
                 let closestIndex = Math.round((ball.x - startX) / spacingX);
                 if (closestIndex < 0) closestIndex = 0;
                 if (closestIndex >= totalBuckets) closestIndex = totalBuckets - 1;
@@ -499,6 +500,7 @@
 
                 balance += totalReturn;
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
+                
                 syncTxToDatabase(totalReturn);
 
                 playSyntheticSound(winMultiplier >= 1 ? 880 : 330, 'sine', 0.18);
@@ -509,7 +511,6 @@
         requestAnimationFrame(handlePhysicsEngineLoop);
     }
 
-    // Run Initialization Procedures
     setTimeout(() => {
         resizeCanvas();
         updateMultipliersDisplay();
