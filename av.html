@@ -405,7 +405,6 @@
         });
     }
 
-    // FIXED: Maps parameters directly onto 'bet_amount' processed by your Apps Script gameplay engine block
     function syncTxToDatabase(amountChange, updateScreenUI = true) {
         let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
         
@@ -444,14 +443,22 @@
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
             
-            // FIXED: Instantly sends deduction parameter updates down to the spreadsheet
             syncTxToDatabase(-betAmount, true);
 
+            // CHANGED: New crash algorithm ensuring frequent crashes under 2.00x
             const rand = Math.random();
-            if (rand < 0.08) {
+            if (rand < 0.12) {
+                // 12% chance of instant crash at 1.00x
                 crashPoint = 1.00;
+            } else if (rand < 0.55) {
+                // 43% chance of crashing early between 1.01x and 1.99x
+                crashPoint = parseFloat((1.01 + Math.random() * 0.98).toFixed(2));
+            } else if (rand < 0.85) {
+                // 30% chance of standard run between 2.00x and 5.00x
+                crashPoint = parseFloat((2.00 + Math.random() * 3.00).toFixed(2));
             } else {
-                crashPoint = parseFloat((1.00 + (Math.random() * 8) + (Math.random() * Math.random() * 20)).toFixed(2));
+                // 15% chance of high multi runs exceeding 5.00x
+                crashPoint = parseFloat((5.00 + Math.random() * 15.00).toFixed(2));
             }
 
             gameActive = true;
@@ -478,7 +485,9 @@
         if (!gameActive) return;
 
         const timeElapsed = (performance.now() - flightStartTime) / 1000;
-        currentMultiplier = parseFloat((1.00 + Math.pow(timeElapsed, 1.45) * 0.15).toFixed(2));
+        
+        // CHANGED: Reduced coefficient from 0.15 to 0.06 and dropped exponent to 1.25 for a slower climb rate
+        currentMultiplier = parseFloat((1.00 + Math.pow(timeElapsed, 1.25) * 0.06).toFixed(2));
 
         const multText = document.getElementById("multiplierDisplay");
 
@@ -491,13 +500,15 @@
         }
 
         if (currentMultiplier >= crashPoint) {
+            currentMultiplier = crashPoint; // Clamp precisely to the assigned crash point
             triggerCrashSequence();
             return;
         }
 
         multText.innerText = `${currentMultiplier.toFixed(2)}x`;
 
-        const progressPercent = Math.min(1, timeElapsed / 10);
+        // The plane coordinate map smoothly conforms to the slowed down multiplier timeline
+        const progressPercent = Math.min(1, timeElapsed / 15);
         const planeX = 60 + (canvas.width - 140) * progressPercent;
         const planeY = (canvas.height - 60) - (canvas.height - 140) * Math.sin(progressPercent * Math.PI / 2);
 
@@ -567,7 +578,6 @@
         balance += totalFlightPayout;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
         
-        // FIXED: Dispatches full multiplier earnings as a clean positive adjustment via bet_amount
         syncTxToDatabase(totalFlightPayout, true);
 
         playSyntheticSound(600, 'sine', 0.15);
@@ -591,7 +601,6 @@
         actionBtn.disabled = true;
         actionBtn.innerText = "Flew Away!";
 
-        // FIXED: Balance was dropped at engine turn-on, so no further database updates are required here upon losing
         resetFlightArenaDelayed();
     }
 
