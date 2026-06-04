@@ -390,14 +390,14 @@
             minesQuantity = parseInt(minesInput.value);
 
             if (desiredBet < 1 || desiredBet > balance) {
-                alert("Stake balance allocation error!");
+                alert("Balance allocation error!");
                 return;
             }
 
             betAmount = desiredBet;
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
-            syncTxToDatabase(-betAmount, false);
+            syncTxToDatabase(-betAmount, true);
 
             gameActive = true;
             openedTilesCount = 0;
