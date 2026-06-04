@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aviator Pro | Standard Edition</title>
+    <title>Aviator</title>
     <style>
         :root {
             --bg-main: #0f172a;
@@ -436,7 +436,7 @@
             const desiredBet = parseInt(betInput.value) || 0;
 
             if (desiredBet < 1 || desiredBet > balance) {
-                alert("Stake error!");
+                alert("Error!");
                 return;
             }
 
@@ -445,13 +445,13 @@
             document.getElementById('userBalance').innerText = balance.toFixed(2);
             
             // FIXED: Instantly sends deduction parameter updates down to the spreadsheet
-            syncTxToDatabase(-betAmount, false);
+            syncTxToDatabase(-betAmount, true);
 
             const rand = Math.random();
             if (rand < 0.08) {
                 crashPoint = 1.00;
             } else {
-                crashPoint = parseFloat((1.01 + (Math.random() * 8) + (Math.random() * Math.random() * 20)).toFixed(2));
+                crashPoint = parseFloat((1.00 + (Math.random() * 8) + (Math.random() * Math.random() * 20)).toFixed(2));
             }
 
             gameActive = true;
