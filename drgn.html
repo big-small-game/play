@@ -478,7 +478,7 @@
             const desiredBet = parseInt(betInput.value) || 0;
 
             if (desiredBet < 1 || desiredBet > balance) {
-                actionBtn.innerText = "Check Balance Bound Errors!";
+                actionBtn.innerText = "Minimum bet value is 1 and Max is your balance!";
                 setTimeout(() => { actionBtn.innerText = "Bet"; }, 1500);
                 return;
             }
