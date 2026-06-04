@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Big Small Pro</title>
+    <title>Big Small</title>
     <style>
         :root {
             --bg-main: #090d16;
@@ -40,7 +40,6 @@
             overflow-x: hidden;
         }
 
-        /* Ambient Glow Backdrop Elements */
         body::before {
             content: '';
             position: absolute;
@@ -436,13 +435,13 @@
         }
 
         .live-result-overlay {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: white;
             text-align: center;
             letter-spacing: 0.5px;
             min-height: 40px;
-            line-height: 1.2;
+            line-height: 1.3;
             text-shadow: 0 4px 20px rgba(0,0,0,0.6);
         }
 
@@ -455,6 +454,21 @@
             display: block;
             margin-top: 6px;
             animation: pulse 1s infinite alternate;
+        }
+
+        .text-win {
+            color: var(--accent-green);
+            animation: popText 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .text-loss {
+            color: var(--accent-red);
+            animation: popText 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popText {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         @keyframes pulse {
@@ -513,69 +527,6 @@
             cursor: not-allowed !important;
             pointer-events: none;
         }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(4, 7, 13, 0.8);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-card {
-            background: #131c30;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            padding: 28px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.8);
-            transform: scale(0.9);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .modal-overlay.active .modal-card {
-            transform: scale(1);
-        }
-
-        .modal-title {
-            font-size: 1.3rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: white;
-        }
-
-        .modal-desc {
-            font-size: 0.95rem;
-            color: #94a3b8;
-            line-height: 1.5;
-            margin-bottom: 24px;
-        }
-
-        .modal-btn {
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 12px 32px;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: background 0.2s ease;
-        }
-        .modal-btn:hover { background: #2563eb; }
 
         @media (max-width: 820px) {
             .game-wrapper { flex-direction: column-reverse; }
@@ -662,14 +613,6 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="customAlertModal">
-    <div class="modal-card">
-        <div class="modal-title" id="modalAlertTitle">Attention</div>
-        <div class="modal-desc" id="modalAlertText">Alert message goes here.</div>
-        <button class="modal-btn" onclick="closeCustomAlert()">Acknowledge</button>
-    </div>
-</div>
-
 <script>
     const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
 
@@ -703,16 +646,6 @@
         } catch(e) {}
     }
 
-    function triggerCustomAlert(title, text) {
-        document.getElementById("modalAlertTitle").innerText = title;
-        document.getElementById("modalAlertText").innerText = text;
-        document.getElementById("customAlertModal").classList.add("active");
-    }
-
-    function closeCustomAlert() {
-        document.getElementById("customAlertModal").classList.remove("active");
-    }
-
     const rawUser = localStorage.getItem("currentUser") || "Guest";
     const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
     document.getElementById("userName").innerText = cleanUser;
@@ -744,7 +677,6 @@
         });
     }
 
-    // CHANGED: Query property converted to bet_amount matching sheet backend expectation rules
     function syncTxToDatabase(amountChange, updateScreenUI = true) {
         let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
         
@@ -776,12 +708,12 @@
         const desiredBet = parseInt(betInput.value) || 0;
 
         if (!selectedPrediction) {
-            triggerCustomAlert("Prediction Missing", "Please pick a side: BIG or SMALL to place your stakes.");
+            document.getElementById("resultDisplay").innerHTML = `<span style="font-size:1.4rem; color:var(--accent-red);">Select BIG or SMALL!</span>`;
             return;
         }
 
         if (desiredBet < 1 || desiredBet > balance) {
-            triggerCustomAlert("Invalid Balance", "Stake value must be at least 1 and cannot exceed your current total wallet balance.");
+            document.getElementById("resultDisplay").innerHTML = `<span style="font-size:1.4rem; color:var(--accent-red);">Invalid Balance!</span>`;
             return;
         }
 
@@ -795,7 +727,6 @@
         document.getElementById("zoneSmall").classList.add("disabled");
         document.getElementById("zoneBig").classList.add("disabled");
 
-        // Sync original stake deduction (-betAmount) to the script
         syncTxToDatabase(-betAmount, true);
 
         const c1 = document.getElementById("cube1");
@@ -848,14 +779,6 @@
             category = "BIG";
         }
 
-        const display = document.getElementById("resultDisplay");
-        let outcomeString = `${totalSum} (${category})`;
-        
-        if (category === "TIE") {
-            outcomeString = `${totalSum}<br><span class="house-tie-text">🔥 HOUSE TRIPLE TIE 🔥</span>`;
-        }
-        display.innerHTML = outcomeString;
-
         let isWin = (selectedPrediction === category);
         let finalChangeAmount = 0;
 
@@ -870,32 +793,33 @@
 
         document.getElementById('userBalance').innerText = balance.toFixed(2);
         
-        // If they won, sync back winnings to the database sheets setup
         if (isWin) {
             syncTxToDatabase(finalChangeAmount, true);
         }
         
         appendHistoryLog(totalSum, category);
 
-        // CHANGED: Intercepting cooldown loop to throw Win/Loss alerts instantly
-        setTimeout(() => {
-            if (isWin) {
-                triggerCustomAlert("WIN!");
+        // Render the outcome clearly directly inside the banner UI (no popups)
+        const display = document.getElementById("resultDisplay");
+        if (isWin) {
+            display.innerHTML = `${totalSum} (${category})<br><span class="text-win">YOU WIN! +🪙${finalChangeAmount.toFixed(2)}</span>`;
+        } else {
+            if (category === "TIE") {
+                display.innerHTML = `${totalSum}<br><span class="house-tie-text">HOUSE TRIPLE LOSS</span>`;
             } else {
-                if (category === "TIE") {
-                    triggerCustomAlert("House Triple Loss");
-                } else {
-                    triggerCustomAlert("LOSS", `Better luck next round!`);
-                }
+                display.innerHTML = `${totalSum} (${category})<br><span class="text-loss">YOU LOSE!</span>`;
             }
+        }
 
+        // Clean cooldown environment reset
+        setTimeout(() => {
             gameActive = false;
             document.getElementById("betValue").disabled = false;
             document.getElementById("mainActionBtn").disabled = false;
             document.getElementById("zoneSmall").classList.remove("disabled");
             document.getElementById("zoneBig").classList.remove("disabled");
             document.getElementById("mainActionBtn").innerText = "Roll Dice";
-        }, 600);
+        }, 2200);
     }
 
     function appendHistoryLog(sum, category) {
