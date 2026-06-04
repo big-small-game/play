@@ -1,642 +1,655 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dragon Tower</title>
-    <style>
-        :root {
-            --bg-main: #0f172a;
-            --bg-sidebar: #1e293b;
-            --bg-card: #0b0f19;
-            --primary-blue: #3b82f6;
-            --accent-gold: #f59e0b;
-            --accent-green: #00e676;
-            --accent-red: #ff3333;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-glass: rgba(255, 255, 255, 0.05);
-            --tile-unopened: #2f455e;
-            --tile-unopened-hover: #3c5674;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dragon Tower</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-card: #0b0f19;
+            --primary-blue: #3b82f6;
+            --accent-gold: #f59e0b;
+            --accent-green: #00e676;
+            --accent-red: #ff3333;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glass: rgba(255, 255, 255, 0.05);
+            --tile-unopened: #2f455e;
+            --tile-unopened-hover: #3c5674;
+        }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-light);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
 
-        .back-nav-container {
-            width: 100%;
-            max-width: 900px;
-            display: flex;
-            justify-content: flex-start;
-            margin-bottom: 12px;
-        }
+        .back-nav-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 12px;
+        }
 
-        .btn-back {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid var(--border-glass);
-            color: var(--text-light);
-            font-size: 0.85rem;
-            font-weight: bold;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            transition: all 0.2s ease;
-        }
+        .btn-back {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border-glass);
+            color: var(--text-light);
+            font-size: 0.85rem;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
 
-        .btn-back:hover {
-            background: var(--primary-blue);
-            border-color: transparent;
-        }
+        .btn-back:hover {
+            background: var(--primary-blue);
+            border-color: transparent;
+        }
 
-        .game-wrapper {
-            width: 100%;
-            max-width: 900px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            display: flex;
-            flex-direction: row;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-        }
+        .game-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
 
-        .sidebar-controls {
-            width: 320px;
-            background: var(--bg-sidebar);
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            border-right: 1px solid var(--border-glass);
-        }
+        .sidebar-controls {
+            width: 320px;
+            background: var(--bg-sidebar);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border-right: 1px solid var(--border-glass);
+        }
 
-        .grid-theater {
-            flex: 1;
-            background: var(--bg-card);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            position: relative;
-        }
+        .grid-theater {
+            flex: 1;
+            background: var(--bg-card);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            position: relative;
+        }
 
-        .header-widget {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 16px;
-            max-width: 900px;
-            padding: 0 8px;
-        }
+        .header-widget {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 16px;
+            max-width: 900px;
+            padding: 0 8px;
+        }
 
-        .user-tag {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--text-muted);
-        }
+        .user-tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
 
-        .wallet-display {
-            background: var(--bg-sidebar);
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-glass);
-            font-weight: 800;
-            color: var(--accent-gold);
-        }
+        .wallet-display {
+            background: var(--bg-sidebar);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-glass);
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
 
-        /* Set to standard column sequence so higher array indexes stack upward physically */
-        .tower-arena {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%;
-            max-width: 440px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border-glass);
-        }
+        .tower-arena {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-width: 440px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+        }
 
-        .tower-row {
-            display: grid;
-            gap: 8px;
-            padding: 6px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-            opacity: 0.25;
-        }
+        .tower-row {
+            display: grid;
+            gap: 8px;
+            padding: 6px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            opacity: 0.25;
+        }
 
-        .layout-easy { grid-template-columns: 55px 1fr 1fr 1fr; }
-        .layout-medium { grid-template-columns: 55px 1fr 1fr; }
-        .layout-hard { grid-template-columns: 55px 1fr 1fr 1fr; }
+        .layout-easy { grid-template-columns: 55px 1fr 1fr 1fr; }
+        .layout-medium { grid-template-columns: 55px 1fr 1fr; }
+        .layout-hard { grid-template-columns: 55px 1fr 1fr 1fr; }
 
-        .tower-row.active-row {
-            opacity: 1;
-            background: rgba(59, 130, 246, 0.08);
-            border-color: rgba(59, 130, 246, 0.25);
-        }
+        .tower-row.active-row {
+            opacity: 1;
+            background: rgba(59, 130, 246, 0.08);
+            border-color: rgba(59, 130, 246, 0.25);
+        }
 
-        .tower-row.completed-row {
-            opacity: 0.7;
-        }
+        .tower-row.completed-row {
+            opacity: 0.7;
+        }
 
-        .mult-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: var(--accent-gold);
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 6px;
-            border: 1px solid var(--border-glass);
-        }
+        .mult-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+            border: 1px solid var(--border-glass);
+        }
 
-        .block-btn {
-            background: var(--tile-unopened);
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 3px 0 #1b2a3a;
-            transition: all 0.1s ease;
-        }
+        .block-btn {
+            background: var(--tile-unopened);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 3px 0 #1b2a3a;
+            transition: all 0.1s ease;
+        }
 
-        .block-btn:hover:not(:disabled) {
-            background: var(--tile-unopened-hover);
-            transform: translateY(-1px);
-        }
+        .block-btn:hover:not(:disabled) {
+            background: var(--tile-unopened-hover);
+            transform: translateY(-1px);
+        }
 
-        .block-egg {
-            background: #071824 !important;
-            border: 2px solid var(--accent-green) !important;
-            box-shadow: 0 0 12px rgba(0, 230, 118, 0.15) !important;
-            transform: none !important;
-        }
+        .block-egg {
+            background: #071824 !important;
+            border: 2px solid var(--accent-green) !important;
+            box-shadow: 0 0 12px rgba(0, 230, 118, 0.15) !important;
+            transform: none !important;
+        }
 
-        .block-skull {
-            background: #1e1015 !important;
-            border: 2px solid var(--accent-red) !important;
-            transform: none !important;
-        }
+        .block-skull {
+            background: #1e1015 !important;
+            border: 2px solid var(--accent-red) !important;
+            box-shadow: 0 0 12px rgba(255, 51, 51, 0.15) !important;
+            transform: none !important;
+        }
 
-        .label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-        }
+        .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
 
-        .input-container {
-            display: flex;
-            background: var(--bg-main);
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.1);
-            overflow: hidden;
-            height: 44px;
-        }
+        .input-container {
+            display: flex;
+            background: var(--bg-main);
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            height: 44px;
+        }
 
-        .input-container input, .input-container select {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 0 14px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            outline: none;
-        }
+        .input-container input, .input-container select {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0 14px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            outline: none;
+        }
 
-        .scale-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: none;
-            color: var(--text-light);
-            padding: 0 14px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            border-left: 1px solid rgba(255,255,255,0.1);
-        }
+        .scale-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-light);
+            padding: 0 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
 
-        .scale-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .scale-btn:hover { background: rgba(255, 255, 255, 0.1); }
 
-        .action-btn {
-            width: 100%;
-            height: 50px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            color: white;
-            transition: all 0.15s ease;
-        }
+        .action-btn {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            transition: all 0.15s ease;
+        }
 
-        .btn-bet {
-            background: var(--primary-blue);
-            box-shadow: 0 4px 0 #1d4ed8;
-        }
-        .btn-bet:hover:not(:disabled) { background: #2563eb; }
+        .btn-bet {
+            background: var(--primary-blue);
+            box-shadow: 0 4px 0 #1d4ed8;
+        }
+        .btn-bet:hover:not(:disabled) { background: #2563eb; }
 
-        .btn-cashout {
-            background: var(--accent-green);
-            color: #000;
-            box-shadow: 0 4px 0 #00b359;
-            font-weight: 800;
-        }
-        .btn-cashout:hover:not(:disabled) { background: #33ff99; }
+        .btn-cashout {
+            background: var(--accent-green);
+            color: #000;
+            box-shadow: 0 4px 0 #00b359;
+            font-weight: 800;
+        }
+        .btn-cashout:hover:not(:disabled) { background: #33ff99; }
 
-        .action-btn:active:not(:disabled) {
-            transform: translateY(3px);
-            box-shadow: none !important;
-        }
+        .btn-win-banner {
+            background: linear-gradient(135deg, #00c853 0%, #00b359 100%) !important;
+            color: #000 !important;
+            box-shadow: 0 4px 14px rgba(0, 230, 118, 0.3) !important;
+        }
 
-        .action-btn:disabled {
-            background: #334155 !important;
-            color: #64748b !important;
-            box-shadow: none !important;
-            cursor: not-allowed;
-        }
+        .btn-loss-banner {
+            background: linear-gradient(135deg, #d50000 0%, #b71c1c 100%) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 14px rgba(255, 51, 51, 0.3) !important;
+        }
 
-        @media (max-width: 768px) {
-            .game-wrapper { flex-direction: column-reverse; }
-            .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); }
-            .grid-theater { padding: 16px; }
-        }
-    </style>
+        .action-btn:active:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: none !important;
+        }
+
+        .action-btn:disabled {
+            background: #334155 !important;
+            color: #64748b !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .game-wrapper { flex-direction: column-reverse; }
+            .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); }
+            .grid-theater { padding: 16px; }
+        }
+    </style>
 </head>
 <body>
 
 <div class="back-nav-container">
-    <a href="game.html" class="btn-back">← Back to Games</a>
+    <a href="game.html" class="btn-back">← Back to Games</a>
 </div>
 
 <div class="header-widget">
-    <div class="user-tag">👤 User: <span id="userName">Guest</span></div>
-    <div class="wallet-display">🪙 <span id="userBalance">0.00</span></div>
+    <div class="user-tag">👤 User: <span id="userName">Guest</span></div>
+    <div class="wallet-display">🪙 <span id="userBalance">0.00</span></div>
 </div>
 
 <div class="game-wrapper">
-    <div class="sidebar-controls">
-        <div>
-            <div class="label">Bet Amount</div>
-            <div class="input-container">
-                <input type="number" id="betValue" value="10" min="1">
-                <button class="scale-btn" onclick="adjustStakeScale('half')">½</button>
-                <button class="scale-btn" onclick="adjustStakeScale('double')">2x</button>
-            </div>
-        </div>
+    <div class="sidebar-controls">
+        <div>
+            <div class="label">Bet Amount</div>
+            <div class="input-container">
+                <input type="number" id="betValue" value="10" min="1">
+                <button class="scale-btn" onclick="adjustStakeScale('half')">½</button>
+                <button class="scale-btn" onclick="adjustStakeScale('double')">2x</button>
+            </div>
+        </div>
 
-        <div>
-            <div class="label">Difficulty</div>
-            <div class="input-container">
-                <select id="difficultySelector" onchange="buildTowerArenaFramework()">
-                    <option value="easy" selected>Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-            </div>
-        </div>
+        <div>
+            <div class="label">Difficulty</div>
+            <div class="input-container">
+                <select id="difficultySelector" onchange="buildTowerArenaFramework()">
+                    <option value="easy" selected>Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+        </div>
 
-        <button class="action-btn btn-bet" id="mainActionBtn" onclick="toggleTowerEngineLoopState()" disabled>Syncing Balance...</button>
-    </div>
+        <button class="action-btn btn-bet" id="mainActionBtn" onclick="toggleTowerEngineLoopState()" disabled>Syncing Balance...</button>
+    </div>
 
-    <div class="grid-theater">
-        <div class="tower-arena" id="towerArenaContainer"></div>
-    </div>
+    <div class="grid-theater">
+        <div class="tower-arena" id="towerArenaContainer"></div>
+    </div>
 </div>
 
 <script>
-    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
+    const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
 
-    let balance = 0;
-    let betAmount = 0;
-    let gameActive = false;
-    let currentRowIndex = 0;
-    let currentMultiplier = 1.00;
+    let balance = 0;
+    let betAmount = 0;
+    let gameActive = false;
+    let currentRowIndex = 0;
+    let currentMultiplier = 1.00;
 
-    const totalRowsCount = 6;
-    let selectedDifficulty = "easy";
-    let activeRowMultipliers = [];
-    let towersDataMatrix = [];
+    const totalRowsCount = 6;
+    let selectedDifficulty = "easy";
+    let activeRowMultipliers = [];
+    let towersDataMatrix = [];
 
-    const difficultyConfigs = {
-        easy: { blocks: 3, risks: 1, mults: [1.31, 1.74, 2.32, 3.10, 4.13, 6.00] },
-        medium: { blocks: 2, risks: 1, mults: [1.47, 2.21, 3.31, 4.97, 7.44, 11.00] },
-        hard: { blocks: 3, risks: 2, mults: [1.95, 5.30, 13.90, 28.85, 98.30, 151.00] }
-    };
+    const difficultyConfigs = {
+        easy: { blocks: 3, risks: 1, mults: [1.31, 1.74, 2.32, 3.10, 4.13, 6.00] },
+        medium: { blocks: 2, risks: 1, mults: [1.47, 2.21, 3.31, 4.97, 7.44, 11.00] },
+        hard: { blocks: 3, risks: 2, mults: [1.95, 5.30, 13.90, 28.85, 98.30, 151.00] }
+    };
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSyntheticSound(frequency, type, duration, slideTo = 0) {
-        try {
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            osc.type = type;
-            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
-            if (slideTo > 0) osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
-            gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
-        } catch(e) {}
-    }
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSyntheticSound(frequency, type, duration, slideTo = 0) {
+        try {
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+            if (slideTo > 0) osc.frequency.exponentialRampToValueAtTime(slideTo, audioCtx.currentTime + duration);
+            gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch(e) {}
+    }
 
-    const rawUser = localStorage.getItem("currentUser") || "Guest";
-    const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
-    document.getElementById("userName").innerText = cleanUser;
+    const rawUser = localStorage.getItem("currentUser") || "Guest";
+    const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
+    document.getElementById("userName").innerText = cleanUser;
 
-    function buildTowerArenaFramework() {
-        if (gameActive) return;
-        selectedDifficulty = document.getElementById("difficultySelector").value;
-        const config = difficultyConfigs[selectedDifficulty];
-        activeRowMultipliers = config.mults;
+    function buildTowerArenaFramework() {
+        if (gameActive) return;
+        selectedDifficulty = document.getElementById("difficultySelector").value;
+        const config = difficultyConfigs[selectedDifficulty];
+        activeRowMultipliers = config.mults;
 
-        const arena = document.getElementById("towerArenaContainer");
-        arena.innerHTML = "";
+        const arena = document.getElementById("towerArenaContainer");
+        arena.innerHTML = "";
 
-        // Build from row index 5 down to 0, appending them so row 0 stays physically at the bottom
-        for (let r = totalRowsCount - 1; r >= 0; r--) {
-            const rowDiv = document.createElement("div");
-            rowDiv.className = `tower-row layout-${selectedDifficulty}`;
-            rowDiv.id = `row-${r}`;
+        for (let r = totalRowsCount - 1; r >= 0; r--) {
+            const rowDiv = document.createElement("div");
+            rowDiv.className = `tower-row layout-${selectedDifficulty}`;
+            rowDiv.id = `row-${r}`;
 
-            const badge = document.createElement("div");
-            badge.className = "mult-badge";
-            badge.innerText = `${activeRowMultipliers[r]}x`;
-            rowDiv.appendChild(badge);
+            const badge = document.createElement("div");
+            badge.className = "mult-badge";
+            badge.innerText = `${activeRowMultipliers[r]}x`;
+            rowDiv.appendChild(badge);
 
-            for (let b = 0; b < config.blocks; b++) {
-                const btn = document.createElement("button");
-                btn.className = "block-btn";
-                btn.dataset.blockIndex = b;
-                btn.disabled = true;
-                btn.addEventListener("click", () => handleBlockSelection(r, b));
-                rowDiv.appendChild(btn);
-            }
-            arena.appendChild(rowDiv);
-        }
-    }
+            for (let b = 0; b < config.blocks; b++) {
+                const btn = document.createElement("button");
+                btn.className = "block-btn";
+                btn.dataset.blockIndex = b;
+                btn.disabled = true;
+                btn.addEventListener("click", () => handleBlockSelection(r, b));
+                rowDiv.appendChild(btn);
+            }
+            arena.appendChild(rowDiv);
+        }
+    }
 
-    function fetchLiveWallet() {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`, {
-            method: "GET",
-            mode: "cors",
-            redirect: "follow"
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data && data.balance !== undefined) {
-                balance = parseFloat(data.balance) || 0;
-                document.getElementById('userBalance').innerText = balance.toFixed(2);
-                
-                if (!gameActive) {
-                    const actionBtn = document.getElementById("mainActionBtn");
-                    actionBtn.disabled = false;
-                    actionBtn.innerText = "Bet";
-                    actionBtn.className = "action-btn btn-bet";
-                }
-            }
-        }).catch(err => console.error("Wallet download failed:", err));
-    }
+    function fetchLiveWallet() {
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`, {
+            method: "GET",
+            mode: "cors",
+            redirect: "follow"
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data && data.balance !== undefined) {
+                balance = parseFloat(data.balance) || 0;
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
+                
+                if (!gameActive) {
+                    const actionBtn = document.getElementById("mainActionBtn");
+                    actionBtn.disabled = false;
+                    actionBtn.innerText = "Bet";
+                    actionBtn.className = "action-btn btn-bet";
+                }
+            }
+        }).catch(err => console.error("Wallet download failed:", err));
+    }
 
-    function syncTxToDatabase(amountChange, updateScreenUI = true) {
-        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
+    function syncTxToDatabase(amountChange, updateScreenUI = true) {
+        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
 
-        fetch(url, {
-            method: "GET",
-            mode: "cors",
-            redirect: "follow"
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (updateScreenUI && data && data.newBalance !== undefined) {
-                balance = parseFloat(data.newBalance);
-                document.getElementById('userBalance').innerText = balance.toFixed(2);
-            } else if (updateScreenUI && data && data.balance !== undefined) {
-                balance = parseFloat(data.balance);
-                document.getElementById('userBalance').innerText = balance.toFixed(2);
-            }
-        }).catch(err => console.error("Database update transaction rejected:", err));
-    }
+        fetch(url, {
+            method: "GET",
+            mode: "cors",
+            redirect: "follow"
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (updateScreenUI && data && data.newBalance !== undefined) {
+                balance = parseFloat(data.newBalance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
+            } else if (updateScreenUI && data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
+            }
+        }).catch(err => console.error("Database update transaction rejected:", err));
+    }
 
-    function adjustStakeScale(type) {
-        if (gameActive) return;
-        const input = document.getElementById("betValue");
-        let current = parseInt(input.value) || 0;
-        if (type === 'half') input.value = Math.max(1, Math.floor(current / 2));
-        if (type === 'double') input.value = Math.min(balance, current * 2);
-    }
+    function adjustStakeScale(type) {
+        if (gameActive) return;
+        const input = document.getElementById("betValue");
+        let current = parseInt(input.value) || 0;
+        if (type === 'half') input.value = Math.max(1, Math.floor(current / 2));
+        if (type === 'double') input.value = Math.min(balance, current * 2);
+    }
 
-    function toggleTowerEngineLoopState() {
-        const actionBtn = document.getElementById("mainActionBtn");
+    function toggleTowerEngineLoopState() {
+        const actionBtn = document.getElementById("mainActionBtn");
 
-        if (!gameActive) {
-            const betInput = document.getElementById("betValue");
-            const desiredBet = parseInt(betInput.value) || 0;
+        if (!gameActive) {
+            const betInput = document.getElementById("betValue");
+            const desiredBet = parseInt(betInput.value) || 0;
 
-            if (desiredBet < 1 || desiredBet > balance) {
-                alert("Stake bounds matching allocation error!");
-                return;
-            }
+            if (desiredBet < 1 || desiredBet > balance) {
+                actionBtn.innerText = "Check Balance Bound Errors!";
+                setTimeout(() => { actionBtn.innerText = "Bet"; }, 1500);
+                return;
+            }
 
-            betAmount = desiredBet;
-            balance -= betAmount;
-            document.getElementById('userBalance').innerText = balance.toFixed(2);
-            
-            syncTxToDatabase(-betAmount, true);
+            betAmount = desiredBet;
+            balance -= betAmount;
+            document.getElementById('userBalance').innerText = balance.toFixed(2);
+            
+            syncTxToDatabase(-betAmount, true);
 
-            gameActive = true;
-            currentRowIndex = 0;
-            currentMultiplier = 1.00;
-            generateTowerMatrixTruthMap();
+            gameActive = true;
+            currentRowIndex = 0;
+            currentMultiplier = 1.00;
+            generateTowerMatrixTruthMap();
 
-            betInput.disabled = true;
-            document.getElementById("difficultySelector").disabled = true;
+            betInput.disabled = true;
+            document.getElementById("difficultySelector").disabled = true;
 
-            actionBtn.innerText = "Cash Out";
-            actionBtn.className = "action-btn btn-cashout";
-            actionBtn.disabled = true;
+            actionBtn.innerText = "Cash Out";
+            actionBtn.className = "action-btn btn-cashout";
+            actionBtn.disabled = true;
 
-            playSyntheticSound(523.25, 'triangle', 0.15);
-            activateRowHighlightTier(0);
-        } else {
-            executeCashoutSequence();
-        }
-    }
+            playSyntheticSound(523.25, 'triangle', 0.15);
+            activateRowHighlightTier(0);
+        } else {
+            executeCashoutSequence();
+        }
+    }
 
-    function generateTowerMatrixTruthMap() {
-        towersDataMatrix = [];
-        const config = difficultyConfigs[selectedDifficulty];
+    function generateTowerMatrixTruthMap() {
+        towersDataMatrix = [];
+        const config = difficultyConfigs[selectedDifficulty];
 
-        for (let r = 0; r < totalRowsCount; r++) {
-            let rowArr = Array(config.blocks).fill('egg');
-            let placedRisks = 0;
-            while (placedRisks < config.risks) {
-                let targetIdx = Math.floor(Math.random() * config.blocks);
-                if (rowArr[targetIdx] !== 'skull') {
-                    rowArr[targetIdx] = 'skull';
-                    placedRisks++;
-                }
-            }
-            towersDataMatrix.push(rowArr);
-        }
-    }
+        for (let r = 0; r < totalRowsCount; r++) {
+            let rowArr = Array(config.blocks).fill('egg');
+            let placedRisks = 0;
+            while (placedRisks < config.risks) {
+                let targetIdx = Math.floor(Math.random() * config.blocks);
+                if (rowArr[targetIdx] !== 'skull') {
+                    rowArr[targetIdx] = 'skull';
+                    placedRisks++;
+                }
+            }
+            towersDataMatrix.push(rowArr);
+        }
+    }
 
-    function activateRowHighlightTier(rowIndex) {
-        for (let r = 0; r < totalRowsCount; r++) {
-            const rowEl = document.getElementById(`row-${r}`);
-            const buttons = rowEl.getElementsByClassName("block-btn");
-            
-            if (r === rowIndex) {
-                rowEl.className = `tower-row layout-${selectedDifficulty} active-row`;
-                for (let b = 0; b < buttons.length; b++) buttons[b].disabled = false;
-            } else {
-                if (r < rowIndex) rowEl.className = `tower-row layout-${selectedDifficulty} completed-row`;
-                else rowEl.className = `tower-row layout-${selectedDifficulty}`;
-                for (let b = 0; b < buttons.length; b++) buttons[b].disabled = true;
-            }
-        }
-    }
+    function activateRowHighlightTier(rowIndex) {
+        for (let r = 0; r < totalRowsCount; r++) {
+            const rowEl = document.getElementById(`row-${r}`);
+            const buttons = rowEl.getElementsByClassName("block-btn");
+            
+            if (r === rowIndex) {
+                rowEl.className = `tower-row layout-${selectedDifficulty} active-row`;
+                for (let b = 0; b < buttons.length; b++) buttons[b].disabled = false;
+            } else {
+                if (r < rowIndex) rowEl.className = `tower-row layout-${selectedDifficulty} completed-row`;
+                else rowEl.className = `tower-row layout-${selectedDifficulty}`;
+                for (let b = 0; b < buttons.length; b++) buttons[b].disabled = true;
+            }
+        }
+    }
 
-    function handleBlockSelection(rowIndex, blockIndex) {
-        if (!gameActive || rowIndex !== currentRowIndex) return;
+    function handleBlockSelection(rowIndex, blockIndex) {
+        if (!gameActive || rowIndex !== currentRowIndex) return;
 
-        const rowEl = document.getElementById(`row-${rowIndex}`);
-        const selectedButton = rowEl.getElementsByClassName("block-btn")[blockIndex];
-        const truthValue = towersDataMatrix[rowIndex][blockIndex];
+        const rowEl = document.getElementById(`row-${rowIndex}`);
+        const selectedButton = rowEl.getElementsByClassName("block-btn")[blockIndex];
+        const truthValue = towersDataMatrix[rowIndex][blockIndex];
 
-        if (truthValue === 'skull') {
-            selectedButton.className = "block-btn block-skull";
-            selectedButton.innerText = "💥";
-            triggerTowerLossSequence();
-        } else {
-            selectedButton.className = "block-btn block-egg";
-            selectedButton.innerText = "🥚";
-            playSyntheticSound(587.33 + (rowIndex * 70), 'sine', 0.12, 700 + (rowIndex * 70));
+        if (truthValue === 'skull') {
+            selectedButton.className = "block-btn block-skull";
+            selectedButton.innerText = "💥";
+            triggerTowerLossSequence();
+        } else {
+            selectedButton.className = "block-btn block-egg";
+            selectedButton.innerText = "🥚";
+            playSyntheticSound(587.33 + (rowIndex * 70), 'sine', 0.12, 700 + (rowIndex * 70));
 
-            currentMultiplier = activeRowMultipliers[rowIndex];
-            const prospectiveCashoutTotal = betAmount * currentMultiplier;
+            currentMultiplier = activeRowMultipliers[rowIndex];
+            const prospectiveCashoutTotal = betAmount * currentMultiplier;
 
-            const actionBtn = document.getElementById("mainActionBtn");
-            actionBtn.disabled = false;
-            actionBtn.innerText = `Cash Out (${prospectiveCashoutTotal.toFixed(2)})`;
+            const actionBtn = document.getElementById("mainActionBtn");
+            actionBtn.disabled = false;
+            actionBtn.innerText = `Cash Out (${prospectiveCashoutTotal.toFixed(2)})`;
 
-            if (currentRowIndex + 1 < totalRowsCount) {
-                currentRowIndex++;
-                activateRowHighlightTier(currentRowIndex);
-            } else {
-                executeCashoutSequence();
-            }
-        }
-    }
+            if (currentRowIndex + 1 < totalRowsCount) {
+                currentRowIndex++;
+                activateRowHighlightTier(currentRowIndex);
+            } else {
+                executeCashoutSequence();
+            }
+        }
+    }
 
-    function executeCashoutSequence() {
-        if (!gameActive) return;
-        gameActive = false;
+    function executeCashoutSequence() {
+        if (!gameActive) return;
+        gameActive = false;
 
-        const totalClimbWinnings = betAmount * currentMultiplier;
-        balance += totalClimbWinnings;
-        document.getElementById('userBalance').innerText = balance.toFixed(2);
-        
-        syncTxToDatabase(totalClimbWinnings, true);
+        const totalClimbWinnings = betAmount * currentMultiplier;
+        balance += totalClimbWinnings;
+        document.getElementById('userBalance').innerText = balance.toFixed(2);
+        
+        syncTxToDatabase(totalClimbWinnings, true);
 
-        playSyntheticSound(659.25, 'sine', 0.1);
-        setTimeout(() => playSyntheticSound(783.99, 'sine', 0.1), 80);
-        setTimeout(() => playSyntheticSound(987.77, 'sine', 0.2, 1400), 160);
+        playSyntheticSound(659.25, 'sine', 0.1);
+        setTimeout(() => playSyntheticSound(783.99, 'sine', 0.1), 80);
+        setTimeout(() => playSyntheticSound(987.77, 'sine', 0.2, 1400), 160);
 
-        revealEntireTowerArenaTruthMap();
+        revealEntireTowerArenaTruthMap();
 
-        const actionBtn = document.getElementById("mainActionBtn");
-        actionBtn.disabled = true;
-        actionBtn.innerText = `+🪙${totalClimbWinnings.toFixed(2)}`;
+        const actionBtn = document.getElementById("mainActionBtn");
+        actionBtn.className = "action-btn btn-win-banner";
+        actionBtn.disabled = true;
+        actionBtn.innerText = `YOU WIN! +🪙${totalClimbWinnings.toFixed(2)}`;
 
-        resetGameArenaEnvironmentDelayed();
-    }
+        resetGameArenaEnvironmentDelayed();
+    }
 
-    function triggerTowerLossSequence() {
-        gameActive = false;
-        revealEntireTowerArenaTruthMap();
-        playSyntheticSound(110, 'sawtooth', 0.45, 40);
+    function triggerTowerLossSequence() {
+        gameActive = false;
+        revealEntireTowerArenaTruthMap();
+        playSyntheticSound(110, 'sawtooth', 0.45, 40);
 
-        const actionBtn = document.getElementById("mainActionBtn");
-        actionBtn.disabled = true;
-        actionBtn.innerText = "Game Over";
+        const actionBtn = document.getElementById("mainActionBtn");
+        actionBtn.className = "action-btn btn-loss-banner";
+        actionBtn.disabled = true;
+        actionBtn.innerText = "YOU LOSE!";
 
-        resetGameArenaEnvironmentDelayed();
-    }
+        resetGameArenaEnvironmentDelayed();
+    }
 
-    function revealEntireTowerArenaTruthMap() {
-        for (let r = 0; r < totalRowsCount; r++) {
-            const rowEl = document.getElementById(`row-${r}`);
-            const buttons = rowEl.getElementsByClassName("block-btn");
-            for (let b = 0; b < buttons.length; b++) {
-                buttons[b].disabled = true;
-                const truth = towersDataMatrix[r][b];
-                if (truth === 'skull') {
-                    if (buttons[b].innerText !== "💥") {
-                        buttons[b].className = "block-btn block-skull";
-                        buttons[b].innerText = "💣";
-                        buttons[b].style.opacity = "0.3";
-                    }
-                } else {
-                    if (buttons[b].innerText !== "🥚") {
-                        buttons[b].innerText = "🥚";
-                        buttons[b].style.opacity = "0.15";
-                    }
-                }
-            }
-        }
-    }
+    function revealEntireTowerArenaTruthMap() {
+        for (let r = 0; r < totalRowsCount; r++) {
+            const rowEl = document.getElementById(`row-${r}`);
+            const buttons = rowEl.getElementsByClassName("block-btn");
+            for (let b = 0; b < buttons.length; b++) {
+                buttons[b].disabled = true;
+                const truth = towersDataMatrix[r][b];
+                if (truth === 'skull') {
+                    if (buttons[b].innerText !== "💥") {
+                        buttons[b].className = "block-btn block-skull";
+                        buttons[b].innerText = "💣";
+                        buttons[b].style.opacity = "0.3";
+                    }
+                } else {
+                    if (buttons[b].innerText !== "🥚") {
+                        buttons[b].innerText = "🥚";
+                        buttons[b].style.opacity = "0.15";
+                    }
+                }
+            }
+        }
+    }
 
-    function resetGameArenaEnvironmentDelayed() {
-        setTimeout(() => {
-            document.getElementById("betValue").disabled = false;
-            document.getElementById("difficultySelector").disabled = false;
-            
-            const actionBtn = document.getElementById("mainActionBtn");
-            actionBtn.innerText = "Bet";
-            actionBtn.className = "action-btn btn-bet";
-            actionBtn.disabled = false;
+    function resetGameArenaEnvironmentDelayed() {
+        setTimeout(() => {
+            document.getElementById("betValue").disabled = false;
+            document.getElementById("difficultySelector").disabled = false;
+            
+            const actionBtn = document.getElementById("mainActionBtn");
+            actionBtn.innerText = "Bet";
+            actionBtn.className = "action-btn btn-bet";
+            actionBtn.disabled = false;
 
-            buildTowerArenaFramework();
-        }, 3500);
-    }
+            buildTowerArenaFramework();
+        }, 3000);
+    }
 
-    buildTowerArenaFramework();
-    fetchLiveWallet();
+    buildTowerArenaFramework();
+    fetchLiveWallet();
 </script>
 </body>
 </html>
