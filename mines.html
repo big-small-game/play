@@ -29,7 +29,7 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif; /* Clean, normal system font */
+            font-family: Arial, Helvetica, sans-serif;
             background-color: var(--bg-main);
             color: var(--text-light);
             min-height: 100vh;
@@ -344,7 +344,11 @@
     }
 
     function fetchLiveWallet() {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`)
+        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`, {
+            method: "GET",
+            mode: "cors",
+            redirect: "follow"
+        })
         .then(r => r.json())
         .then(data => {
             if (data && data.balance !== undefined) {
@@ -357,18 +361,27 @@
                     actionBtn.className = "action-btn btn-bet";
                 }
             }
-        });
+        }).catch(err => console.error("Wallet lookup error:", err));
     }
 
     function syncTxToDatabase(amountChange, updateScreenUI = true) {
-        fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&amount=${amountChange}`)
+        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
+
+        fetch(url, {
+            method: "GET",
+            mode: "cors",
+            redirect: "follow"
+        })
         .then(r => r.json())
         .then(data => {
-            if (updateScreenUI && data && data.balance !== undefined) {
+            if (updateScreenUI && data && data.newBalance !== undefined) {
+                balance = parseFloat(data.newBalance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
+            } else if (updateScreenUI && data && data.balance !== undefined) {
                 balance = parseFloat(data.balance);
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
-        });
+        }).catch(err => console.error("Database update sequence rejected:", err));
     }
 
     function adjustStakeScale(type) {
@@ -397,6 +410,7 @@
             betAmount = desiredBet;
             balance -= betAmount;
             document.getElementById('userBalance').innerText = balance.toFixed(2);
+            
             syncTxToDatabase(-betAmount, true);
 
             gameActive = true;
@@ -409,11 +423,10 @@
 
             actionBtn.innerText = "Cash Out";
             actionBtn.className = "action-btn btn-cashout";
-            actionBtn.disabled = true; // Correctly starts disabled until 1st diamond selection occurs
+            actionBtn.disabled = true;
 
             playSyntheticSound(587.33, 'triangle', 0.15);
 
-            // Re-enabling interactive grid loop
             const tiles = gridContainer.children;
             for (let i = 0; i < tiles.length; i++) {
                 tiles[i].className = "tile-btn";
@@ -445,7 +458,6 @@
         return Math.max(1.01, parseFloat((absoluteRawOdds * 0.99).toFixed(2)));
     }
 
-    // Dynamic combination utilities
     function combinations(n, k) {
         if (k === 0) return 1;
         let res = 1;
@@ -471,7 +483,7 @@
             const prospectiveCashoutTotal = betAmount * currentPayoutMultiplier;
 
             const actionBtn = document.getElementById("mainActionBtn");
-            actionBtn.disabled = false; // Enables the cash out button upon finding a diamond
+            actionBtn.disabled = false;
             actionBtn.innerText = `Cash Out (${prospectiveCashoutTotal.toFixed(2)})`;
 
             if (openedTilesCount === (25 - minesQuantity)) {
@@ -487,6 +499,7 @@
         const totalWinningsReturn = betAmount * currentPayoutMultiplier;
         balance += totalWinningsReturn;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
+        
         syncTxToDatabase(totalWinningsReturn, true);
 
         playSyntheticSound(523.25, 'sine', 0.1);
