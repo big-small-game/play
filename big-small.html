@@ -207,7 +207,6 @@
             outline: none;
         }
 
-        /* Remove default spin buttons */
         .input-container input::-webkit-outer-spin-button,
         .input-container input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -351,16 +350,14 @@
             box-shadow: inset 0 4px 30px rgba(0,0,0,0.6);
         }
 
-        /* Container 3D Dice styling Grid setup */
         .dice-container {
             display: flex;
             gap: 40px;
             margin-bottom: 25px;
-            perspective: 600px; /* Essential for 3D realism perspective */
+            perspective: 600px;
             padding: 20px;
         }
 
-        /* Advanced Realistic 3D Cube Structure Styles */
         .dice-cube {
             position: relative;
             width: 60px;
@@ -384,7 +381,6 @@
             backface-visibility: hidden;
         }
 
-        /* 3D Sides Transformations mapping */
         .face-1 { transform: rotateY(0deg) translateZ(30px); }
         .face-2 { transform: rotateY(90deg) translateZ(30px); }
         .face-3 { transform: rotateX(90deg) translateZ(30px); }
@@ -392,7 +388,6 @@
         .face-5 { transform: rotateY(-90deg) translateZ(30px); }
         .face-6 { transform: rotateY(180deg) translateZ(30px); }
 
-        /* Pip Dots configuration layout rules inside 3x3 grids */
         .pip {
             background-color: #0f172a;
             border-radius: 50%;
@@ -401,11 +396,9 @@
             margin: auto;
             box-shadow: inset 0 1px 1px rgba(0,0,0,0.6);
         }
-        /* Red center point dot for face 1 and 4 for extra luxury classic look */
         .face-1 .pip { background-color: #dc2626; width: 12px; height: 12px;}
         .face-4 .pip { background-color: #1e3a8a; }
 
-        /* Specific Pip distributions maps per side */
         .face-1 .pip:nth-child(1) { grid-area: 2 / 2; }
 
         .face-2 .pip:nth-child(1) { grid-area: 1 / 1; }
@@ -433,7 +426,6 @@
         .face-6 .pip:nth-child(5) { grid-area: 3 / 1; }
         .face-6 .pip:nth-child(6) { grid-area: 3 / 3; }
 
-        /* Live rolling spin configuration animation classes loops */
         .dice-cube.rolling-fast {
             animation: spin3D 0.2s infinite linear;
         }
@@ -522,7 +514,6 @@
             pointer-events: none;
         }
 
-        /* Premium Modal Dialog Popups UI Elements */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -687,7 +678,6 @@
     let selectedPrediction = null;
     let gameActive = false;
 
-    // Fixed 3D Rotation coordinates mapping table for structural sides indexes (1 to 6)
     const cubeRotationMap = {
         1: "rotateX(0deg) rotateY(0deg)",
         2: "rotateX(0deg) rotateY(-90deg)",
@@ -713,7 +703,6 @@
         } catch(e) {}
     }
 
-    // Modal Helper logic actions
     function triggerCustomAlert(title, text) {
         document.getElementById("modalAlertTitle").innerText = title;
         document.getElementById("modalAlertText").innerText = text;
@@ -724,7 +713,8 @@
         document.getElementById("customAlertModal").classList.remove("active");
     }
 
-    const cleanUser = (localStorage.getItem("currentUser") || "Guest").trim();
+    const rawUser = localStorage.getItem("currentUser") || "Guest";
+    const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
     document.getElementById("userName").innerText = cleanUser;
 
     function selectPrediction(side) {
@@ -754,11 +744,9 @@
         });
     }
 
-    function syncTxToDatabase(amountChange, outcome = "none", updateScreenUI = true) {
-        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&modify_balance=${amountChange}`;
-        if(outcome !== "none") {
-            url += `&game_result=${outcome}`;
-        }
+    // CHANGED: Query property converted to bet_amount matching sheet backend expectation rules
+    function syncTxToDatabase(amountChange, updateScreenUI = true) {
+        let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
         
         fetch(url)
         .then(r => r.json())
@@ -766,8 +754,11 @@
             if (updateScreenUI && data && data.newBalance !== undefined) {
                 balance = parseFloat(data.newBalance);
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
+            } else if (updateScreenUI && data && data.balance !== undefined) {
+                balance = parseFloat(data.balance);
+                document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
-        });
+        }).catch(err => console.error("Database sync failed:", err));
     }
 
     function adjustStakeScale(type) {
@@ -799,16 +790,14 @@
         balance -= betAmount;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
         
-        // Locking interfaces
         betInput.disabled = true;
         document.getElementById("mainActionBtn").disabled = true;
         document.getElementById("zoneSmall").classList.add("disabled");
         document.getElementById("zoneBig").classList.add("disabled");
 
-        // Sync original stake subtraction to server
-        syncTxToDatabase(-betAmount, "none", true);
+        // Sync original stake deduction (-betAmount) to the script
+        syncTxToDatabase(-betAmount, true);
 
-        // Visual rolling initialization via adding faster continuous looping rotation animation
         const c1 = document.getElementById("cube1");
         const c2 = document.getElementById("cube2");
         const c3 = document.getElementById("cube3");
@@ -842,12 +831,10 @@
         const c2 = document.getElementById("cube2");
         const c3 = document.getElementById("cube3");
 
-        // Stop continuous spinning animations
         c1.classList.remove("rolling-fast");
         c2.classList.remove("rolling-fast");
         c3.classList.remove("rolling-fast");
 
-        // Apply distinct 3D vector coordinates to face correct landing outcomes directly
         c1.style.transform = cubeRotationMap[r1];
         c2.style.transform = cubeRotationMap[r2];
         c3.style.transform = cubeRotationMap[r3];
@@ -869,15 +856,12 @@
         }
         display.innerHTML = outcomeString;
 
-        // Determinedynamic payoffs
         let isWin = (selectedPrediction === category);
         let finalChangeAmount = 0;
-        let gameResultStatus = "loss";
 
         if (isWin) {
             finalChangeAmount = betAmount * 2;
             balance += finalChangeAmount;
-            gameResultStatus = "win";
             playSyntheticSound(520, 'sine', 0.12);
             setTimeout(() => playSyntheticSound(780, 'sine', 0.18), 80);
         } else {
@@ -886,19 +870,32 @@
 
         document.getElementById('userBalance').innerText = balance.toFixed(2);
         
-        // Final database balancing sync
-        syncTxToDatabase(finalChangeAmount, gameResultStatus, true);
+        // If they won, sync back winnings to the database sheets setup
+        if (isWin) {
+            syncTxToDatabase(finalChangeAmount, true);
+        }
+        
         appendHistoryLog(totalSum, category);
 
-        // Cool-down layout reset
+        // CHANGED: Intercepting cooldown loop to throw Win/Loss alerts instantly
         setTimeout(() => {
+            if (isWin) {
+                triggerCustomAlert("WIN!");
+            } else {
+                if (category === "TIE") {
+                    triggerCustomAlert("House Triple Loss");
+                } else {
+                    triggerCustomAlert("LOSS", `Better luck next round!`);
+                }
+            }
+
             gameActive = false;
             document.getElementById("betValue").disabled = false;
             document.getElementById("mainActionBtn").disabled = false;
             document.getElementById("zoneSmall").classList.remove("disabled");
             document.getElementById("zoneBig").classList.remove("disabled");
             document.getElementById("mainActionBtn").innerText = "Roll Dice";
-        }, 1800);
+        }, 600);
     }
 
     function appendHistoryLog(sum, category) {
