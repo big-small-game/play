@@ -806,7 +806,7 @@
         document.getElementById("zoneBig").classList.add("disabled");
 
         // Sync original stake subtraction to server
-        syncTxToDatabase(-betAmount, "none", false);
+        syncTxToDatabase(-betAmount, "none", true);
 
         // Visual rolling initialization via adding faster continuous looping rotation animation
         const c1 = document.getElementById("cube1");
