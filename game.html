@@ -435,15 +435,9 @@ function forceSyncWalletData() {
 }
 
 // Separate function handles asynchronous alert lookups from external script
-// Separate function handles asynchronous alert lookups from external script
 function syncNotificationBanners() {
-    // Reconstruct the database registration format by pinning the firebase domain suffix
-    let databaseRegisteredHandle = dynamicUserHandle;
-    if (databaseRegisteredHandle !== "Guest" && !databaseRegisteredHandle.includes("@")) {
-        databaseRegisteredHandle = databaseRegisteredHandle + "@game.local";
-    }
-
-    fetch(`${NOTI_URL}?username=${encodeURIComponent(databaseRegisteredHandle)}&nocache=${Date.now()}`)
+    // UPDATED: Simply use the clean handle without appending any explicit domain extension layout 
+    fetch(`${NOTI_URL}?username=${encodeURIComponent(dynamicUserHandle)}&nocache=${Date.now()}`)
     .then(res => res.json())
     .then(data => {
         if (data && data.status === "success" && Array.isArray(data.notifications)) {
