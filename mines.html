@@ -145,16 +145,17 @@
             justify-content: center;
             align-items: center;
             box-shadow: 0 3px 0 #1b2a3a;
-            transition: all 0.1s ease;
+            transition: background 0.1s ease, box-shadow 0.1s ease;
             width: 100%;
             height: 100%;
             padding: 0;
             margin: 0;
+            transform: none !important;
         }
 
         .tile-btn:hover:not(:disabled) {
             background: var(--tile-unopened-hover);
-            transform: translateY(-1px);
+            transform: none !important;
         }
 
         .tile-gem {
@@ -188,7 +189,7 @@
             height: 44px;
         }
 
-        .input-container input {
+        .input-container input, .input-container select {
             width: 100%;
             background: transparent;
             border: none;
@@ -197,6 +198,13 @@
             font-weight: 700;
             font-size: 0.95rem;
             outline: none;
+        }
+
+        .input-container select {
+            background-color: var(--bg-main);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
         }
 
         .scale-btn {
@@ -282,7 +290,8 @@
         <div>
             <div class="label">Mines Count (1-24)</div>
             <div class="input-container">
-                <input type="number" id="minesQuantityInput" value="3" min="1" max="24" onchange="validateMinesBoundsRange(this)">
+                <select id="minesQuantityInput">
+                    </select>
             </div>
         </div>
 
@@ -304,7 +313,17 @@
 
     let boardTilesArray = Array(25).fill(false);
     let openedTilesCount = 0;
-    let currentPayoutMultiplier = 1.00;
+    let currentPayoutMultiplier = 0.25;
+
+    // Generate option list for mines select field
+    const selectElement = document.getElementById("minesQuantityInput");
+    for (let m = 1; m <= 24; m++) {
+        let opt = document.createElement("option");
+        opt.value = m;
+        opt.innerText = m;
+        if (m === 3) opt.selected = true; // Match initial state setup
+        selectElement.appendChild(opt);
+    }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSyntheticSound(frequency, type, duration, slideTo = 0) {
@@ -335,12 +354,6 @@
         btn.disabled = true;
         btn.addEventListener("click", () => handleTileClickReveal(i));
         gridContainer.appendChild(btn);
-    }
-
-    function validateMinesBoundsRange(input) {
-        let val = parseInt(input.value) || 3;
-        if (val < 1) input.value = 1;
-        if (val > 24) input.value = 24;
     }
 
     function fetchLiveWallet() {
@@ -399,7 +412,6 @@
             const betInput = document.getElementById("betValue");
             const desiredBet = parseInt(betInput.value) || 0;
             const minesInput = document.getElementById("minesQuantityInput");
-            validateMinesBoundsRange(minesInput);
             minesQuantity = parseInt(minesInput.value);
 
             if (desiredBet < 1 || desiredBet > balance) {
@@ -415,7 +427,7 @@
 
             gameActive = true;
             openedTilesCount = 0;
-            currentPayoutMultiplier = 1.00;
+            currentPayoutMultiplier = 0.25;
             generateRandomHiddenMinesPlacement();
 
             betInput.disabled = true;
@@ -455,7 +467,7 @@
         let currentCombinations = combinations(25, openedTilesCount);
         let nextCombinations = combinations(25 - minesQuantity, openedTilesCount);
         let absoluteRawOdds = currentCombinations / nextCombinations;
-        return Math.max(1.01, parseFloat((absoluteRawOdds * 0.99).toFixed(2)));
+        return Math.max(0.01, parseFloat(((absoluteRawOdds * 0.99) * 0.25).toFixed(2)));
     }
 
     function combinations(n, k) {
