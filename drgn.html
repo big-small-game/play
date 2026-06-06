@@ -149,6 +149,7 @@
             opacity: 0.25;
         }
 
+        /* Restored original block layouts */
         .layout-easy { grid-template-columns: 55px 1fr 1fr 1fr; }
         .layout-medium { grid-template-columns: 55px 1fr 1fr; }
         .layout-hard { grid-template-columns: 55px 1fr 1fr 1fr; }
@@ -362,6 +363,7 @@
     let activeRowMultipliers = [];
     let towersDataMatrix = [];
 
+    // Blocks and risk values reflect the original layouts, winChance contains your custom probabilities
     const difficultyConfigs = {
         easy: { blocks: 3, risks: 1, mults: [1.31, 1.74, 2.32, 3.10, 4.13, 6.00] },
         medium: { blocks: 2, risks: 1, mults: [1.47, 2.21, 3.31, 4.97, 7.44, 11.00] },
@@ -508,21 +510,11 @@
         }
     }
 
+    // Initialize an empty layout tracker array
     function generateTowerMatrixTruthMap() {
         towersDataMatrix = [];
-        const config = difficultyConfigs[selectedDifficulty];
-
         for (let r = 0; r < totalRowsCount; r++) {
-            let rowArr = Array(config.blocks).fill('egg');
-            let placedRisks = 0;
-            while (placedRisks < config.risks) {
-                let targetIdx = Math.floor(Math.random() * config.blocks);
-                if (rowArr[targetIdx] !== 'skull') {
-                    rowArr[targetIdx] = 'skull';
-                    placedRisks++;
-                }
-            }
-            towersDataMatrix.push(rowArr);
+            towersDataMatrix.push(null); 
         }
     }
 
@@ -545,15 +537,36 @@
     function handleBlockSelection(rowIndex, blockIndex) {
         if (!gameActive || rowIndex !== currentRowIndex) return;
 
+        const config = difficultyConfigs[selectedDifficulty];
         const rowEl = document.getElementById(`row-${rowIndex}`);
         const selectedButton = rowEl.getElementsByClassName("block-btn")[blockIndex];
-        const truthValue = towersDataMatrix[rowIndex][blockIndex];
+        
+        // Calculate dynamic real probability on runtime interaction
+        const rand = Math.random();
+        let isSafeOutcome = rand < config.winChance;
 
-        if (truthValue === 'skull') {
-            selectedButton.className = "block-btn block-skull";
-            selectedButton.innerText = "💥";
-            triggerTowerLossSequence();
-        } else {
+        let rowArr = Array(config.blocks).fill(null);
+
+        if (isSafeOutcome) {
+            // Player won this selection!
+            rowArr[blockIndex] = 'egg';
+            
+            // Generate standard background items to match original tile rules
+            let remainingSkulls = config.risks;
+            while (remainingSkulls > 0) {
+                let targetIdx = Math.floor(Math.random() * config.blocks);
+                if (rowArr[targetIdx] === null) {
+                    rowArr[targetIdx] = 'skull';
+                    remainingSkulls--;
+                }
+            }
+            // Fill any leftover placeholders with eggs
+            for (let i = 0; i < rowArr.length; i++) {
+                if (rowArr[i] === null) rowArr[i] = 'egg';
+            }
+
+            towersDataMatrix[rowIndex] = rowArr;
+
             selectedButton.className = "block-btn block-egg";
             selectedButton.innerText = "🥚";
             playSyntheticSound(587.33 + (rowIndex * 70), 'sine', 0.12, 700 + (rowIndex * 70));
@@ -571,6 +584,29 @@
             } else {
                 executeCashoutSequence();
             }
+        } else {
+            // Player lost this selection!
+            rowArr[blockIndex] = 'skull';
+
+            // Generate standard safe eggs for visual display
+            let safeEggsToPlace = config.blocks - config.risks;
+            while (safeEggsToPlace > 0) {
+                let targetIdx = Math.floor(Math.random() * config.blocks);
+                if (rowArr[targetIdx] === null) {
+                    rowArr[targetIdx] = 'egg';
+                    safeEggsToPlace--;
+                }
+            }
+            // Fill any leftover placeholders with skulls
+            for (let i = 0; i < rowArr.length; i++) {
+                if (rowArr[i] === null) rowArr[i] = 'skull';
+            }
+
+            towersDataMatrix[rowIndex] = rowArr;
+
+            selectedButton.className = "block-btn block-skull";
+            selectedButton.innerText = "💥";
+            triggerTowerLossSequence();
         }
     }
 
@@ -612,9 +648,25 @@
     }
 
     function revealEntireTowerArenaTruthMap() {
+        const config = difficultyConfigs[selectedDifficulty];
         for (let r = 0; r < totalRowsCount; r++) {
             const rowEl = document.getElementById(`row-${r}`);
             const buttons = rowEl.getElementsByClassName("block-btn");
+            
+            // If the row was never reached, generate a valid layout representation for game review reveal
+            if (!towersDataMatrix[r]) {
+                let rowArr = Array(config.blocks).fill('egg');
+                let placedRisks = 0;
+                while (placedRisks < config.risks) {
+                    let targetIdx = Math.floor(Math.random() * config.blocks);
+                    if (rowArr[targetIdx] !== 'skull') {
+                        rowArr[targetIdx] = 'skull';
+                        placedRisks++;
+                    }
+                }
+                towersDataMatrix[r] = rowArr;
+            }
+
             for (let b = 0; b < buttons.length; b++) {
                 buttons[b].disabled = true;
                 const truth = towersDataMatrix[r][b];
