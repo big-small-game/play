@@ -154,6 +154,13 @@ textarea.form-input {
   transform: scale(0.98);
 }
 
+.submit-btn:disabled {
+  background: #334155 !important;
+  color: #64748b !important;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 .support-channels {
   margin-top: 24px;
   padding-top: 16px;
@@ -182,7 +189,7 @@ textarea.form-input {
 <canvas id="bgCanvas"></canvas>
 
 <div class="app-wrapper">
-    <button class="back-btn" onclick="game.html">⬅️ Back to Games</button>
+    <button class="back-btn" onclick="goBack()">⬅️ Back to Games</button>
 
     <div class="contact-card">
         <h1>SUPPORT CENTER</h1>
@@ -204,7 +211,7 @@ textarea.form-input {
                 <textarea id="formMessage" class="form-input" placeholder="Describe your issue with transaction IDs if applicable..." required></textarea>
             </div>
             
-            <button type="submit" class="submit-btn">✈️ Send Message</button>
+            <button type="submit" class="submit-btn" id="sendBtn">✈️ Send Message</button>
         </form>
 
         <div class="support-channels">
@@ -214,7 +221,8 @@ textarea.form-input {
 </div>
 
 <script>
-// Automatically pull user identity details just like your main page
+const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyONp4_bwK3-riyQltZfZLBoVu6h8-XPEiH5OS-ACIafEvAryvDK_se6JcLXOtW0vvjUw/exec";
+
 let rawStorageUser = localStorage.getItem("currentUser") || "Guest";
 let dynamicUserHandle = rawStorageUser.trim();
 if(dynamicUserHandle.includes("@")) {
@@ -222,27 +230,53 @@ if(dynamicUserHandle.includes("@")) {
 }
 document.getElementById("contactUsername").value = dynamicUserHandle;
 
+// Redirect logic to match your games dashboard setup
 function goBack() {
-    // Navigates back to your main game page dashboard
-    window.location.href = "hub.html"; // Change "hub.html" to your actual main dashboard file name if different!
+    window.location.href = "game.html";
 }
 
 function handleFormSubmit(event) {
     event.preventDefault();
     
+    const submitBtn = document.getElementById('sendBtn');
     const subject = document.getElementById("formSubject").value;
     const message = document.getElementById("formMessage").value;
     
-    // Process form submitting operations here. 
-    // You can send this via another Google Sheet API or look into third-party integrations.
-    alert(`Thank you, ${dynamicUserHandle}! Your message regarding "${subject}" has been submitted.`);
-    
-    // Clear details
-    document.getElementById("formSubject").value = "";
-    document.getElementById("formMessage").value = "";
+    submitBtn.innerText = "Sending...";
+    submitBtn.disabled = true;
+
+    const payload = {
+        username: dynamicUserHandle,
+        subject: subject,
+        message: message
+    };
+
+    fetch(APPS_SCRIPT_WEB_APP_URL, {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(response => {
+        if(response.status === "success") {
+            alert(`Message sent successfully, ${dynamicUserHandle}!`);
+            document.getElementById("formSubject").value = "";
+            document.getElementById("formMessage").value = "";
+        } else {
+            alert("Submission error: " + response.message);
+        }
+    })
+    .catch(err => {
+        console.error("Error sending message:", err);
+        alert("Network communication issue. Could not record log entry.");
+    })
+    .finally(() => {
+        submitBtn.innerText = "✈️ Send Message";
+        submitBtn.disabled = false;
+    });
 }
 
-/* Background animated engine (Keeps visual seamlessness with main hub) */
+/* Background animated engine */
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
@@ -263,45 +297,6 @@ for (let i = 0; i < 45; i++) {
         speed: Math.random() * 0.15 + 0.05
     });
 }
-
-  function handleFormSubmit(event) {
-    event.preventDefault();
-    
-    const submitBtn = document.querySelector('.submit-btn');
-    const subject = document.getElementById("formSubject").value;
-    const message = document.getElementById("formMessage").value;
-    
-    submitBtn.innerText = "Sending...";
-    submitBtn.disabled = true;
-
-    const payload = {
-        username: dynamicUserHandle,
-        subject: subject,
-        message: message
-    };
-
-    // Use your Apps Script Deployment Web App URL here
-    fetch("https://script.google.com/macros/s/AKfycbyONp4_bwK3-riyQltZfZLBoVu6h8-XPEiH5OS-ACIafEvAryvDK_se6JcLXOtW0vvjUw/exec", {
-        method: "POST",
-        body: JSON.stringify(payload)
-    })
-    .then(res => res.json())
-    .then(response => {
-        if(response.status === "success") {
-            alert(`Message sent successfully, ${dynamicUserHandle}!`);
-            document.getElementById("formSubject").value = "";
-            document.getElementById("formMessage").value = "";
-        } else {
-            alert("Submission error. Please try again.");
-        }
-    })
-    .catch(err => console.error("Error sending message:", err))
-    .finally(() => {
-        submitBtn.innerText = "✈️ Send Message";
-        submitBtn.disabled = false;
-    });
-}
-
 
 function animateBackgroundMesh() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -329,4 +324,3 @@ animateBackgroundMesh();
 </script>
 </body>
 </html>
-
