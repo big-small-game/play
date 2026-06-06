@@ -56,26 +56,10 @@ body {
   flex-direction: column;
   gap: 16px;
   z-index: 10;
+  position: relative;
 }
 
-/* New User Welcome Message Notification Banner */
-.welcome-alert-banner {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 100%);
-  border: 1px solid rgba(147, 51, 234, 0.4);
-  padding: 14px 16px;
-  border-radius: 16px;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  color: #e0f2fe;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  display: none; /* Controlled dynamically by JS */
-  animation: pulseGlow 2s infinite alternate;
-}
 
-@keyframes pulseGlow {
-  from { border-color: rgba(147, 51, 234, 0.4); }
-  to { border-color: rgba(59, 130, 246, 0.8); }
-}
 
 .app-header {
   display: flex;
@@ -89,6 +73,13 @@ body {
   border: 1px solid var(--border-glass);
   box-shadow: var(--glow-shadow);
   position: relative;
+  z-index: 1000;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .account-trigger {
@@ -110,6 +101,37 @@ body {
   transform: scale(0.9);
 }
 
+.noti-trigger {
+  width: 44px;
+  height: 44px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-glass);
+  color: white;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  position: relative;
+}
+.noti-trigger:active {
+  transform: scale(0.9);
+}
+.noti-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--bg-main);
+}
+
 .wallet-badge {
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 215, 0, 0.25);
@@ -124,20 +146,7 @@ body {
 .wallet-badge:active {
   transform: scale(0.95);
 }
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 10px 14px;
-  border-radius: 50px;
-  border: 1px solid var(--border-glass);
-  box-shadow: var(--glow-shadow);
-  position: relative;
-  z-index: 1000;
-}
+
 .hero-card{
   position: relative;
   z-index: 1;
@@ -146,21 +155,16 @@ body {
 .account-drawer {
   display: none;
   position: fixed;
-
   top: 95px;
   left: 16px;
   right: 16px;
-
   background: rgba(10, 15, 30, 0.98);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 24px;
   padding: 20px;
-
   box-shadow: 0 24px 50px rgba(0,0,0,0.8);
-
   z-index: 2147483647;
 }
 
@@ -191,20 +195,38 @@ body {
 }
 .btn-dep { background: linear-gradient(135deg, #10b981, #059669); }
 .btn-wd { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.btn-cu { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
 .btn-lo { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); color: #f87171; }
+
+/* Notification Panel styles */
+.noti-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border-glass);
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+.noti-item:last-child {
+  margin-bottom: 0;
+}
+.noti-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding: 20px 0;
+}
 
 .hero-card {
   position: relative;
   z-index: 1;
-
   background: var(--bg-card);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-
   border: 1px solid var(--border-glass);
   border-radius: 24px;
   padding: 22px;
-
   box-shadow: var(--glow-shadow);
 }
 
@@ -220,11 +242,6 @@ body {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: 4px;
-}
-
-.app-wrapper {
-  position: relative;
-  z-index: 1;
 }
 
 .games-grid-title {
@@ -278,19 +295,33 @@ body {
 
 <div class="app-wrapper">
 
-    <div class="welcome-alert-banner" id="welcomeGuide">
-        Welcome to the Game Hub! Deposit/Withdraw Money using the **Account** or **Balance** Button.
-    </div>
-
     <div class="app-header">
-        <button class="account-trigger" onclick="toggleAccountMenu()">👤</button>
-        <button class="wallet-badge" onclick="toggleAccountMenu()">🪙 <span id="coins">Syncing...</span></button>
+        <button class="account-trigger" onclick="toggleMenu('accountMenu')">👤</button>
+        
+        <div class="header-right">
+            <button class="noti-trigger" onclick="toggleMenu('notiMenu')">
+                🔔<span class="noti-badge">3</span>
+            </button>
+            <button class="wallet-badge" onclick="toggleMenu('walletMenu')">🪙 <span id="coins">Syncing...</span></button>
+        </div>
         
         <div class="account-drawer" id="accountMenu">
-            <div class="drawer-user-info">ID: <span id="userHandleDisplay" style="color: white;">Loading...</span></div>
+            <div class="drawer-user-info">Account Options (<span id="userHandleDisplay" style="color: white;">Loading...</span>)</div>
+            <button class="drawer-btn btn-cu" onclick="routeTo('contact.html')">✉️ Contact Us</button>
+            <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out Account</button>
+        </div>
+
+        <div class="account-drawer" id="walletMenu">
+            <div class="drawer-user-info">Wallet Management</div>
             <button class="drawer-btn btn-dep" onclick="routeTo('deposit.html')">➕ Deposit Money</button>
             <button class="drawer-btn btn-wd" onclick="routeTo('withdraw.html')">➖ Withdraw Money</button>
-            <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out Account</button>
+        </div>
+
+        <div class="account-drawer" id="notiMenu">
+            <div class="drawer-user-info">Notifications</div>
+            <div class="noti-item">🚀 Welcome! Explore our mini game suite and win grand multipliers.</div>
+            <div class="noti-item">💎 System update complete. Live syncing capabilities running optimized.</div>
+            <div class="noti-item">🎉 Complete a verification layout to manage extreme wallet values securely.</div>
         </div>
     </div>
 
@@ -337,7 +368,9 @@ body {
             <span class="sub-desc">Constructing new engines...</span>
         </button>
     </div>
-</div> <script>
+</div>
+
+<script>
 const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
 
 let rawStorageUser = localStorage.getItem("currentUser") || "Guest";
@@ -349,20 +382,38 @@ if(dynamicUserHandle.includes("@")) {
 
 document.getElementById("sessionEmail").innerText = dynamicUserHandle;
 document.getElementById("userHandleDisplay").innerText = dynamicUserHandle;
+
+// Global menu management rules to toggle windows correctly
+function toggleMenu(menuId) {
+    const menus = ["accountMenu", "walletMenu", "notiMenu"];
+    menus.forEach(id => {
+        const el = document.getElementById(id);
+        if (id === menuId) {
+            el.style.display = el.style.display === "block" ? "none" : "block";
+        } else {
+            el.style.display = "none";
+        }
+    });
+}
+
 document.addEventListener("click", function(e){
-    const menu = document.getElementById("accountMenu");
-    const trigger = document.querySelector(".account-trigger");
+    const amenu = document.getElementById("accountMenu");
+    const wmenu = document.getElementById("walletMenu");
+    const nmenu = document.getElementById("notiMenu");
+    
+    const atrigger = document.querySelector(".account-trigger");
     const wallet = document.querySelector(".wallet-badge");
+    const ntrigger = document.querySelector(".noti-trigger");
 
     if(
-        !menu.contains(e.target) &&
-        !trigger.contains(e.target) &&
-        !wallet.contains(e.target)
+        !amenu.contains(e.target) && !wmenu.contains(e.target) && !nmenu.contains(e.target) &&
+        !atrigger.contains(e.target) && !wallet.contains(e.target) && !ntrigger.contains(e.target)
     ){
-        menu.style.display = "none";
+        amenu.style.display = "none";
+        wmenu.style.display = "none";
+        nmenu.style.display = "none";
     }
 });
-
 
 // Core balance syncing engine with strict cache-busting architecture
 function forceSyncWalletData() {
@@ -384,18 +435,13 @@ function forceSyncWalletData() {
     .catch(error => console.error("Sync error:", error));
 }
 
-function toggleAccountMenu() {
-    let menuElement = document.getElementById("accountMenu");
-    menuElement.style.display = menuElement.style.display === "block" ? "none" : "block";
-}
-
 function routeTo(targetFile) {
     window.location.href = targetFile;
 }
 
 function triggerSignout() {
     localStorage.removeItem("currentUser");
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 }
 
 // Force updates on visibility changes and back actions
