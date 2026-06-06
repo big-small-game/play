@@ -11,8 +11,6 @@
             --bg-card: #0b0f19;
             --primary-blue: #3b82f6;
             --accent-gold: #f59e0b;
-            --accent-green: #00e676;
-            --accent-red: #ff3333;
             --text-light: #f8fafc;
             --text-muted: #94a3b8;
             --border-glass: rgba(255, 255, 255, 0.05);
@@ -40,7 +38,7 @@
 
         .back-nav-container {
             width: 100%;
-            max-width: 940px;
+            max-width: 900px;
             display: flex;
             justify-content: flex-start;
             margin-bottom: 12px;
@@ -68,7 +66,7 @@
 
         .game-wrapper {
             width: 100%;
-            max-width: 940px;
+            max-width: 900px;
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid var(--border-glass);
             border-radius: 16px;
@@ -79,7 +77,7 @@
         }
 
         .sidebar-controls {
-            width: 340px;
+            width: 320px;
             background: var(--bg-sidebar);
             padding: 24px;
             display: flex;
@@ -88,16 +86,15 @@
             border-right: 1px solid var(--border-glass);
         }
 
-        .grid-theater {
+        .board-theater {
             flex: 1;
             background: var(--bg-card);
             display: flex;
             flex-direction: column;
-            padding: 24px;
-            position: relative;
-            min-height: 500px;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            position: relative;
         }
 
         .header-widget {
@@ -106,7 +103,7 @@
             align-items: center;
             width: 100%;
             margin-bottom: 16px;
-            max-width: 940px;
+            max-width: 900px;
             padding: 0 8px;
         }
 
@@ -125,18 +122,6 @@
             color: var(--accent-gold);
         }
 
-        .canvas-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
         .label {
             font-size: 0.75rem;
             font-weight: 700;
@@ -153,10 +138,9 @@
             border: 1px solid rgba(255,255,255,0.1);
             overflow: hidden;
             height: 44px;
-            align-items: center;
         }
 
-        .input-container input, .input-container select {
+        .input-container input {
             width: 100%;
             background: transparent;
             border: none;
@@ -165,11 +149,6 @@
             font-weight: 700;
             font-size: 0.95rem;
             outline: none;
-        }
-
-        .input-container select option {
-            background: var(--bg-sidebar);
-            color: white;
         }
 
         .scale-btn {
@@ -181,33 +160,28 @@
             font-weight: 600;
             cursor: pointer;
             border-left: 1px solid rgba(255,255,255,0.1);
-            height: 100%;
         }
 
         .scale-btn:hover { background: rgba(255, 255, 255, 0.1); }
 
         .action-btn {
             width: 100%;
-            height: 54px;
+            height: 50px;
             border: none;
             border-radius: 6px;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            color: #020617;
-            background: var(--accent-green);
-            box-shadow: 0 4px 0 #047857;
+            color: white;
             transition: all 0.15s ease;
-            text-transform: uppercase;
+            background: #10b981;
+            box-shadow: 0 4px 0 #059669;
         }
-
-        .action-btn:hover:not(:disabled) { background: #34d399; }
-
+        .action-btn:hover:not(:disabled) { background: #059669; }
         .action-btn:active:not(:disabled) {
             transform: translateY(3px);
             box-shadow: none !important;
         }
-
         .action-btn:disabled {
             background: #334155 !important;
             color: #64748b !important;
@@ -215,10 +189,18 @@
             cursor: not-allowed;
         }
 
+        canvas {
+            background: #070b12;
+            border-radius: 12px;
+            max-width: 100%;
+            height: auto;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+
         @media (max-width: 768px) {
             .game-wrapper { flex-direction: column-reverse; }
             .sidebar-controls { width: 100%; border-right: none; border-top: 1px solid var(--border-glass); }
-            .grid-theater { padding: 12px; min-height: 400px; }
+            .board-theater { padding: 10px; }
         }
     </style>
 </head>
@@ -244,24 +226,11 @@
             </div>
         </div>
 
-        <div>
-            <div class="label">Risk / Difficulty</div>
-            <div class="input-container">
-                <select id="difficultySelect" onchange="updateMultipliersDisplay()">
-                    <option value="easy">Easy</option>
-                    <option value="medium" selected>Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-            </div>
-        </div>
-
-        <button class="action-btn" id="mainActionBtn" onclick="dropPlinkoBall()" disabled>Syncing Balance...</button>
+        <button class="action-btn" id="dropBallBtn" onclick="initiateBallDrop()" disabled>Syncing Balance...</button>
     </div>
 
-    <div class="grid-theater">
-        <div class="canvas-container">
-            <canvas id="plinkoCanvas"></canvas>
-        </div>
+    <div class="board-theater">
+        <canvas id="plinkoCanvas" width="500" height="550"></canvas>
     </div>
 </div>
 
@@ -272,76 +241,41 @@
     const canvas = document.getElementById("plinkoCanvas");
     const ctx = canvas.getContext("2d");
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSyntheticSound(frequency, type, duration) {
-        try {
-            // Ensure context is running to eliminate potential browser sync muting glitches
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            const osc = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            osc.type = type;
-            osc.frequency.value = frequency;
-            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
-        } catch(e) {}
-    }
-
     const rawUser = localStorage.getItem("currentUser") || "Guest";
     const cleanUser = rawUser.trim().includes("@") ? rawUser.split("@")[0] : rawUser.trim();
     document.getElementById("userName").innerText = cleanUser;
 
+    // Plinko Grid Setup Configurations
     const rows = 8;
-    let pegs = [];
-    let balls = [];
-    let multipliers = [];
+    const pegs = [];
+    const activeBalls = [];
+    
+    // Multipliers array from left to right for 8 rows (9 buckets)
+    const multipliers = [5.0, 2.0, 1.4, 0.6, 0.4, 0.6, 1.4, 2.0, 5.0];
+    const bucketColors = ["#ef4444", "#f97316", "#f59e0b", "#84cc16", "#10b981", "#84cc16", "#f59e0b", "#f97316", "#ef4444"];
 
-    const difficultySettings = {
-        easy:   [5.0, 2.0, 1.4, 0.6, 0.4, 0.6, 1.4, 2.0, 5.0],
-        medium: [10, 4.0, 1.5, 0.7, 0.2, 0.7, 1.5, 4.0, 10],
-        hard:   [29, 8.0, 2.0, 0.5, 0.2, 0.5, 2.0, 8.0, 29]
-    };
-
-    // Magnitudes of magnetic force driving items towards center index based on choices
-    const centeringBiasConfig = {
-        easy: 0.015,
-        medium: 0.045,
-        hard: 0.085
-    };
-
-    function resizeCanvas() {
-        canvas.width = canvas.parentElement.clientWidth;
-        canvas.height = canvas.parentElement.clientHeight || 500;
-        generatePegGrid();
-    }
-    window.addEventListener('resize', resizeCanvas);
-
-    function generatePegGrid() {
-        pegs = [];
-        const spacingX = canvas.width / (rows + 2);
-        const spacingY = (canvas.height - 80) / rows;
-
-        for (let r = 2; r <= rows + 1; r++) {
-            const pegsInRow = r;
-            const rowWidth = (pegsInRow - 1) * spacingX;
-            const startX = (canvas.width - rowWidth) / 2;
-            const y = (r - 1) * spacingY + 30;
-
-            for (let p = 0; p < pegsInRow; p++) {
-                pegs.push({ x: startX + p * spacingX, y: y });
-            }
+    // Build Peg Grid Coordinates System
+    const startY = 70;
+    const spacingY = 45;
+    for (let r = 0; r < rows; r++) {
+        const pegCount = r + 3; 
+        const spacingX = 40;
+        const startX = (canvas.width / 2) - ((pegCount - 1) * spacingX / 2);
+        for (let p = 0; p < pegCount; p++) {
+            pegs.push({
+                x: startX + (p * spacingX),
+                y: startY + (r * spacingY),
+                radius: 4
+            });
         }
     }
 
-    function updateMultipliersDisplay() {
-        const diff = document.getElementById("difficultySelect").value;
-        multipliers = difficultySettings[diff];
-    }
+    // Determine bottom bucket layout coordinates
+    const totalBuckets = rows + 1; 
+    const bucketWidth = 42;
+    const bucketHeight = 30;
+    const bucketStartY = canvas.height - 45;
+    const bucketStartX = (canvas.width / 2) - ((totalBuckets * bucketWidth) / 2);
 
     function fetchLiveWallet() {
         fetch(`${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&nocache=${Date.now()}`, {
@@ -354,30 +288,22 @@
             if (data && data.balance !== undefined) {
                 balance = parseFloat(data.balance) || 0;
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
-                document.getElementById("mainActionBtn").disabled = false;
-                document.getElementById("mainActionBtn").innerText = "Drop Ball";
+                document.getElementById("dropBallBtn").disabled = false;
+                document.getElementById("dropBallBtn").innerText = "Drop Ball";
             }
-        }).catch(err => console.error("Wallet hook exception:", err));
+        }).catch(err => console.error("Wallet lookup error:", err));
     }
 
     function syncTxToDatabase(amountChange) {
         let url = `${DATABASE_URL}?username=${encodeURIComponent(cleanUser)}&bet_amount=${amountChange}`;
-
-        fetch(url, {
-            method: "GET",
-            mode: "cors",
-            redirect: "follow"
-        })
+        fetch(url, { method: "GET", mode: "cors", redirect: "follow" })
         .then(r => r.json())
         .then(data => {
             if (data && data.newBalance !== undefined) {
                 balance = parseFloat(data.newBalance);
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
-            } else if (data && data.balance !== undefined) {
-                balance = parseFloat(data.balance);
-                document.getElementById('userBalance').innerText = balance.toFixed(2);
             }
-        }).catch(err => console.error("Database update sequence rejected:", err));
+        }).catch(err => console.error("Database sync failed:", err));
     }
 
     function adjustStakeScale(type) {
@@ -387,158 +313,137 @@
         if (type === 'double') input.value = Math.min(balance, current * 2);
     }
 
-    function dropPlinkoBall() {
+    function initiateBallDrop() {
         const betInput = document.getElementById("betValue");
-        const desiredBet = parseInt(betInput.value) || 0;
+        const betAmount = parseInt(betInput.value) || 0;
 
-        if (desiredBet < 1 || desiredBet > balance) {
-            alert("Insufficient or invalid bet amount!");
+        if (betAmount < 1 || betAmount > balance) {
+            alert("Invalid bet amount selected!");
             return;
         }
 
-        balance -= desiredBet;
+        // Deduct upfront bet value instantly
+        balance -= betAmount;
         document.getElementById('userBalance').innerText = balance.toFixed(2);
-        
-        syncTxToDatabase(-desiredBet);
+        syncTxToDatabase(-betAmount);
 
-        balls.push({
-            x: canvas.width / 2 + (Math.random() * 4 - 2),
-            y: 15,
+        // Spawn a new physics ball at the top entry channel
+        activeBalls.push({
+            x: canvas.width / 2 + (Math.random() * 6 - 3), // slight offset random variance
+            y: 20,
             vx: 0,
-            vy: 2.5,
-            radius: 6,
-            bet: desiredBet,
-            difficulty: document.getElementById("difficultySelect").value,
-            currentRow: 0
+            vy: 1.5, // Initial downward plunge speed triggers drop
+            radius: 7,
+            bet: betAmount
         });
-
-        playSyntheticSound(523.25, 'sine', 0.1);
     }
 
-    function drawMultipliers() {
-        const totalBuckets = rows + 1;
-        const spacingX = canvas.width / (rows + 2);
-        const rowWidth = (totalBuckets - 1) * spacingX;
-        const startX = (canvas.width - rowWidth) / 2;
-        const y = canvas.height - 35;
-
-        ctx.font = "bold 11px Arial";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-
-        for (let b = 0; b < totalBuckets; b++) {
-            const mVal = multipliers[b] || 1;
-            const bucketX = startX + b * spacingX;
-
-            let color = "#ef4444"; 
-            if (b >= 2 && b <= 6) color = "#fbbf24"; 
-            if (b >= 3 && b <= 5) color = "#2563eb"; 
-
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.roundRect(bucketX - (spacingX/2 - 3), y - 12, spacingX - 6, 24, 4);
-            ctx.fill();
-
-            ctx.fillStyle = "#ffffff";
-            ctx.fillText(mVal + "x", bucketX, y);
-        }
-    }
-
-    function handlePhysicsEngineLoop() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-        pegs.forEach(peg => {
-            ctx.beginPath();
-            ctx.arc(peg.x, peg.y, 3.5, 0, 2 * Math.PI);
-            ctx.fill();
-        });
-
-        drawMultipliers();
-
+    function enginePhysicsUpdate() {
         const gravity = 0.16;
-        const bounceDamping = 0.45;
-        const midCanvasX = canvas.width / 2;
+        const friction = 0.5;
 
-        for (let i = balls.length - 1; i >= 0; i--) {
-            let ball = balls[i];
+        for (let b = activeBalls.length - 1; b >= 0; b--) {
+            let ball = activeBalls[b];
 
-            // Fetch specific bias config settings based on targeted difficulty row state
-            const biasStrength = centeringBiasConfig[ball.difficulty] || 0.02;
-            
-            // Continuous dynamic trajectory adjustments pulling items towards screen centers
-            if (ball.x < midCanvasX) {
-                ball.vx += biasStrength;
-            } else if (ball.x > midCanvasX) {
-                ball.vx -= biasStrength;
-            }
-
+            // Apply downward acceleration physics
             ball.vy += gravity;
             ball.x += ball.vx;
             ball.y += ball.vy;
 
-            pegs.forEach(peg => {
+            // Side wall collision safety cushions
+            if (ball.x - ball.radius < 10) {
+                ball.x = 10 + ball.radius;
+                ball.vx *= -0.4;
+            }
+            if (ball.x + ball.radius > canvas.width - 10) {
+                ball.x = canvas.width - 10 - ball.radius;
+                ball.vx *= -0.4;
+            }
+
+            // Peg collision checks
+            for (let p = 0; p < pegs.length; p++) {
+                let peg = pegs[p];
                 let dx = ball.x - peg.x;
                 let dy = ball.y - peg.y;
-                let dist = Math.sqrt(dx * dx + dy * dy);
+                let distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (dist < ball.radius + 3.5) {
-                    let nx = dx / dist;
-                    let ny = dy / dist;
-                    ball.x = peg.x + nx * (ball.radius + 3.5);
-                    ball.y = peg.y + ny * (ball.radius + 3.5);
+                if (distance < ball.radius + peg.radius) {
+                    // Push out of collision state to prevent sticky peg trapping
+                    let angle = Math.atan2(dy, dx);
+                    ball.x = peg.x + Math.cos(angle) * (ball.radius + peg.radius);
+                    ball.y = peg.y + Math.sin(angle) * (ball.radius + peg.radius);
 
-                    let dot = ball.vx * nx + ball.vy * ny;
-                    ball.vx = (ball.vx - 2 * dot * nx) * bounceDamping;
-                    ball.vy = (ball.vy - 2 * dot * ny) * bounceDamping;
-
-                    ball.vx += (Math.random() - 0.5) * 0.4;
+                    // Bounce velocity diversion calculations
+                    let speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+                    ball.vx = Math.cos(angle) * speed * friction;
+                    ball.vy = Math.sin(angle) * speed * friction;
                     
-                    playSyntheticSound(783.99, 'triangle', 0.04);
+                    // Add slight random path diversion element to break perfect vertical states
+                    ball.vx += (Math.random() * 0.4 - 0.2);
                 }
-            });
+            }
 
-            if (ball.x < ball.radius) { ball.x = ball.radius; ball.vx *= -0.5; }
-            if (ball.x > canvas.width - ball.radius) { ball.x = canvas.width - ball.radius; ball.vx *= -0.5; }
+            // Landed inside bucket matrix check
+            if (ball.y >= bucketStartY) {
+                let landingIndex = Math.floor((ball.x - bucketStartX) / bucketWidth);
+                if (landingIndex < 0) landingIndex = 0;
+                if (landingIndex >= totalBuckets) landingIndex = totalBuckets - 1;
 
-            ctx.fillStyle = "#ff3366";
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
-            ctx.fill();
+                let payoutMult = multipliers[landingIndex];
+                let roundWinnings = ball.bet * payoutMult;
 
-            if (ball.y >= canvas.height - 55) {
-                const spacingX = canvas.width / (rows + 2);
-                const totalBuckets = rows + 1;
-                const rowWidth = (totalBuckets - 1) * spacingX;
-                const startX = (canvas.width - rowWidth) / 2;
-
-                let closestIndex = Math.round((ball.x - startX) / spacingX);
-                if (closestIndex < 0) closestIndex = 0;
-                if (closestIndex >= totalBuckets) closestIndex = totalBuckets - 1;
-
-                const chosenMultipliers = difficultySettings[ball.difficulty];
-                const winMultiplier = chosenMultipliers[closestIndex];
-                const totalReturn = ball.bet * winMultiplier;
-
-                balance += totalReturn;
+                balance += roundWinnings;
                 document.getElementById('userBalance').innerText = balance.toFixed(2);
-                
-                syncTxToDatabase(totalReturn);
+                syncTxToDatabase(roundWinnings);
 
-                playSyntheticSound(winMultiplier >= 1 ? 880 : 330, 'sine', 0.18);
-                balls.splice(i, 1);
+                // Delete processing instance index from array
+                activeBalls.splice(b, 1);
             }
         }
-
-        requestAnimationFrame(handlePhysicsEngineLoop);
     }
 
-    setTimeout(() => {
-        resizeCanvas();
-        updateMultipliersDisplay();
-        handlePhysicsEngineLoop();
-        fetchLiveWallet();
-    }, 100);
+    function renderFrameLoop() {
+        enginePhysicsUpdate();
+
+        // Canvas clearing refresh layout
+        ctx.fillStyle = "#070b12";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Render Peg elements
+        ctx.fillStyle = "#ffffff";
+        for (let p = 0; p < pegs.length; p++) {
+            ctx.beginPath();
+            ctx.arc(pegs[p].x, pegs[p].y, pegs[p].radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Render Multiplier Buckets
+        for (let i = 0; i < totalBuckets; i++) {
+            let x = bucketStartX + (i * bucketWidth);
+            ctx.fillStyle = bucketColors[i];
+            ctx.fillRect(x + 2, bucketStartY, bucketWidth - 4, bucketHeight);
+
+            ctx.fillStyle = "#000000";
+            ctx.font = "bold 10px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(multipliers[i] + "x", x + (bucketWidth / 2), bucketStartY + 18);
+        }
+
+        // Render Active Falling Balls
+        ctx.fillStyle = "#ff3b30";
+        for (let b = 0; b < activeBalls.length; b++) {
+            let ball = activeBalls[b];
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        requestAnimationFrame(renderFrameLoop);
+    }
+
+    // Initialize environment sequences
+    fetchLiveWallet();
+    requestAnimationFrame(renderFrameLoop);
 </script>
 </body>
 </html>
