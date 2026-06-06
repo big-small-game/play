@@ -59,8 +59,6 @@ body {
   position: relative;
 }
 
-
-
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -130,6 +128,7 @@ body {
   padding: 2px 6px;
   border-radius: 10px;
   border: 1px solid var(--bg-main);
+  display: none;
 }
 
 .wallet-badge {
@@ -198,7 +197,6 @@ body {
 .btn-cu { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
 .btn-lo { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-glass); color: #f87171; }
 
-/* Notification Panel styles */
 .noti-item {
   background: rgba(255,255,255,0.03);
   border: 1px solid var(--border-glass);
@@ -300,13 +298,13 @@ body {
         
         <div class="header-right">
             <button class="noti-trigger" onclick="toggleMenu('notiMenu')">
-                🔔<span class="noti-badge">3</span>
+                🔔<span class="noti-badge" id="notiCountBadge">0</span>
             </button>
             <button class="wallet-badge" onclick="toggleMenu('walletMenu')">🪙 <span id="coins">Syncing...</span></button>
         </div>
         
         <div class="account-drawer" id="accountMenu">
-            <div class="drawer-user-info">Account Options (<span id="userHandleDisplay" style="color: white;">Loading...</span>)</div>
+            <div class="drawer-user-info">Account Menu</div>
             <button class="drawer-btn btn-cu" onclick="routeTo('contact.html')">✉️ Contact Us</button>
             <button class="drawer-btn btn-lo" onclick="triggerSignout()">🚪 Log Out Account</button>
         </div>
@@ -319,9 +317,9 @@ body {
 
         <div class="account-drawer" id="notiMenu">
             <div class="drawer-user-info">Notifications</div>
-            <div class="noti-item">🚀 Welcome! Explore our mini game suite and win grand multipliers.</div>
-            <div class="noti-item">💎 System update complete. Live syncing capabilities running optimized.</div>
-            <div class="noti-item">🎉 Complete a verification layout to manage extreme wallet values securely.</div>
+            <div id="notificationContainer">
+                <div class="noti-empty">Checking alerts...</div>
+            </div>
         </div>
     </div>
 
@@ -372,6 +370,7 @@ body {
 
 <script>
 const DATABASE_URL = "https://script.google.com/macros/s/AKfycbzWEe-nOLyOZlwk8t76jgULfhPfXZdtDPqtaWi4dJuEIP5HMJW8GQJM7N7HPK5x63NzfQ/exec";
+const NOTI_URL = "https://script.google.com/macros/s/AKfycbyONp4_bwK3-riyQltZfZLBoVu6h8-XPEiH5OS-ACIafEvAryvDK_se6JcLXOtW0vvjUw/exec";
 
 let rawStorageUser = localStorage.getItem("currentUser") || "Guest";
 let dynamicUserHandle = rawStorageUser.trim();
@@ -381,15 +380,17 @@ if(dynamicUserHandle.includes("@")) {
 }
 
 document.getElementById("sessionEmail").innerText = dynamicUserHandle;
-document.getElementById("userHandleDisplay").innerText = dynamicUserHandle;
 
-// Global menu management rules to toggle windows correctly
 function toggleMenu(menuId) {
     const menus = ["accountMenu", "walletMenu", "notiMenu"];
     menus.forEach(id => {
         const el = document.getElementById(id);
         if (id === menuId) {
             el.style.display = el.style.display === "block" ? "none" : "block";
+            // If opening notification menu, clear the counter mark
+            if (id === "notiMenu" && el.style.display === "block") {
+                document.getElementById("notiCountBadge").style.display = "none";
+            }
         } else {
             el.style.display = "none";
         }
@@ -415,7 +416,6 @@ document.addEventListener("click", function(e){
     }
 });
 
-// Core balance syncing engine with strict cache-busting architecture
 function forceSyncWalletData() {
     fetch(`${DATABASE_URL}?username=${encodeURIComponent(dynamicUserHandle)}&nocache=${Date.now()}`)
     .then(response => response.json())
@@ -424,7 +424,6 @@ function forceSyncWalletData() {
             let extractedBalanceValue = parseFloat(data.balance);
             document.getElementById("coins").innerText = extractedBalanceValue.toFixed(2);
             
-            // Onboarding display rule handler: show notice banner if account is completely fresh or has no coins
             if (extractedBalanceValue === 0) {
                 document.getElementById("welcomeGuide").style.display = "block";
             } else {
@@ -433,6 +432,38 @@ function forceSyncWalletData() {
         }
     })
     .catch(error => console.error("Sync error:", error));
+}
+
+// Separate function handles asynchronous alert lookups from external script
+function syncNotificationBanners() {
+    fetch(`${NOTI_URL}?username=${encodeURIComponent(dynamicUserHandle)}&nocache=${Date.now()}`)
+    .then(res => res.json())
+    .then(data => {
+        if (data && data.status === "success" && Array.isArray(data.notifications)) {
+            const container = document.getElementById("notificationContainer");
+            const badge = document.getElementById("notiCountBadge");
+            
+            if (data.notifications.length === 0) {
+                container.innerHTML = `<div class="noti-empty">No new system alerts at this moment.</div>`;
+                badge.style.display = "none";
+            } else {
+                container.innerHTML = "";
+                data.notifications.forEach(item => {
+                    const row = document.createElement("div");
+                    row.className = "noti-item";
+                    row.innerText = item.msg;
+                    container.appendChild(row);
+                });
+                
+                // Keep badge hidden if user is actively viewing notification pane
+                if (document.getElementById("notiMenu").style.display !== "block") {
+                    badge.innerText = data.notifications.length;
+                    badge.style.display = "block";
+                }
+            }
+        }
+    })
+    .catch(err => console.error("Notification engine error:", err));
 }
 
 function routeTo(targetFile) {
@@ -444,25 +475,25 @@ function triggerSignout() {
     window.location.href = "index.html";
 }
 
-// Force updates on visibility changes and back actions
 window.addEventListener("pageshow", function(event) {
     forceSyncWalletData();
+    syncNotificationBanners();
 });
 
 document.addEventListener("visibilitychange", function() {
     if (document.visibilityState === "visible") {
         forceSyncWalletData();
+        syncNotificationBanners();
     }
 });
 
-// Checks for out-of-sync backend sheet alterations every 3 seconds while active
 setInterval(() => {
     if (document.visibilityState === "visible") {
         forceSyncWalletData();
+        syncNotificationBanners();
     }
 }, 3000);
 
-// Animated Background Matrix Logic
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
