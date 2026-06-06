@@ -435,8 +435,15 @@ function forceSyncWalletData() {
 }
 
 // Separate function handles asynchronous alert lookups from external script
+// Separate function handles asynchronous alert lookups from external script
 function syncNotificationBanners() {
-    fetch(`${NOTI_URL}?username=${encodeURIComponent(dynamicUserHandle)}&nocache=${Date.now()}`)
+    // Reconstruct the database registration format by pinning the firebase domain suffix
+    let databaseRegisteredHandle = dynamicUserHandle;
+    if (databaseRegisteredHandle !== "Guest" && !databaseRegisteredHandle.includes("@")) {
+        databaseRegisteredHandle = databaseRegisteredHandle + "@game.local";
+    }
+
+    fetch(`${NOTI_URL}?username=${encodeURIComponent(databaseRegisteredHandle)}&nocache=${Date.now()}`)
     .then(res => res.json())
     .then(data => {
         if (data && data.status === "success" && Array.isArray(data.notifications)) {
@@ -465,7 +472,6 @@ function syncNotificationBanners() {
     })
     .catch(err => console.error("Notification engine error:", err));
 }
-
 function routeTo(targetFile) {
     window.location.href = targetFile;
 }
