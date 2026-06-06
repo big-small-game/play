@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Contact Support - Mini Games Hub</title>
+<style>
+:root {
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --bg-main: #060b19;
+  --bg-card: rgba(15, 23, 42, 0.55);
+  --primary-blue: #3b82f6;
+  --accent-gold: #f59e0b;
+  --text-light: #f8fafc;
+  --text-muted: #64748b;
+  --border-glass: rgba(255, 255, 255, 0.07);
+  --glow-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-main);
+  color: var(--text-light);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 16px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+#bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.app-wrapper {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 10;
+}
+
+.back-btn {
+  align-self: flex-start;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  color: var(--text-light);
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--glow-shadow);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  transition: transform 0.15s ease;
+}
+.back-btn:active {
+  transform: scale(0.95);
+}
+
+.contact-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-glass);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--glow-shadow);
+}
+
+.contact-card h1 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  background: linear-gradient(45deg, #60a5fa, #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 6px;
+}
+
+.contact-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: white;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus {
+  border-color: var(--primary-blue);
+}
+
+textarea.form-input {
+  resize: none;
+  height: 120px;
+}
+
+.submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: none;
+  color: white;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transition: transform 0.15s ease;
+}
+.submit-btn:active {
+  transform: scale(0.98);
+}
+
+.support-channels {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.channel-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #60a5fa;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.channel-link:hover {
+  text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="app-wrapper">
+    <button class="back-btn" onclick="goBack()">⬅️ Dashboard</button>
+
+    <div class="contact-card">
+        <h1>SUPPORT CENTER</h1>
+        <p>Have an issue with your wallet sync or games? Drop us a message instantly.</p>
+        
+        <form id="contactForm" onsubmit="handleFormSubmit(event)">
+            <div class="form-group">
+                <label>User ID / Identity</label>
+                <input type="text" id="contactUsername" class="form-input" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label>Subject</label>
+                <input type="text" id="formSubject" class="form-input" placeholder="e.g., Deposit issue, Game bug" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Message Detail</label>
+                <textarea id="formMessage" class="form-input" placeholder="Describe your issue with transaction IDs if applicable..." required></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn">✈️ Send Message</button>
+        </form>
+
+        <div class="support-channels">
+            <a href="mailto:gamzoneadda@gmail.com" class="channel-link">✉️ Email Support: gamzoneadda@gmail.com</a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Automatically pull user identity details just like your main page
+let rawStorageUser = localStorage.getItem("currentUser") || "Guest";
+let dynamicUserHandle = rawStorageUser.trim();
+if(dynamicUserHandle.includes("@")) {
+    dynamicUserHandle = dynamicUserHandle.split("@")[0];
+}
+document.getElementById("contactUsername").value = dynamicUserHandle;
+
+function goBack() {
+    // Navigates back to your main game page dashboard
+    window.location.href = "hub.html"; // Change "hub.html" to your actual main dashboard file name if different!
+}
+
+function handleFormSubmit(event) {
+    event.preventDefault();
+    
+    const subject = document.getElementById("formSubject").value;
+    const message = document.getElementById("formMessage").value;
+    
+    // Process form submitting operations here. 
+    // You can send this via another Google Sheet API or look into third-party integrations.
+    alert(`Thank you, ${dynamicUserHandle}! Your message regarding "${subject}" has been submitted.`);
+    
+    // Clear details
+    document.getElementById("formSubject").value = "";
+    document.getElementById("formMessage").value = "";
+}
+
+/* Background animated engine (Keeps visual seamlessness with main hub) */
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+for (let i = 0; i < 45; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2.5 + 0.5,
+        alpha: Math.random() * 0.5 + 0.1,
+        speed: Math.random() * 0.15 + 0.05
+    });
+}
+
+function animateBackgroundMesh() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, '#060b19');
+    grad.addColorStop(1, '#0c152b');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < particles.length; i++) {
+        let p = particles[i];
+        p.y -= p.speed;
+        if (p.y < -10) {
+            p.y = canvas.height + 10;
+            p.x = Math.random() * canvas.width;
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(96, 165, 250, ${p.alpha})`;
+        ctx.fill();
+    }
+    requestAnimationFrame(animateBackgroundMesh);
+}
+animateBackgroundMesh();
+</script>
+</body>
+</html>
+
