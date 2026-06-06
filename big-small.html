@@ -754,9 +754,34 @@
     }
 
     function resolveDiceEngineOutcome() {
-        const r1 = Math.floor(Math.random() * 6) + 1;
-        const r2 = Math.floor(Math.random() * 6) + 1;
-        const r3 = Math.floor(Math.random() * 6) + 1;
+        // Step 1: Roll initial raw values
+        let r1 = Math.floor(Math.random() * 6) + 1;
+        let r2 = Math.floor(Math.random() * 6) + 1;
+        let r3 = Math.floor(Math.random() * 6) + 1;
+
+        let totalSum = r1 + r2 + r3;
+        let category = "TIE";
+
+        if (totalSum >= 4 && totalSum <= 10) category = "SMALL";
+        else if (totalSum >= 11 && totalSum <= 17) category = "BIG";
+
+        // Step 2: House Override Engine (Sets cap strictly below 25% win-rate)
+        if (selectedPrediction === category) {
+            const winRateCap = 0.23; // 23% winning probability
+            if (Math.random() > winRateCap) {
+                // Force a losing combination depending on user preference
+                if (selectedPrediction === "SMALL") {
+                    // Force BIG parameters (e.g., 5, 5, 5 = 15)
+                    r1 = 5; r2 = 5; r3 = 5;
+                    category = "BIG";
+                } else if (selectedPrediction === "BIG") {
+                    // Force SMALL parameters (e.g., 2, 2, 2 = 6)
+                    r1 = 2; r2 = 2; r3 = 2;
+                    category = "SMALL";
+                }
+                totalSum = r1 + r2 + r3;
+            }
+        }
 
         const c1 = document.getElementById("cube1");
         const c2 = document.getElementById("cube2");
@@ -769,15 +794,6 @@
         c1.style.transform = cubeRotationMap[r1];
         c2.style.transform = cubeRotationMap[r2];
         c3.style.transform = cubeRotationMap[r3];
-
-        const totalSum = r1 + r2 + r3;
-        let category = "TIE";
-
-        if (totalSum >= 4 && totalSum <= 10) {
-            category = "SMALL";
-        } else if (totalSum >= 11 && totalSum <= 17) {
-            category = "BIG";
-        }
 
         let isWin = (selectedPrediction === category);
         let finalChangeAmount = 0;
@@ -799,7 +815,6 @@
         
         appendHistoryLog(totalSum, category);
 
-        // Render the outcome clearly directly inside the banner UI (no popups)
         const display = document.getElementById("resultDisplay");
         if (isWin) {
             display.innerHTML = `${totalSum} (${category})<br><span class="text-win">YOU WIN! +🪙${finalChangeAmount.toFixed(2)}</span>`;
@@ -811,7 +826,6 @@
             }
         }
 
-        // Clean cooldown environment reset
         setTimeout(() => {
             gameActive = false;
             document.getElementById("betValue").disabled = false;
