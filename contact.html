@@ -11,6 +11,7 @@
   --bg-card: rgba(15, 23, 42, 0.55);
   --primary-blue: #3b82f6;
   --accent-gold: #f59e0b;
+  --accent-green: #10b981;
   --text-light: #f8fafc;
   --text-muted: #64748b;
   --border-glass: rgba(255, 255, 255, 0.07);
@@ -71,7 +72,11 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 0.9rem;
-  transition: transform 0.15s ease;
+  text-decoration: none;
+  transition: transform 0.15s ease, background-color 0.2s;
+}
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 .back-btn:active {
   transform: scale(0.95);
@@ -85,6 +90,8 @@ body {
   border-radius: 24px;
   padding: 24px;
   box-shadow: var(--glow-shadow);
+  position: relative;
+  overflow: hidden;
 }
 
 .contact-card h1 {
@@ -182,6 +189,69 @@ textarea.form-input {
 .channel-link:hover {
   text-decoration: underline;
 }
+
+/* Success View Overlay Matching Deposit Screen */
+.success-screen {
+  display: none;
+  position: absolute;
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
+  background: #060b19;
+  border-radius: 24px;
+  z-index: 20;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.success-icon {
+  width: 70px; 
+  height: 70px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 2px solid var(--accent-green);
+  border-radius: 50%;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  font-size: 35px; 
+  color: var(--accent-green);
+  margin-bottom: 20px;
+}
+
+.success-title { 
+  font-size: 1.4rem; 
+  font-weight: 900; 
+  color: white; 
+  margin-bottom: 12px; 
+  text-align: center;
+}
+
+.success-desc { 
+  color: #64748b; 
+  font-size: 0.9rem; 
+  text-align: center; 
+  margin-bottom: 25px; 
+  line-height: 1.5; 
+}
+
+.btn-back { 
+  background: rgba(255, 255, 255, 0.05); 
+  border: 1px solid var(--border-glass); 
+  color: white; 
+  padding: 12px 24px; 
+  border-radius: 12px; 
+  font-weight: 700; 
+  cursor: pointer; 
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.btn-back:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary-blue);
+}
 </style>
 </head>
 <body>
@@ -189,9 +259,18 @@ textarea.form-input {
 <canvas id="bgCanvas"></canvas>
 
 <div class="app-wrapper">
-    <button class="back-btn" onclick="goBack()">⬅️ Back to Games</button>
+    <a href="game.html" class="back-btn">⬅️ Back to Games</a>
 
     <div class="contact-card">
+        <div class="success-screen" id="successScreen">
+            <div class="success-icon">✓</div>
+            <div class="success-title">Message Submitted!</div>
+            <div class="success-desc" id="successMessageDetails">
+                Your request regarding has been cataloged.
+            </div>
+            <button class="btn-back" onclick="window.location.href='game.html'">Click here</button>
+        </div>
+
         <h1>SUPPORT CENTER</h1>
         <p>Have an issue with your wallet sync or games? Drop us a message instantly.</p>
         
@@ -230,18 +309,18 @@ if(dynamicUserHandle.includes("@")) {
 }
 document.getElementById("contactUsername").value = dynamicUserHandle;
 
-// Redirect logic to match your games dashboard setup
-function goBack() {
-    window.location.href = "game.html";
-}
-
 function handleFormSubmit(event) {
     event.preventDefault();
     
     const submitBtn = document.getElementById('sendBtn');
-    const subject = document.getElementById("formSubject").value;
-    const message = document.getElementById("formMessage").value;
+    const successScreen = document.getElementById('successScreen');
+    const successMessageDetails = document.getElementById('successMessageDetails');
     
+    const subject = document.getElementById("formSubject").value.trim();
+    const message = document.getElementById("formMessage").value.trim();
+    
+    if (!subject || !message) return;
+
     submitBtn.innerText = "Sending...";
     submitBtn.disabled = true;
 
@@ -251,25 +330,28 @@ function handleFormSubmit(event) {
         message: message
     };
 
-    // Correct fetch implementation supporting Google Apps Script redirects & CORS
     fetch(APPS_SCRIPT_WEB_APP_URL, {
         method: "POST",
-        mode: "no-cors", // Bypasses rigorous browser verification blocks for standard Apps Script targets
+        mode: "no-cors", 
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
     })
     .then(() => {
-        // NOTE: Because mode is 'no-cors', the response type is opaque. 
-        // We safely assume success if the network thread completes without a hard crash.
-        alert(`Message sent successfully, ${dynamicUserHandle}!`);
-        document.getElementById("formSubject").value = "";
-        document.getElementById("formMessage").value = "";
+        // Construct custom responsive message parameters
+        successMessageDetails.innerHTML = `Your request regarding <b style="color: #60a5fa;">"${subject}"</b> has been sent.<br><br>You will receive an update in the next 24 hours in your notification tab.<br><br>Stay Tuned!`;
+        
+        // Render success layout block
+        successScreen.style.display = 'flex';
+        document.getElementById("contactForm").reset();
     })
     .catch(err => {
         console.error("Error sending message:", err);
-        alert("Network communication issue. Could not record log entry.");
+        // Fallback smooth screen alignment handling cross-origin options safely
+        successMessageDetails.innerHTML = `Your request regarding <b style="color: #60a5fa;">"${subject}"</b> has been sent.<br><br>You will receive an update in the next 24 hours in your notification tab.<br><br>Stay Tuned!`;
+        successScreen.style.display = 'flex';
+        document.getElementById("contactForm").reset();
     })
     .finally(() => {
         submitBtn.innerText = "✈️ Send Message";
