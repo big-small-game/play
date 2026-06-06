@@ -182,7 +182,7 @@ textarea.form-input {
 <canvas id="bgCanvas"></canvas>
 
 <div class="app-wrapper">
-    <button class="back-btn" onclick="goBack()">⬅️ Dashboard</button>
+    <button class="back-btn" onclick="game.html">⬅️ Back to Games</button>
 
     <div class="contact-card">
         <h1>SUPPORT CENTER</h1>
@@ -190,7 +190,7 @@ textarea.form-input {
         
         <form id="contactForm" onsubmit="handleFormSubmit(event)">
             <div class="form-group">
-                <label>User ID / Identity</label>
+                <label>User ID</label>
                 <input type="text" id="contactUsername" class="form-input" readonly>
             </div>
             
@@ -263,6 +263,45 @@ for (let i = 0; i < 45; i++) {
         speed: Math.random() * 0.15 + 0.05
     });
 }
+
+  function handleFormSubmit(event) {
+    event.preventDefault();
+    
+    const submitBtn = document.querySelector('.submit-btn');
+    const subject = document.getElementById("formSubject").value;
+    const message = document.getElementById("formMessage").value;
+    
+    submitBtn.innerText = "Sending...";
+    submitBtn.disabled = true;
+
+    const payload = {
+        username: dynamicUserHandle,
+        subject: subject,
+        message: message
+    };
+
+    // Use your Apps Script Deployment Web App URL here
+    fetch("YOUR_APPS_SCRIPT_WEB_APP_URL", {
+        method: "POST",
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(response => {
+        if(response.status === "success") {
+            alert(`Message sent successfully, ${dynamicUserHandle}!`);
+            document.getElementById("formSubject").value = "";
+            document.getElementById("formMessage").value = "";
+        } else {
+            alert("Submission error. Please try again.");
+        }
+    })
+    .catch(err => console.error("Error sending message:", err))
+    .finally(() => {
+        submitBtn.innerText = "✈️ Send Message";
+        submitBtn.disabled = false;
+    });
+}
+
 
 function animateBackgroundMesh() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
