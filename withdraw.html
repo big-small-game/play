@@ -296,7 +296,7 @@
     <div class="balance-display">Current Balance: 🪙<span id="currentBalance">Syncing...</span></div>
     
     <div class="notice-box">
-        ⚠️ Minimum Withdraw: 🪙100.<br>Withdrawal confirms within 24 hours.
+        ⚠️ Minimum Withdraw: 🪙300.<br>Withdrawal confirms within 24 hours.
     </div>
 
     <form id="withdrawForm">
@@ -307,7 +307,7 @@
 
         <div class="form-group">
             <label for="amount">Payout Total</label>
-            <input type="number" id="amount" name="amount" placeholder="Minimum 100" min="100" required disabled>
+            <input type="number" id="amount" name="amount" placeholder="Minimum 300" min="300" required disabled>
             <div id="balanceError" class="error-msg">❌ Amount exceeds available balance!</div>
             <div id="minError" class="error-msg">❌ Minimum withdrawal limit is 🪙100!</div>
         </div>
@@ -480,7 +480,7 @@
         const method = document.getElementById('payout_method').value;
         const amountRequested = parseFloat(document.getElementById('amount').value) || 0;
 
-        if (amountRequested > accountBalance || amountRequested < 100) return;
+        if (amountRequested > accountBalance || amountRequested < 300) return;
 
         let targetPaymentInfo = "";
         if(method === "BANK") {
