@@ -467,7 +467,7 @@
         let currentCombinations = combinations(25, openedTilesCount);
         let nextCombinations = combinations(25 - minesQuantity, openedTilesCount);
         let absoluteRawOdds = currentCombinations / nextCombinations;
-        return Math.max(0.01, parseFloat(((absoluteRawOdds * 0.99) * 0.45).toFixed(2)));
+        return Math.max(0.01, parseFloat(((absoluteRawOdds * 0.99) * 0.80).toFixed(2)));
     }
 
     function combinations(n, k) {
